@@ -1,0 +1,35 @@
+name: Roteiro de videoaula
+description: Criar roteiro de fala para videoaula de módulo
+title: "[video] módulo X - roteiro"
+labels: ["video-script"]
+body:
+  - type: input
+    id: modulo
+    attributes:
+      label: Módulo
+      placeholder: "Ex.: Módulo 3 — Proteção de Dispositivos e Redes"
+    validations:
+      required: true
+  - type: input
+    id: duracao
+    attributes:
+      label: Duração-alvo
+      placeholder: "Ex.: 6 a 8 minutos"
+    validations:
+      required: true
+  - type: textarea
+    id: objetivo
+    attributes:
+      label: Objetivo do vídeo
+    validations:
+      required: true
+  - type: textarea
+    id: formato
+    attributes:
+      label: Formato esperado
+      value: |
+        - abertura breve
+        - explicação principal
+        - exemplo prático
+        - alerta de golpe
+        - fechamento com ação recomendada
