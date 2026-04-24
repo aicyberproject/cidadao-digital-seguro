@@ -1,0 +1,26 @@
+name: QA técnico
+description: Validar build, fluxo, navegação e comportamento do curso
+title: "[qa] validar "
+labels: ["qa"]
+body:
+  - type: checkboxes
+    id: fluxo
+    attributes:
+      label: Itens de validação
+      options:
+        - label: Build executa com sucesso
+        - label: Página inicial carrega
+        - label: Módulos são exibidos
+        - label: Progressão funciona
+        - label: Quizzes funcionam
+        - label: Avaliação final funciona
+        - label: Certificado é gerado
+        - label: Console sem erros críticos
+  - type: textarea
+    id: ambiente
+    attributes:
+      label: Ambiente
+      value: |
+        - Navegador:
+        - Sistema operacional:
+        - URL testada:

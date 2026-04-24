@@ -1,0 +1,36 @@
+name: Revisão de quiz
+description: Criar ou revisar questões de quiz e avaliação
+title: "[quiz] módulo X - "
+labels: ["quiz"]
+body:
+  - type: input
+    id: escopo
+    attributes:
+      label: Escopo
+      placeholder: "Ex.: Módulo 5 ou avaliação final"
+    validations:
+      required: true
+  - type: input
+    id: quantidade
+    attributes:
+      label: Quantidade desejada
+      placeholder: "Ex.: ampliar de 3 para 5 questões"
+  - type: dropdown
+    id: dificuldade
+    attributes:
+      label: Nível de dificuldade
+      options:
+        - básico
+        - intermediário
+        - avançado
+    validations:
+      required: true
+  - type: textarea
+    id: diretrizes
+    attributes:
+      label: Diretrizes
+      value: |
+        - Evitar alternativas óbvias
+        - Cada questão deve ter apenas uma resposta correta
+        - As alternativas devem ser plausíveis
+        - Linguagem acessível ao público leigo
