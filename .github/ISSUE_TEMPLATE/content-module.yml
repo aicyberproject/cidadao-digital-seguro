@@ -1,0 +1,40 @@
+name: Conteúdo de módulo
+description: Criar, revisar ou expandir conteúdo pedagógico de um módulo
+title: "[content] módulo X - "
+labels: ["content"]
+body:
+  - type: input
+    id: modulo
+    attributes:
+      label: Módulo
+      placeholder: "Ex.: Módulo 1 — Ecossistema de Segurança Digital"
+    validations:
+      required: true
+  - type: textarea
+    id: objetivo
+    attributes:
+      label: Objetivo pedagógico
+    validations:
+      required: true
+  - type: checkboxes
+    id: tarefas
+    attributes:
+      label: Tarefas
+      options:
+        - label: Revisar texto de abertura
+        - label: Melhorar pergunta mobilizadora
+        - label: Acrescentar exemplos práticos
+        - label: Revisar checklist
+        - label: Revisar atividade prática
+        - label: Revisar links complementares
+        - label: Ampliar quiz
+  - type: textarea
+    id: restricoes
+    attributes:
+      label: Restrições
+      value: |
+        - Editar apenas arquivos em src/content/
+        - Não alterar componentes React
+        - Não alterar CSS
+        - Manter estrutura JavaScript existente
+        - Não inventar fonte oficial

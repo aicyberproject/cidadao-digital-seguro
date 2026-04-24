@@ -1,0 +1,29 @@
+name: Melhoria de UX
+description: Melhorar navegação, legibilidade, progresso ou certificado
+title: "[ux] "
+labels: ["ux"]
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: Problema observado
+    validations:
+      required: true
+  - type: textarea
+    id: resultado
+    attributes:
+      label: Resultado esperado
+    validations:
+      required: true
+  - type: checkboxes
+    id: areas
+    attributes:
+      label: Áreas afetadas
+      options:
+        - label: Tela inicial
+        - label: Navegação de módulos
+        - label: Progresso
+        - label: Quiz
+        - label: Avaliação final
+        - label: Certificado
+        - label: Acessibilidade
