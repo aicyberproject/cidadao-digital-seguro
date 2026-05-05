@@ -1,9 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-const repoName = 'cidadao-digital-seguro'
-
 export default defineConfig({
-  base: `/${repoName}/`,
+  base: '/cidadao-digital-seguro/',
   plugins: [react()],
 })
