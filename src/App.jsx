@@ -3,9 +3,6 @@ import { motion } from 'framer-motion'
 import { jsPDF } from 'jspdf'
 import {
   Shield,
-  Lock,
-  Wifi,
-  ShoppingCart,
   AlertTriangle,
   FileCheck,
   CheckCircle2,
@@ -46,8 +43,30 @@ function shuffleArray(items) {
     .map(({ item }) => item)
 }
 
-function randomizeQuiz(quiz) {
-  return shuffleArray(quiz).map((questionItem) => {
+function getQuizSource(moduleItem) {
+  if (Array.isArray(moduleItem.questionBank) && moduleItem.questionBank.length > 0) {
+    return moduleItem.questionBank
+  }
+
+  if (Array.isArray(moduleItem.quiz) && moduleItem.quiz.length > 0) {
+    return moduleItem.quiz
+  }
+
+  return []
+}
+
+function getQuizSize(moduleItem) {
+  if (typeof moduleItem.quizSize === 'number' && moduleItem.quizSize > 0) {
+    return moduleItem.quizSize
+  }
+
+  return 10
+}
+
+function randomizeQuiz(quizSource, size = 10) {
+  const selectedQuestions = shuffleArray(quizSource).slice(0, Math.min(size, quizSource.length))
+
+  return selectedQuestions.map((questionItem) => {
     const correctOption = questionItem.options[questionItem.answer]
     const shuffledOptions = shuffleArray(questionItem.options)
 
@@ -209,10 +228,12 @@ export default function App() {
     [selectedModuleId],
   )
 
-  const selectedModuleState = progressState.moduleState[selectedModule.id] || defaultProgress().moduleState[selectedModule.id]
+  const selectedModuleState =
+    progressState.moduleState[selectedModule.id] || defaultProgress().moduleState[selectedModule.id]
+
   const currentItem = selectedModule.content[screenIndex]
   const allModulesCompleted = modules.every((m) => progressState.moduleState[m.id]?.completed)
-  const activeModuleQuiz = progressState.quizVariants?.[selectedModule.id] || selectedModule.quiz
+  const activeModuleQuiz = progressState.quizVariants?.[selectedModule.id] || selectedModule.quiz || []
   const moduleQuizResult = scoreQuiz(activeModuleQuiz, selectedModuleState.quizAnswers || {})
   const finalResult = scoreQuiz(finalAssessment, progressState.finalAssessmentAnswers || {})
 
@@ -228,11 +249,14 @@ export default function App() {
         ...prev,
         quizVariants: {
           ...(prev.quizVariants || {}),
-          [selectedModule.id]: randomizeQuiz(selectedModule.quiz),
+          [selectedModule.id]: randomizeQuiz(
+            getQuizSource(selectedModule),
+            getQuizSize(selectedModule),
+          ),
         },
       }
     })
-  }, [screenIndex, selectedModule.id, selectedModule.content.length, selectedModule.quiz])
+  }, [screenIndex, selectedModule.id, selectedModule.content.length, selectedModule])
 
   function generateCertificatePdf() {
     if (!progressState.certificateUnlocked) return
@@ -361,7 +385,7 @@ export default function App() {
 
   function answerModuleQuiz(idx, answer) {
     setProgressState((prev) => {
-      const quizForScoring = prev.quizVariants?.[selectedModule.id] || selectedModule.quiz
+      const quizForScoring = prev.quizVariants?.[selectedModule.id] || selectedModule.quiz || []
       const nextAnswers = {
         ...prev.moduleState[selectedModule.id].quizAnswers,
         [idx]: answer,
@@ -384,7 +408,10 @@ export default function App() {
 
   function retryModuleQuiz() {
     setProgressState((prev) => {
-      const randomizedQuiz = randomizeQuiz(selectedModule.quiz)
+      const randomizedQuiz = randomizeQuiz(
+        getQuizSource(selectedModule),
+        getQuizSize(selectedModule),
+      )
 
       return {
         ...prev,
