@@ -39,6 +39,26 @@ function saveProgress(data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
 }
 
+function shuffleArray(items) {
+  return [...items]
+    .map((item) => ({ item, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ item }) => item)
+}
+
+function randomizeQuiz(quiz) {
+  return shuffleArray(quiz).map((questionItem) => {
+    const correctOption = questionItem.options[questionItem.answer]
+    const shuffledOptions = shuffleArray(questionItem.options)
+
+    return {
+      ...questionItem,
+      options: shuffledOptions,
+      answer: shuffledOptions.indexOf(correctOption),
+    }
+  })
+}
+
 function defaultProgress() {
   const moduleState = Object.fromEntries(
     modules.map((m, index) => [
@@ -60,18 +80,62 @@ function defaultProgress() {
     started: false,
     introSeen: false,
     moduleState,
+    quizVariants: {},
     finalAssessmentAnswers: {},
     finalAssessmentPassed: false,
     certificateUnlocked: false,
   }
 }
 
+function normalizeProgress(loaded) {
+  const fresh = defaultProgress()
+
+  if (!loaded || typeof loaded !== 'object') return fresh
+
+  const normalizedModuleState = { ...fresh.moduleState }
+
+  modules.forEach((moduleItem) => {
+    normalizedModuleState[moduleItem.id] = {
+      ...fresh.moduleState[moduleItem.id],
+      ...(loaded.moduleState?.[moduleItem.id] || {}),
+      contentSeen: {
+        ...fresh.moduleState[moduleItem.id].contentSeen,
+        ...(loaded.moduleState?.[moduleItem.id]?.contentSeen || {}),
+      },
+      checklist: {
+        ...fresh.moduleState[moduleItem.id].checklist,
+        ...(loaded.moduleState?.[moduleItem.id]?.checklist || {}),
+      },
+      quizAnswers: {
+        ...fresh.moduleState[moduleItem.id].quizAnswers,
+        ...(loaded.moduleState?.[moduleItem.id]?.quizAnswers || {}),
+      },
+    }
+  })
+
+  return {
+    ...fresh,
+    ...loaded,
+    moduleState: normalizedModuleState,
+    quizVariants: loaded.quizVariants || {},
+    finalAssessmentAnswers: loaded.finalAssessmentAnswers || {},
+    finalAssessmentPassed: !!loaded.finalAssessmentPassed,
+    certificateUnlocked: !!loaded.certificateUnlocked,
+  }
+}
+
 function scoreQuiz(quiz, answers) {
   let correct = 0
+
   quiz.forEach((q, i) => {
     if (answers[i] === q.answer) correct += 1
   })
-  return { correct, total: quiz.length, passed: correct / quiz.length >= 0.7 }
+
+  return {
+    correct,
+    total: quiz.length,
+    passed: quiz.length > 0 ? correct / quiz.length >= 0.7 : false,
+  }
 }
 
 function ProgressBar({ value }) {
@@ -92,12 +156,17 @@ function SectionTag({ children }) {
 
 function ModuleProgress({ mod, state }) {
   const totalSteps = mod.content.length + 3
-  const seenCount = Object.values(state.contentSeen).filter(Boolean).length
-  const checklistDone = Object.keys(state.checklist).length > 0 && Object.values(state.checklist).every(Boolean) ? 1 : 0
+  const seenCount = Object.values(state.contentSeen || {}).filter(Boolean).length
+  const checklistDone =
+    Object.keys(state.checklist || {}).length > 0 && Object.values(state.checklist || {}).every(Boolean) ? 1 : 0
   const activityDone = state.activityDone ? 1 : 0
   const videoDone = state.videoDone ? 1 : 0
   const quizDone = state.quizPassed ? 1 : 0
-  const percent = Math.min(100, Math.round(((seenCount + checklistDone + activityDone + videoDone + quizDone) / totalSteps) * 100))
+  const percent = Math.min(
+    100,
+    Math.round(((seenCount + checklistDone + activityDone + videoDone + quizDone) / totalSteps) * 100),
+  )
+
   return <ProgressBar value={percent} />
 }
 
@@ -128,22 +197,46 @@ export default function App() {
 
   useEffect(() => {
     const loaded = loadProgress()
-    if (loaded) setProgressState(loaded)
+    if (loaded) setProgressState(normalizeProgress(loaded))
   }, [])
 
   useEffect(() => {
     saveProgress(progressState)
   }, [progressState])
 
-  const selectedModule = useMemo(() => modules.find((m) => m.id === selectedModuleId) || modules[0], [selectedModuleId])
-  const selectedModuleState = progressState.moduleState[selectedModule.id]
+  const selectedModule = useMemo(
+    () => modules.find((m) => m.id === selectedModuleId) || modules[0],
+    [selectedModuleId],
+  )
+
+  const selectedModuleState = progressState.moduleState[selectedModule.id] || defaultProgress().moduleState[selectedModule.id]
   const currentItem = selectedModule.content[screenIndex]
-  const allModulesCompleted = modules.every((m) => progressState.moduleState[m.id].completed)
-  const moduleQuizResult = scoreQuiz(selectedModule.quiz, selectedModuleState.quizAnswers || {})
+  const allModulesCompleted = modules.every((m) => progressState.moduleState[m.id]?.completed)
+  const activeModuleQuiz = progressState.quizVariants?.[selectedModule.id] || selectedModule.quiz
+  const moduleQuizResult = scoreQuiz(activeModuleQuiz, selectedModuleState.quizAnswers || {})
   const finalResult = scoreQuiz(finalAssessment, progressState.finalAssessmentAnswers || {})
+
+  useEffect(() => {
+    const isQuizScreen = screenIndex === selectedModule.content.length
+
+    if (!isQuizScreen) return
+
+    setProgressState((prev) => {
+      if (prev.quizVariants?.[selectedModule.id]) return prev
+
+      return {
+        ...prev,
+        quizVariants: {
+          ...(prev.quizVariants || {}),
+          [selectedModule.id]: randomizeQuiz(selectedModule.quiz),
+        },
+      }
+    })
+  }, [screenIndex, selectedModule.id, selectedModule.content.length, selectedModule.quiz])
 
   function generateCertificatePdf() {
     if (!progressState.certificateUnlocked) return
+
     const cleanName = participantName.trim() || 'Participante'
     const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' })
     const today = new Date().toLocaleDateString('pt-BR')
@@ -174,7 +267,7 @@ export default function App() {
     doc.setFontSize(13)
     const lines = doc.splitTextToSize(
       'concluiu com aproveitamento o curso Cidadão Digital Seguro: Prevenção e Combate a Crimes Cibernéticos, em formato online autoinstrucional, com carga horária sugerida de 12 a 18 horas, contemplando identificação de riscos, prevenção de fraudes e resposta a incidentes digitais.',
-      220
+      220,
     )
     doc.text(lines, 148.5, 92, { align: 'center' })
 
@@ -189,7 +282,10 @@ export default function App() {
     doc.setFont('helvetica', 'normal')
     doc.text('Certificação digital gerada pela aplicação do curso', 148.5, 178, { align: 'center' })
 
-    const fileName = `certificado-cidadao-digital-seguro-${cleanName.toLowerCase().replace(/[^a-z0-9]+/gi, '-')}.pdf`
+    const fileName = `certificado-cidadao-digital-seguro-${cleanName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/gi, '-')}.pdf`
+
     doc.save(fileName)
   }
 
@@ -212,7 +308,10 @@ export default function App() {
         ...prev.moduleState,
         [selectedModule.id]: {
           ...prev.moduleState[selectedModule.id],
-          contentSeen: { ...prev.moduleState[selectedModule.id].contentSeen, [itemIndex]: true },
+          contentSeen: {
+            ...prev.moduleState[selectedModule.id].contentSeen,
+            [itemIndex]: true,
+          },
         },
       },
     }))
@@ -239,7 +338,10 @@ export default function App() {
       ...prev,
       moduleState: {
         ...prev.moduleState,
-        [selectedModule.id]: { ...prev.moduleState[selectedModule.id], videoDone: true },
+        [selectedModule.id]: {
+          ...prev.moduleState[selectedModule.id],
+          videoDone: true,
+        },
       },
     }))
   }
@@ -249,15 +351,23 @@ export default function App() {
       ...prev,
       moduleState: {
         ...prev.moduleState,
-        [selectedModule.id]: { ...prev.moduleState[selectedModule.id], activityDone: true },
+        [selectedModule.id]: {
+          ...prev.moduleState[selectedModule.id],
+          activityDone: true,
+        },
       },
     }))
   }
 
   function answerModuleQuiz(idx, answer) {
     setProgressState((prev) => {
-      const nextAnswers = { ...prev.moduleState[selectedModule.id].quizAnswers, [idx]: answer }
-      const result = scoreQuiz(selectedModule.quiz, nextAnswers)
+      const quizForScoring = prev.quizVariants?.[selectedModule.id] || selectedModule.quiz
+      const nextAnswers = {
+        ...prev.moduleState[selectedModule.id].quizAnswers,
+        [idx]: answer,
+      }
+      const result = scoreQuiz(quizForScoring, nextAnswers)
+
       return {
         ...prev,
         moduleState: {
@@ -266,6 +376,28 @@ export default function App() {
             ...prev.moduleState[selectedModule.id],
             quizAnswers: nextAnswers,
             quizPassed: result.passed,
+          },
+        },
+      }
+    })
+  }
+
+  function retryModuleQuiz() {
+    setProgressState((prev) => {
+      const randomizedQuiz = randomizeQuiz(selectedModule.quiz)
+
+      return {
+        ...prev,
+        quizVariants: {
+          ...(prev.quizVariants || {}),
+          [selectedModule.id]: randomizedQuiz,
+        },
+        moduleState: {
+          ...prev.moduleState,
+          [selectedModule.id]: {
+            ...prev.moduleState[selectedModule.id],
+            quizAnswers: {},
+            quizPassed: false,
           },
         },
       }
@@ -308,8 +440,12 @@ export default function App() {
 
   function answerFinalAssessment(idx, answer) {
     setProgressState((prev) => {
-      const nextAnswers = { ...prev.finalAssessmentAnswers, [idx]: answer }
+      const nextAnswers = {
+        ...prev.finalAssessmentAnswers,
+        [idx]: answer,
+      }
       const result = scoreQuiz(finalAssessment, nextAnswers)
+
       return {
         ...prev,
         finalAssessmentAnswers: nextAnswers,
@@ -332,13 +468,20 @@ export default function App() {
     <div className="app-shell">
       <div className="topbar">
         <div>
-          <div className="eyebrow"><Shield size={14} /> Curso online com progressão por conclusão de atividades</div>
+          <div className="eyebrow">
+            <Shield size={14} /> Curso online com progressão por conclusão de atividades
+          </div>
           <h1>{courseIntro.title}</h1>
           <p className="subtitle">{courseIntro.subtitle}</p>
         </div>
+
         <div className="top-actions">
-          <button className="button button-outline" onClick={goHome}><Home size={16} /> Início</button>
-          <button className="button button-outline" onClick={resetCourse}><RotateCcw size={16} /> Reiniciar</button>
+          <button className="button button-outline" onClick={goHome}>
+            <Home size={16} /> Início
+          </button>
+          <button className="button button-outline" onClick={resetCourse}>
+            <RotateCcw size={16} /> Reiniciar
+          </button>
         </div>
       </div>
 
@@ -349,10 +492,12 @@ export default function App() {
               <h2>Trilha do curso</h2>
               <p className="muted">Os módulos são liberados progressivamente.</p>
             </div>
+
             <div className="card-body sidebar-list">
               {modules.map((m, idx) => {
                 const state = progressState.moduleState[m.id]
                 const Icon = m.icon
+
                 return (
                   <button
                     key={m.id}
@@ -368,7 +513,9 @@ export default function App() {
                   >
                     <div className="module-chip-head">
                       <div className="module-chip-left">
-                        <div className="icon-box small"><Icon size={16} /></div>
+                        <div className="icon-box small">
+                          <Icon size={16} />
+                        </div>
                         <div>
                           <div className="mini-muted">Etapa {idx + 1}</div>
                           <div className="module-chip-title">{m.shortTitle}</div>
@@ -384,14 +531,16 @@ export default function App() {
               <div className="final-box">
                 <div className="final-box-head">
                   <span>Avaliação final</span>
-                  {progressState.finalAssessmentPassed ? <CheckCircle2 className="success-icon" size={18} /> : null}
+                  {progressState.finalAssessmentPassed ? (
+                    <CheckCircle2 className="success-icon" size={18} />
+                  ) : null}
                 </div>
-                <ProgressBar value={finalResult.passed ? 100 : Math.round((finalResult.correct / finalResult.total) * 100) || 0} />
-                <button
-                  className="button full"
-                  disabled={!allModulesCompleted}
-                  onClick={() => setCurrentView('final-review')}
-                >
+
+                <ProgressBar
+                  value={finalResult.passed ? 100 : Math.round((finalResult.correct / finalResult.total) * 100) || 0}
+                />
+
+                <button className="button full" disabled={!allModulesCompleted} onClick={() => setCurrentView('final-review')}>
                   Ir para a etapa final
                 </button>
               </div>
@@ -404,26 +553,58 @@ export default function App() {
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
               <ScreenCard title="Bem-vindo ao curso" icon={Shield}>
                 <p className="muted-body">{courseIntro.description}</p>
+
                 <div className="grid-2">
                   {courseIntro.outcomes.map((item) => (
-                    <div key={item} className="info-box">{item}</div>
+                    <div key={item} className="info-box">
+                      {item}
+                    </div>
                   ))}
                 </div>
+
                 <div className="tags-row">
                   <SectionTag>Identificar</SectionTag>
                   <SectionTag>Prevenir</SectionTag>
                   <SectionTag>Reagir</SectionTag>
                 </div>
+
                 <div className="actions-row">
-                  <button className="button" onClick={startCourse}>Começar agora <ChevronRight size={16} /></button>
-                  <button className="button button-outline" onClick={() => setCurrentView('structure')}>Como funciona a trilha</button>
+                  <button className="button" onClick={startCourse}>
+                    Começar agora <ChevronRight size={16} />
+                  </button>
+                  <button className="button button-outline" onClick={() => setCurrentView('structure')}>
+                    Como funciona a trilha
+                  </button>
                 </div>
               </ScreenCard>
 
               <div className="grid-3">
-                <Card><div className="card-header"><h2>Formato</h2></div><div className="card-body muted-body">Curso autoinstrucional em trilha progressiva, com conteúdos, atividades práticas, quizzes e avaliação final integradora.</div></Card>
-                <Card><div className="card-header"><h2>Liberação</h2></div><div className="card-body muted-body">Cada módulo é liberado após a conclusão da etapa anterior, incluindo atividade obrigatória e quiz com aproveitamento mínimo.</div></Card>
-                <Card><div className="card-header"><h2>Certificação</h2></div><div className="card-body muted-body">O certificado é liberado ao final da trilha, após aprovação na avaliação integradora.</div></Card>
+                <Card>
+                  <div className="card-header">
+                    <h2>Formato</h2>
+                  </div>
+                  <div className="card-body muted-body">
+                    Curso autoinstrucional em trilha progressiva, com conteúdos, atividades práticas, quizzes e avaliação final integradora.
+                  </div>
+                </Card>
+
+                <Card>
+                  <div className="card-header">
+                    <h2>Liberação</h2>
+                  </div>
+                  <div className="card-body muted-body">
+                    Cada módulo é liberado após a conclusão da etapa anterior, incluindo atividade obrigatória e quiz com aproveitamento mínimo.
+                  </div>
+                </Card>
+
+                <Card>
+                  <div className="card-header">
+                    <h2>Certificação</h2>
+                  </div>
+                  <div className="card-body muted-body">
+                    O certificado é liberado ao final da trilha, após aprovação na avaliação integradora.
+                  </div>
+                </Card>
               </div>
             </motion.div>
           )}
@@ -444,6 +625,7 @@ export default function App() {
                     <div>Quiz do módulo</div>
                   </div>
                 </div>
+
                 <div className="info-box">
                   <h3>Regras de desbloqueio</h3>
                   <div className="line-list">
@@ -454,7 +636,10 @@ export default function App() {
                   </div>
                 </div>
               </div>
-              <button className="button" onClick={startCourse}>Ir para a trilha</button>
+
+              <button className="button" onClick={startCourse}>
+                Ir para a trilha
+              </button>
             </ScreenCard>
           )}
 
@@ -464,6 +649,7 @@ export default function App() {
                 <p className="muted-body">{selectedModule.theme}</p>
                 <p className="muted-small">Objetivo: {selectedModule.goal}</p>
                 <ModuleProgress mod={selectedModule} state={selectedModuleState} />
+
                 <div className="tags-row">
                   <SectionTag>Etapa {modules.findIndex((m) => m.id === selectedModule.id) + 1}</SectionTag>
                   {selectedModuleState.completed ? <SectionTag>Concluído</SectionTag> : null}
@@ -487,7 +673,11 @@ export default function App() {
                 >
                   {currentItem.type === 'text' && (
                     <div className="stack-md">
-                      {currentItem.body.map((p) => <p className="muted-body" key={p}>{p}</p>)}
+                      {currentItem.body.map((p) => (
+                        <p className="muted-body" key={p}>
+                          {p}
+                        </p>
+                      ))}
                     </div>
                   )}
 
@@ -502,7 +692,16 @@ export default function App() {
                         <div className="video-title">{currentItem.description}</div>
                         <div className="muted-small">Duração sugerida: {currentItem.duration}</div>
                       </div>
-                      <button className="button" onClick={() => { setVideoDone(); markSeen(screenIndex) }}>Marcar videoaula como assistida</button>
+
+                      <button
+                        className="button"
+                        onClick={() => {
+                          setVideoDone()
+                          markSeen(screenIndex)
+                        }}
+                      >
+                        Marcar videoaula como assistida
+                      </button>
                     </div>
                   )}
 
@@ -540,16 +739,34 @@ export default function App() {
                         <summary>Ver orientação de resposta</summary>
                         <p>{currentItem.reflection}</p>
                       </details>
-                      <button className="button" onClick={() => { setActivityDone(); markSeen(screenIndex) }}>Marcar atividade como concluída</button>
+
+                      <button
+                        className="button"
+                        onClick={() => {
+                          setActivityDone()
+                          markSeen(screenIndex)
+                        }}
+                      >
+                        Marcar atividade como concluída
+                      </button>
                     </div>
                   )}
 
                   {currentItem.type !== 'video' && currentItem.type !== 'activity' && (
-                    <button className="button" onClick={() => markSeen(screenIndex)}>Marcar etapa como lida</button>
+                    <button className="button" onClick={() => markSeen(screenIndex)}>
+                      Marcar etapa como lida
+                    </button>
                   )}
 
                   <div className="actions-between">
-                    <button className="button button-outline" disabled={screenIndex === 0} onClick={() => setScreenIndex((s) => Math.max(0, s - 1))}>Voltar</button>
+                    <button
+                      className="button button-outline"
+                      disabled={screenIndex === 0}
+                      onClick={() => setScreenIndex((s) => Math.max(0, s - 1))}
+                    >
+                      Voltar
+                    </button>
+
                     <button
                       className="button"
                       onClick={() => setScreenIndex((s) => Math.min(selectedModule.content.length, s + 1))}
@@ -564,12 +781,15 @@ export default function App() {
               {screenIndex === selectedModule.content.length && (
                 <ScreenCard title={`Quiz do ${selectedModule.shortTitle}`} icon={CheckCircle2}>
                   <div className="stack-lg">
-                    {selectedModule.quiz.map((q, idx) => (
-                      <div key={q.question} className="quiz-box">
-                        <div className="quiz-question">{idx + 1}. {q.question}</div>
+                    {activeModuleQuiz.map((q, idx) => (
+                      <div key={`${selectedModule.id}-${idx}-${q.question}`} className="quiz-box">
+                        <div className="quiz-question">
+                          {idx + 1}. {q.question}
+                        </div>
+
                         <div className="stack-sm">
                           {q.options.map((opt, optionIndex) => (
-                            <label key={opt} className="radio-row">
+                            <label key={`${selectedModule.id}-${idx}-${optionIndex}-${opt}`} className="radio-row">
                               <input
                                 type="radio"
                                 name={`${selectedModule.id}-${idx}`}
@@ -589,18 +809,36 @@ export default function App() {
                   </div>
 
                   <div className="actions-row">
-                    <button className="button button-outline" onClick={() => setScreenIndex(selectedModule.content.length - 1)}>Voltar ao conteúdo</button>
+                    <button
+                      className="button button-outline"
+                      onClick={() => setScreenIndex(selectedModule.content.length - 1)}
+                    >
+                      Voltar ao conteúdo
+                    </button>
+
+                    <button
+                      className="button button-outline"
+                      onClick={retryModuleQuiz}
+                      disabled={selectedModuleState.completed || Object.keys(selectedModuleState.quizAnswers || {}).length === 0}
+                    >
+                      Nova tentativa
+                    </button>
+
                     <button
                       className="button"
                       disabled={!(selectedModuleState.activityDone && selectedModuleState.videoDone && moduleQuizResult.passed)}
                       onClick={completeModule}
                     >
-                      {modules.findIndex((m) => m.id === selectedModule.id) === modules.length - 1 ? 'Ir para a etapa final' : 'Concluir módulo e liberar próximo'}
+                      {modules.findIndex((m) => m.id === selectedModule.id) === modules.length - 1
+                        ? 'Ir para a etapa final'
+                        : 'Concluir módulo e liberar próximo'}
                     </button>
                   </div>
 
                   {!selectedModuleState.activityDone || !selectedModuleState.videoDone ? (
-                    <div className="warning-text">Para concluir o módulo, a atividade prática e a videoaula precisam estar marcadas como concluídas.</div>
+                    <div className="warning-text">
+                      Para concluir o módulo, a atividade prática e a videoaula precisam estar marcadas como concluídas.
+                    </div>
                   ) : null}
                 </ScreenCard>
               )}
@@ -610,7 +848,10 @@ export default function App() {
           {currentView === 'final-review' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
               <ScreenCard title="Revisão geral do curso" icon={BookOpen}>
-                <p className="muted-body">Você concluiu a trilha principal. Agora, revise a jornada completa antes de realizar a avaliação final integradora.</p>
+                <p className="muted-body">
+                  Você concluiu a trilha principal. Agora, revise a jornada completa antes de realizar a avaliação final integradora.
+                </p>
+
                 <div className="grid-2">
                   {modules.map((m) => (
                     <div key={m.id} className="info-box">
@@ -619,18 +860,27 @@ export default function App() {
                     </div>
                   ))}
                 </div>
-                <button className="button" onClick={() => setCurrentView('final-assessment')}>Iniciar avaliação final</button>
+
+                <button className="button" onClick={() => setCurrentView('final-assessment')}>
+                  Iniciar avaliação final
+                </button>
               </ScreenCard>
             </motion.div>
           )}
 
           {currentView === 'final-assessment' && (
             <ScreenCard title="Avaliação final integradora" icon={Award}>
-              <p className="muted-body">Estudo de caso transversal para verificar identificação do golpe, falhas preventivas, ordem correta da reação, preservação de provas e escolha do canal institucional adequado.</p>
+              <p className="muted-body">
+                Estudo de caso transversal para verificar identificação do golpe, falhas preventivas, ordem correta da reação, preservação de provas e escolha do canal institucional adequado.
+              </p>
+
               <div className="stack-lg">
                 {finalAssessment.map((q, idx) => (
                   <div key={q.question} className="quiz-box">
-                    <div className="quiz-question">{idx + 1}. {q.question}</div>
+                    <div className="quiz-question">
+                      {idx + 1}. {q.question}
+                    </div>
+
                     <div className="stack-sm">
                       {q.options.map((opt, optionIndex) => (
                         <label key={opt} className="radio-row">
@@ -648,11 +898,25 @@ export default function App() {
                 ))}
               </div>
 
-              <div className="info-box muted-body">Resultado atual: {finalResult.correct}/{finalResult.total} acertos. Aproveitamento mínimo: 70%.</div>
-              <div className="actions-row">
-                <button className="button" onClick={() => setCurrentView('certificate')} disabled={!progressState.finalAssessmentPassed}>Ir para certificação</button>
+              <div className="info-box muted-body">
+                Resultado atual: {finalResult.correct}/{finalResult.total} acertos. Aproveitamento mínimo: 70%.
               </div>
-              {!progressState.finalAssessmentPassed ? <div className="warning-text">Conclua a avaliação com aproveitamento mínimo para liberar o certificado.</div> : null}
+
+              <div className="actions-row">
+                <button
+                  className="button"
+                  onClick={() => setCurrentView('certificate')}
+                  disabled={!progressState.finalAssessmentPassed}
+                >
+                  Ir para certificação
+                </button>
+              </div>
+
+              {!progressState.finalAssessmentPassed ? (
+                <div className="warning-text">
+                  Conclua a avaliação com aproveitamento mínimo para liberar o certificado.
+                </div>
+              ) : null}
             </ScreenCard>
           )}
 
@@ -662,7 +926,9 @@ export default function App() {
                 <div className="certificate-box">
                   <Award size={48} />
                   <h3>Parabéns pela conclusão</h3>
-                  <p>Você concluiu a trilha formativa e foi aprovado na avaliação final integradora. O curso reforça a tríade: identificar o risco, prevenir com método e reagir com segurança.</p>
+                  <p>
+                    Você concluiu a trilha formativa e foi aprovado na avaliação final integradora. O curso reforça a tríade: identificar o risco, prevenir com método e reagir com segurança.
+                  </p>
                   <div className="muted-small">Certificado em PDF disponível para emissão imediata</div>
                 </div>
 
@@ -674,8 +940,12 @@ export default function App() {
                       <div>Carga horária sugerida: 12 a 18 horas</div>
                       <div>Status: concluído com aproveitamento</div>
                     </div>
+
                     <div className="stack-sm" style={{ marginTop: '12px' }}>
-                      <label htmlFor="participantName" className="muted-body">Nome do participante para o PDF</label>
+                      <label htmlFor="participantName" className="muted-body">
+                        Nome do participante para o PDF
+                      </label>
+
                       <input
                         id="participantName"
                         className="text-input"
@@ -684,9 +954,13 @@ export default function App() {
                         value={participantName}
                         onChange={(e) => setParticipantName(e.target.value)}
                       />
-                      <button className="button" onClick={generateCertificatePdf}>Baixar certificado em PDF</button>
+
+                      <button className="button" onClick={generateCertificatePdf}>
+                        Baixar certificado em PDF
+                      </button>
                     </div>
                   </div>
+
                   <div className="info-box">
                     <div className="link-card-title">Materiais permanentes</div>
                     <div className="line-list">
@@ -700,11 +974,11 @@ export default function App() {
 
                 <div className="info-box">
                   <div className="link-card-title">Orientação final</div>
-                    <div className="line-list">
-                      <div>Guarde o certificado em local seguro.</div>
-                      <div>Revise periodicamente os checklists do curso.</div>
-                      <div>Em caso de golpe ou incidente digital, utilize canais oficiais de atendimento e preserve evidências.</div>
-                    </div>
+                  <div className="line-list">
+                    <div>Guarde o certificado em local seguro.</div>
+                    <div>Revise periodicamente os checklists do curso.</div>
+                    <div>Em caso de golpe ou incidente digital, utilize canais oficiais de atendimento e preserve evidências.</div>
+                  </div>
                 </div>
               </ScreenCard>
             </motion.div>
