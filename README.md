@@ -48,6 +48,35 @@ cidadao-digital-seguro-repo/
     └── main.jsx
 ```
 
+## Agentes de IA para produção e revisão
+
+O projeto inclui uma estrutura de agentes de IA na pasta:
+
+```text
+agents/
+
+Esses agentes não são, neste momento, agentes internos disponíveis ao aluno dentro da aplicação. Eles servem como apoio ao processo de produção, revisão, QA e melhoria contínua do curso.
+
+Agentes previstos
+agente-conteudista.md: expansão, adaptação e refinamento dos conteúdos dos módulos.
+agente-revisor-pedagogico.md: revisão didática, coerência pedagógica, progressão de aprendizagem e clareza dos objetivos.
+agente-quiz.md: criação, revisão e aperfeiçoamento de questões, alternativas, gabaritos e feedbacks.
+agente-ux.md: avaliação da experiência do usuário, clareza visual, navegação, linguagem de interface e acessibilidade básica.
+agente-qa-tecnico.md: revisão técnica de código, build, estado da aplicação, localStorage, regressões e bugs.
+agente-browser-qa.md: teste do curso como usuário final no navegador, simulando a jornada completa do aluno.
+agente-video.md: apoio à criação de roteiros de videoaulas, textos de apoio audiovisual e materiais complementares.
+Fluxo recomendado de trabalho
+
+Para cada melhoria ou issue relevante, recomenda-se o seguinte fluxo:
+
+O agente conteudista propõe ou expande o conteúdo.
+O agente revisor pedagógico avalia clareza, coerência, progressão e adequação didática.
+O agente de quiz revisa ou cria as questões avaliativas.
+O agente UX verifica a experiência do aluno.
+O agente QA técnico verifica a implementação, o build e possíveis regressões.
+O agente browser QA testa a navegação real no navegador.
+A aprovação final permanece humana.
+
 ## Tecnologias utilizadas
 
 1. React 18
