@@ -698,14 +698,13 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="grid-2">
-                  {officialLinks.map((link) => (
-                    <a key={link.url} href={link.url} target="_blank" rel="noreferrer" className="link-card">
-                      <div className="link-card-title">{link.label}</div>
-                      <div className="link-card-url">{link.url}</div>
-                      <ExternalLink size={16} />
-                    </a>
-                  ))}
+                <div className="info-box">
+                  <div className="link-card-title">Orientação final</div>
+                    <div className="line-list">
+                      <div>Guarde o certificado em local seguro.</div>
+                      <div>Revise periodicamente os checklists do curso.</div>
+                      <div>Em caso de golpe ou incidente digital, utilize canais oficiais de atendimento e preserve evidências.</div>
+                    </div>
                 </div>
               </ScreenCard>
             </motion.div>
