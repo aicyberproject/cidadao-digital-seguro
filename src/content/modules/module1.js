@@ -1,128 +1,6 @@
 import { Shield } from 'lucide-react'
 import { officialLinks } from '../officialLinks'
-
-function shuffleArray(items) {
-  return [...items]
-    .map((item) => ({ item, sort: Math.random() }))
-    .sort((a, b) => a.sort - b.sort)
-    .map(({ item }) => item)
-}
-
-function buildRandomizedQuiz(questionBank) {
-  return shuffleArray(questionBank).map((questionItem) => {
-    const correctOption = questionItem.options[questionItem.answer]
-    const shuffledOptions = shuffleArray(questionItem.options)
-
-    return {
-      question: questionItem.question,
-      options: shuffledOptions,
-      answer: shuffledOptions.indexOf(correctOption),
-    }
-  })
-}
-
-const module1QuestionBank = [
-  {
-    question: 'Qual alternativa expressa melhor a ideia de segurança digital como cidadania?',
-    options: [
-      'É uma prática restrita a especialistas em tecnologia e investigação criminal.',
-      'É o conjunto de hábitos, responsabilidades e decisões que permite usar serviços digitais com mais consciência, proteção e capacidade de reação.',
-      'É uma obrigação exclusiva dos bancos, plataformas digitais e órgãos públicos.',
-      'É apenas a instalação de antivírus e aplicativos de bloqueio no celular.',
-    ],
-    answer: 1,
-  },
-  {
-    question: 'No ecossistema de segurança digital, por que a prevenção não pode ser atribuída a uma única instituição?',
-    options: [
-      'Porque os golpes digitais combinam tecnologia, engenharia social, comportamento da vítima, serviços privados e eventual atuação estatal.',
-      'Porque a investigação criminal sempre substitui a orientação preventiva.',
-      'Porque o usuário final não tem qualquer papel antes da ocorrência do prejuízo.',
-      'Porque fraudes digitais são problemas exclusivamente bancários.',
-    ],
-    answer: 0,
-  },
-  {
-    question: 'Uma vítima recebe ligação de falsa central bancária, é pressionada a instalar um aplicativo e orientada a transferir recursos para uma suposta conta segura. Qual leitura é mais adequada?',
-    options: [
-      'Trata-se apenas de falha de atendimento bancário, sem relação com crime digital.',
-      'O elemento mais relevante é a existência de contato telefônico, pois ligações são sempre confiáveis.',
-      'Há indícios de engenharia social, falsa identidade institucional, urgência artificial e possível fraude financeira.',
-      'A vítima deve cumprir as orientações, pois instituições financeiras costumam pedir transferência para proteger saldo.',
-    ],
-    answer: 2,
-  },
-  {
-    question: 'Qual distinção é mais adequada entre fraude e golpe no contexto de transações digitais?',
-    options: [
-      'Fraude e golpe são sempre sinônimos absolutos e não há utilidade em diferenciá-los.',
-      'Na fraude, em sentido operacional, pode haver movimentação irregular sem atuação consciente do titular; no golpe, a vítima é induzida por engenharia social a praticar o ato.',
-      'No golpe, sempre há invasão técnica do dispositivo; na fraude, sempre há ameaça física.',
-      'A fraude só ocorre presencialmente, enquanto o golpe só ocorre em redes sociais.',
-    ],
-    answer: 1,
-  },
-  {
-    question: 'O papel da Polícia Federal, no contexto apresentado no módulo, deve ser compreendido principalmente como:',
-    options: [
-      'Substituir bancos e plataformas em todo atendimento inicial ao consumidor.',
-      'Prestar consultoria privada de segurança digital para cada usuário individual.',
-      'Exercer função investigativa dentro de sua esfera de atribuição, especialmente quando houver competência legal, dimensão federal, interestadual ou internacional.',
-      'Bloquear imediatamente qualquer perfil ou anúncio suspeito, sem necessidade de procedimento ou cooperação.',
-    ],
-    answer: 2,
-  },
-  {
-    question: 'O papel do MJSP, no ecossistema de prevenção e enfrentamento a fraudes digitais, está mais associado a:',
-    options: [
-      'Articulação estratégica, coordenação de políticas públicas e integração de atores públicos e privados.',
-      'Emissão direta de cartões, senhas e códigos de autenticação bancária.',
-      'Atendimento comercial de aplicativos financeiros.',
-      'Fornecimento de antivírus oficial para todos os cidadãos.',
-    ],
-    answer: 0,
-  },
-  {
-    question: 'A atuação da FEBRABAN, no contexto deste curso, é melhor descrita como:',
-    options: [
-      'Órgão de polícia judiciária com atribuição criminal direta.',
-      'Entidade representativa do setor bancário, com papel relevante na prevenção setorial, comunicação antifraude e difusão de boas práticas de segurança financeira.',
-      'Autoridade judicial responsável por condenar autores de fraudes bancárias digitais.',
-      'Plataforma pública obrigatória para registro de boletins de ocorrência.',
-    ],
-    answer: 1,
-  },
-  {
-    question: 'Qual conjunto de sinais deve levar o cidadão a interromper a interação e verificar o fato por canal oficial?',
-    options: [
-      'Mensagem sem urgência, orientação para buscar o site oficial e ausência de pedido de dados sensíveis.',
-      'Pedido de senha ou código, ameaça de bloqueio, link externo, sigilo e pressão para decisão imediata.',
-      'Informação educativa publicada em canal institucional conhecido.',
-      'Solicitação para revisar configurações de segurança diretamente no aplicativo oficial já instalado.',
-    ],
-    answer: 1,
-  },
-  {
-    question: 'Por que preservar mensagens, números, perfis, comprovantes e capturas de tela é uma medida importante após uma tentativa de golpe?',
-    options: [
-      'Porque a preservação de elementos informativos pode apoiar comunicação do fato, atendimento pela instituição envolvida e eventual apuração posterior.',
-      'Porque garante automaticamente a recuperação integral de valores transferidos.',
-      'Porque substitui a necessidade de procurar canais oficiais.',
-      'Porque permite que a vítima faça investigação autônoma e confronte diretamente o suspeito.',
-    ],
-    answer: 0,
-  },
-  {
-    question: 'Qual alternativa representa melhor a lógica integrada “identificar, prevenir e reagir” adotada no curso?',
-    options: [
-      'Identificar o risco apenas depois do prejuízo, prevenir instalando qualquer aplicativo indicado por terceiros e reagir apagando todas as mensagens.',
-      'Identificar sinais de risco, prevenir com hábitos verificáveis e reagir preservando evidências, buscando canais oficiais e evitando novas interações com o golpista.',
-      'Identificar apenas ataques técnicos complexos, prevenir ignorando atualizações e reagir compartilhando o caso em redes sociais.',
-      'Identificar o golpe somente quando houver invasão do dispositivo, prevenir por tentativa e erro e reagir negociando diretamente com o criminoso.',
-    ],
-    answer: 1,
-  },
-]
+import { questionBank } from '../questionBank'
 
 export const module1 = {
   id: 'm1',
@@ -130,7 +8,9 @@ export const module1 = {
   shortTitle: 'Ecossistema de Segurança Digital',
   icon: Shield,
   theme: 'Cidadania digital, prevenção, cooperação institucional e resposta inicial a golpes.',
-  goal: 'Compreender a segurança digital como responsabilidade compartilhada, reconhecer os principais atores do ecossistema de proteção e aplicar critérios iniciais para identificar, prevenir e reagir a golpes digitais.',
+  goal:
+    'Compreender a segurança digital como responsabilidade compartilhada, reconhecer os principais atores do ecossistema de proteção e aplicar critérios iniciais para identificar, prevenir e reagir a golpes digitais.',
+
   content: [
     {
       type: 'text',
@@ -254,12 +134,14 @@ export const module1 = {
     {
       type: 'tip',
       title: 'Dica de Especialista',
-      text: 'Quando a situação parecer urgente demais, pause antes de agir. A pressa é uma das ferramentas mais usadas por golpistas. Contato recebido nunca substitui verificação independente por canal oficial.',
+      text:
+        'Quando a situação parecer urgente demais, pause antes de agir. A pressa é uma das ferramentas mais usadas por golpistas. Contato recebido nunca substitui verificação independente por canal oficial.',
     },
     {
       type: 'scam',
       title: 'Momento É Golpe!',
-      text: 'Uma suposta central informa risco na sua conta, pede confirmação imediata de dados, solicita código recebido por SMS ou orienta a instalar um aplicativo de segurança. O principal sinal de alerta é a tentativa de criar urgência antes da verificação independente.',
+      text:
+        'Uma suposta central informa risco na sua conta, pede confirmação imediata de dados, solicita código recebido por SMS ou orienta a instalar um aplicativo de segurança. O principal sinal de alerta é a tentativa de criar urgência antes da verificação independente.',
     },
     {
       type: 'checklist',
@@ -291,5 +173,8 @@ export const module1 = {
         'A situação apresenta sinais de engenharia social: falsa identidade institucional, urgência, instalação de aplicativo, link externo e solicitação de dados. A PF pode atuar na investigação dentro de sua atribuição; o MJSP atua na articulação estratégica e em políticas públicas; a FEBRABAN e o setor bancário contribuem com prevenção setorial, comunicação antifraude e boas práticas; o cidadão deve interromper contato, não compartilhar novos dados, procurar canais oficiais, preservar evidências e registrar o fato pelo canal adequado.',
     },
   ],
-  quiz: buildRandomizedQuiz(module1QuestionBank),
+
+  questionBank: questionBank.m1,
+  quizSize: 10,
+  quiz: questionBank.m1.slice(0, 10),
 }
