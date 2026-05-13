@@ -174,19 +174,36 @@ function SectionTag({ children }) {
 }
 
 function ModuleProgress({ mod, state }) {
-  const totalSteps = mod.content.length + 3
-  const seenCount = Object.values(state.contentSeen || {}).filter(Boolean).length
-  const checklistDone =
-    Object.keys(state.checklist || {}).length > 0 && Object.values(state.checklist || {}).every(Boolean) ? 1 : 0
-  const activityDone = state.activityDone ? 1 : 0
-  const videoDone = state.videoDone ? 1 : 0
-  const quizDone = state.quizPassed ? 1 : 0
-  const percent = Math.min(
-    100,
-    Math.round(((seenCount + checklistDone + activityDone + videoDone + quizDone) / totalSteps) * 100),
-  )
+  const totalScreens = Array.isArray(mod?.screens)
+    ? mod.screens.length
+    : Array.isArray(mod?.lessons)
+      ? mod.lessons.length
+      : 0
 
-  return <ProgressBar value={percent} />
+  const completedScreens = Array.isArray(state?.completedScreens)
+    ? state.completedScreens.length
+    : 0
+
+  const quizSource = getQuizSource(mod)
+  const totalQuestions = Array.isArray(quizSource) ? quizSource.length : 0
+
+  const answeredQuestions = Array.isArray(state?.quizAnswers)
+    ? state.quizAnswers.length
+    : 0
+
+  const contentProgress = totalScreens > 0
+    ? completedScreens / totalScreens
+    : 0
+
+  const quizProgress = totalQuestions > 0
+    ? answeredQuestions / totalQuestions
+    : 0
+
+  const progressValue = state?.completed
+    ? 100
+    : Math.round(((contentProgress + quizProgress) / 2) * 100)
+
+  return <ProgressBar value={progressValue} />
 }
 
 function ScreenCard({ title, children, icon: Icon }) {
