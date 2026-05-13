@@ -180,8 +180,8 @@ function ModuleProgress({ mod, state }) {
       ? mod.lessons.length
       : 0
 
-  const completedScreens = Array.isArray(state?.completedScreens)
-    ? state.completedScreens.length
+  const completedScreens = state?.contentSeen
+    ? Object.values(state.contentSeen).filter(Boolean).length
     : 0
 
   const quizSource = getQuizSource(mod)
@@ -204,6 +204,48 @@ function ModuleProgress({ mod, state }) {
     : Math.round(((contentProgress + quizProgress) / 2) * 100)
 
   return <ProgressBar value={progressValue} />
+}
+
+function renderLessonContent(blocks) {
+  if (!Array.isArray(blocks)) return null
+
+  return (
+    <div className="stack-md">
+      {blocks.map((block, index) => {
+        if (block.type === 'paragraph') {
+          return (
+            <p key={index} className="muted-body">
+              {block.text}
+            </p>
+          )
+        }
+
+        if (block.type === 'list') {
+          return (
+            <div key={index} className="info-box">
+              {block.title ? <div className="link-card-title">{block.title}</div> : null}
+              <ul className="muted-body">
+                {(block.items || []).map((item, itemIndex) => (
+                  <li key={itemIndex}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+
+        if (block.type === 'callout') {
+          return (
+            <div key={index} className="tip-box">
+              {block.title ? <strong>{block.title}</strong> : null}
+              {block.text ? <p>{block.text}</p> : null}
+            </div>
+          )
+        }
+
+        return null
+      })}
+    </div>
+  )
 }
 
 function ScreenCard({ title, children, icon: Icon }) {
@@ -246,16 +288,23 @@ export default function App() {
   )
 
   const selectedModuleState =
-    progressState.moduleState[selectedModule.id] || defaultProgress().moduleState[selectedModule.id]
+  progressState.moduleState[selectedModule.id] || defaultProgress().moduleState[selectedModule.id]
 
-  const currentItem = selectedModule.content[screenIndex]
+  const selectedModuleContent = Array.isArray(selectedModule.content)
+  ? selectedModule.content
+  : Array.isArray(selectedModule.lessons)
+    ? selectedModule.lessons
+    : []
+
+  const currentItem = selectedModuleContent[screenIndex] || selectedModuleContent[0] || null
+
   const allModulesCompleted = modules.every((m) => progressState.moduleState[m.id]?.completed)
   const activeModuleQuiz = progressState.quizVariants?.[selectedModule.id] || selectedModule.quiz || []
   const moduleQuizResult = scoreQuiz(activeModuleQuiz, selectedModuleState.quizAnswers || {})
   const finalResult = scoreQuiz(finalAssessment, progressState.finalAssessmentAnswers || {})
 
   useEffect(() => {
-    const isQuizScreen = screenIndex === selectedModule.content.length
+    const isQuizScreen = screenIndex === selectedModuleContent.length
 
     if (!isQuizScreen) return
 
@@ -273,7 +322,7 @@ export default function App() {
         },
       }
     })
-  }, [screenIndex, selectedModule.id, selectedModule.content.length, selectedModule])
+  }, [screenIndex, selectedModule.id, selectedModuleContent.length, selectedModule])
 
   function generateCertificatePdf() {
     if (!progressState.certificateUnlocked) return
@@ -690,9 +739,14 @@ export default function App() {
           {currentView === 'module' && selectedModule && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
               <ScreenCard title={selectedModule.title} icon={selectedModule.icon}>
-                <p className="muted-body">{selectedModule.theme}</p>
-                <p className="muted-small">Objetivo: {selectedModule.goal}</p>
-                <ModuleProgress mod={selectedModule} state={selectedModuleState} />
+                 <p className="muted-body">{selectedModule.subtitle || selectedModule.theme}</p>
+
+                 <div className="muted-small">
+    		   <strong>Objetivo:</strong>{' '}
+    		   {selectedModule.goal || selectedModule.objectives?.[0] || selectedModule.summary}
+  		 </div>
+
+  <ModuleProgress mod={selectedModule} state={selectedModuleState} />
 
                 <div className="tags-row">
                   <SectionTag>Etapa {modules.findIndex((m) => m.id === selectedModule.id) + 1}</SectionTag>
@@ -700,10 +754,10 @@ export default function App() {
                 </div>
               </ScreenCard>
 
-              {screenIndex < selectedModule.content.length && currentItem && (
+              {screenIndex < selectedModuleContent.length && currentItem && (
                 <ScreenCard
                   title={currentItem.title}
-                  icon={
+		  icon={
                     currentItem.type === 'video'
                       ? PlayCircle
                       : currentItem.type === 'links'
@@ -715,15 +769,17 @@ export default function App() {
                             : AlertTriangle
                   }
                 >
-                  {currentItem.type === 'text' && (
-                    <div className="stack-md">
-                      {currentItem.body.map((p) => (
-                        <p className="muted-body" key={p}>
-                          {p}
-                        </p>
-                      ))}
-                    </div>
-                  )}
+                  {currentItem.content && renderLessonContent(currentItem.content)}
+
+ 		  {currentItem.type === 'text' && Array.isArray(currentItem.body) && (
+  		     <div className="stack-md">
+    		       {currentItem.body.map((p) => (
+     			 <p className="muted-body" key={p}>
+        		   {p}
+     			 </p>
+  		       ))}
+		      </div>
+		    )}
 
                   {currentItem.type === 'scenario' && <div className="scenario-box">{currentItem.prompt}</div>}
                   {currentItem.type === 'tip' && <div className="tip-box">{currentItem.text}</div>}
@@ -813,7 +869,7 @@ export default function App() {
 
                     <button
                       className="button"
-                      onClick={() => setScreenIndex((s) => Math.min(selectedModule.content.length, s + 1))}
+                      onClick={() => setScreenIndex((s) => Math.min(selectedModuleContent.length, s + 1))}
                       disabled={!selectedModuleState.contentSeen[screenIndex] && currentItem.type !== 'checklist'}
                     >
                       Próxima etapa
@@ -822,7 +878,7 @@ export default function App() {
                 </ScreenCard>
               )}
 
-              {screenIndex === selectedModule.content.length && (
+              {screenIndex === selectedModuleContent.length && (
                 <ScreenCard title={`Quiz do ${selectedModule.shortTitle}`} icon={CheckCircle2}>
                   <div className="stack-lg">
                     {activeModuleQuiz.map((q, idx) => (
@@ -855,7 +911,7 @@ export default function App() {
                   <div className="actions-row">
                     <button
                       className="button button-outline"
-                      onClick={() => setScreenIndex(selectedModule.content.length - 1)}
+                      onClick={() => setScreenIndex(selectedModuleContent.length - 1)}
                     >
                       Voltar ao conteúdo
                     </button>
