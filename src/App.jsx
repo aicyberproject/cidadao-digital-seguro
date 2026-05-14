@@ -174,29 +174,25 @@ function SectionTag({ children }) {
 }
 
 function ModuleProgress({ mod, state }) {
-  const totalScreens = Array.isArray(mod?.screens)
-    ? mod.screens.length
-    : Array.isArray(mod?.lessons)
-      ? mod.lessons.length
-      : 0
+  const totalScreens = getModuleContent(mod).length
 
   const completedScreens = state?.contentSeen
     ? Object.values(state.contentSeen).filter(Boolean).length
     : 0
 
   const quizSource = getQuizSource(mod)
-  const totalQuestions = Array.isArray(quizSource) ? quizSource.length : 0
+  const totalQuestions = Array.isArray(quizSource) ? Math.min(getQuizSize(mod), quizSource.length) : 0
 
-  const answeredQuestions = Array.isArray(state?.quizAnswers)
-    ? state.quizAnswers.length
+  const answeredQuestions = state?.quizAnswers
+    ? Object.keys(state.quizAnswers).length
     : 0
 
   const contentProgress = totalScreens > 0
-    ? completedScreens / totalScreens
+    ? Math.min(completedScreens / totalScreens, 1)
     : 0
 
   const quizProgress = totalQuestions > 0
-    ? answeredQuestions / totalQuestions
+    ? Math.min(answeredQuestions / totalQuestions, 1)
     : 0
 
   const progressValue = state?.completed
@@ -248,6 +244,64 @@ function renderLessonContent(blocks) {
   )
 }
 
+function getModuleContent(moduleItem) {
+  const baseContent = Array.isArray(moduleItem.content)
+    ? moduleItem.content
+    : Array.isArray(moduleItem.lessons)
+      ? moduleItem.lessons
+      : []
+
+  const normalized = [...baseContent]
+
+  if (moduleItem.video) {
+    normalized.push({
+      type: 'video',
+      title: moduleItem.video.title || 'Videoaula do módulo',
+      description:
+        moduleItem.video.script ||
+        moduleItem.video.description ||
+        'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+      duration: moduleItem.video.duration || 'Em preparação',
+    })
+  }
+
+  const linkItems = moduleItem.links || moduleItem.resources || moduleItem.complementaryLinks || []
+
+  if (Array.isArray(linkItems) && linkItems.length > 0) {
+    normalized.push({
+      type: 'links',
+      title: 'Material complementar',
+      items: linkItems,
+    })
+  }
+
+  if (Array.isArray(moduleItem.checklist) && moduleItem.checklist.length > 0) {
+    normalized.push({
+      type: 'checklist',
+      title: 'Checklist de prevenção',
+      items: moduleItem.checklist,
+    })
+  }
+
+  if (moduleItem.practicalActivity) {
+    normalized.push({
+      type: 'activity',
+      title: moduleItem.practicalActivity.title || 'Atividade prática',
+      prompt:
+        moduleItem.practicalActivity.description ||
+        moduleItem.practicalActivity.prompt ||
+        'Atividade prática do módulo.',
+      reflection:
+        Array.isArray(moduleItem.practicalActivity.steps)
+          ? moduleItem.practicalActivity.steps.join(' ')
+          : moduleItem.practicalActivity.reflection ||
+            'Registre os sinais de alerta, a conduta segura e as evidências que devem ser preservadas.',
+    })
+  }
+
+  return normalized
+}
+
 function ScreenCard({ title, children, icon: Icon }) {
   return (
     <Card>
@@ -290,11 +344,8 @@ export default function App() {
   const selectedModuleState =
   progressState.moduleState[selectedModule.id] || defaultProgress().moduleState[selectedModule.id]
 
-  const selectedModuleContent = Array.isArray(selectedModule.content)
-  ? selectedModule.content
-  : Array.isArray(selectedModule.lessons)
-    ? selectedModule.lessons
-    : []
+  const selectedModuleContent = getModuleContent(selectedModule)
+  
 
   const currentItem = selectedModuleContent[screenIndex] || selectedModuleContent[0] || null
 
@@ -724,8 +775,8 @@ export default function App() {
                   <div className="line-list">
                     <div>A próxima etapa só é liberada após a conclusão da anterior</div>
                     <div>O quiz do módulo exige aproveitamento mínimo de 70%</div>
-                    <div>A atividade prática e o checklist são obrigatórios</div>
-                    <div>A avaliação final só abre após os seis módulos concluídos</div>
+                    <div>A videoaula, a atividade prática e o quiz são obrigatórios para conclusão do módulo</div>
+                    <div>A avaliação final só abre após todos os módulos disponíveis serem concluídos</div>
                   </div>
                 </div>
               </div>
@@ -746,9 +797,9 @@ export default function App() {
     		   {selectedModule.goal || selectedModule.objectives?.[0] || selectedModule.summary}
   		 </div>
 
-  <ModuleProgress mod={selectedModule} state={selectedModuleState} />
+  		 <ModuleProgress mod={selectedModule} state={selectedModuleState} />
 
-                <div className="tags-row">
+                 <div className="tags-row">
                   <SectionTag>Etapa {modules.findIndex((m) => m.id === selectedModule.id) + 1}</SectionTag>
                   {selectedModuleState.completed ? <SectionTag>Concluído</SectionTag> : null}
                 </div>
@@ -868,12 +919,14 @@ export default function App() {
                     </button>
 
                     <button
-                      className="button"
-                      onClick={() => setScreenIndex((s) => Math.min(selectedModuleContent.length, s + 1))}
-                      disabled={!selectedModuleState.contentSeen[screenIndex] && currentItem.type !== 'checklist'}
-                    >
-                      Próxima etapa
-                    </button>
+  		      className="button"
+		      onClick={() => {
+		      markSeen(screenIndex)
+		      setScreenIndex((s) => Math.min(selectedModuleContent.length, s + 1))
+		    }}
+		   >
+		    Próxima etapa
+		  </button>
                   </div>
                 </ScreenCard>
               )}
@@ -956,7 +1009,7 @@ export default function App() {
                   {modules.map((m) => (
                     <div key={m.id} className="info-box">
                       <div className="link-card-title">{m.shortTitle}</div>
-                      <div className="muted-small">{m.goal}</div>
+                      <div className="muted-small">{m.goal || m.subtitle || m.summary}</div>
                     </div>
                   ))}
                 </div>
