@@ -260,12 +260,30 @@ const module4 = {
       'Liste as evidências que devem ser guardadas em caso de tentativa ou consumação do golpe.',
     ],
   },
-  video: {
-    title: 'Transações e consumo seguro',
-    duration: '8 a 10 min',
+    video: {
+    title: 'Videoaula — Transações e consumo seguro',
+    duration: 'Em preparação',
     script:
-      'Apresente a ideia de que o golpe tenta tirar a vítima do ambiente oficial e fazê-la agir sob pressão. Em seguida, explique banco via internet, Pix, QR Code, boletos, falsas centrais, compras online, marketplaces e falsos comprovantes. Finalize com o fluxo de resposta: interromper, confirmar por canal oficial, bloquear, contestar e preservar evidências.',
+      'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial sobre banco via internet, Pix, boletos, QR Codes, compras online, marketplaces e sinais de golpes financeiros.',
   },
+  resources: [
+    {
+      label: 'CERT.br — Fascículo Banco via Internet',
+      url: 'https://cartilha.cert.br/fasciculos/banco-via-internet/fasciculo-banco-via-internet.pdf',
+    },
+    {
+      label: 'CERT.br — Fascículo Comércio via Internet',
+      url: 'https://cartilha.cert.br/fasciculos/comercio-via-internet/fasciculo-comercio-via-internet.pdf',
+    },
+    {
+      label: 'CERT.br — Fascículo Furto de Celular',
+      url: 'https://cartilha.cert.br/fasciculos/furto-de-celular/fasciculo-furto-celular.pdf',
+    },
+    {
+      label: 'Campanha #DigaNãoAosGolpes — FEBRABAN',
+      url: 'https://antifraudes.febraban.org.br/',
+    },
+  ],
   questionBank: questionBank.m4,
   quizSize: 10,
   quiz: questionBank.m4.slice(0, 10),
