@@ -773,7 +773,7 @@ export default function App() {
                 <div className="info-box">
                   <h3>Regras de desbloqueio</h3>
                   <div className="line-list">
-                    <div>A próxima etapa só é liberada após a conclusão da anterior</div>
+                    <div>Ao clicar em Próxima etapa, a leitura da tela atual é registrada automaticamente</div>
                     <div>O quiz do módulo exige aproveitamento mínimo de 70%</div>
                     <div>A videoaula, a atividade prática e o quiz são obrigatórios para conclusão do módulo</div>
                     <div>A avaliação final só abre após todos os módulos disponíveis serem concluídos</div>
@@ -902,13 +902,7 @@ export default function App() {
                       </button>
                     </div>
                   )}
-
-                  {currentItem.type !== 'video' && currentItem.type !== 'activity' && (
-                    <button className="button" onClick={() => markSeen(screenIndex)}>
-                      Marcar etapa como lida
-                    </button>
-                  )}
-
+                  
                   <div className="actions-between">
                     <button
                       className="button button-outline"
