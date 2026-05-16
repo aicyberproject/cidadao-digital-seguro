@@ -277,6 +277,30 @@ const module5 = {
     script:
       'Apresente o catálogo como ferramenta de reconhecimento de padrões. Explique phishing, malware, ransomware, perfis falsos, falsas vendas, golpes de marketplace, boatos, deepfakes e vazamentos de dados. Use a lógica: sinal de alerta, ação esperada pelo criminoso, conduta segura e evidência a preservar.',
   },
+  
+  resources: [
+  {
+    label: 'CERT.br — Fascículo Códigos Maliciosos',
+    url: 'https://cartilha.cert.br/fasciculos/codigos-maliciosos/fasciculo-codigos-maliciosos.pdf',
+  },
+  {
+    label: 'CERT.br — Fascículo Boatos',
+    url: 'https://cartilha.cert.br/fasciculos/boatos/fasciculo-boatos.pdf',
+  },
+  {
+    label: 'CERT.br — Fascículo Vazamento de Dados',
+    url: 'https://cartilha.cert.br/fasciculos/vazamento-de-dados/fasciculo-vazamento-de-dados.pdf',
+  },
+  {
+    label: 'CERT.br — Fascículo Redes Sociais',
+    url: 'https://cartilha.cert.br/fasciculos/redes-sociais/fasciculo-redes-sociais.pdf',
+  },
+  {
+    label: 'INTERPOL — Think Twice Campaign',
+    url: 'https://www.interpol.int/Crimes/Cybercrime',
+  },
+],
+
   questionBank: questionBank.m5,
   quizSize: 10,
   quiz: questionBank.m5.slice(0, 10),
