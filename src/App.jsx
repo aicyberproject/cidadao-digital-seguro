@@ -78,6 +78,64 @@ function randomizeQuiz(quizSource, size = 10) {
   })
 }
 
+function getModuleContent(moduleItem) {
+  const baseContent = Array.isArray(moduleItem.content)
+    ? moduleItem.content
+    : Array.isArray(moduleItem.lessons)
+      ? moduleItem.lessons
+      : []
+
+  const normalized = [...baseContent]
+
+  if (moduleItem.video) {
+    normalized.push({
+      type: 'video',
+      title: moduleItem.video.title || 'Videoaula do módulo',
+      description:
+        moduleItem.video.script ||
+        moduleItem.video.description ||
+        'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+      duration: moduleItem.video.duration || 'Em preparação',
+    })
+  }
+
+  const linkItems = moduleItem.links || moduleItem.resources || moduleItem.complementaryLinks || []
+
+  if (Array.isArray(linkItems) && linkItems.length > 0) {
+    normalized.push({
+      type: 'links',
+      title: 'Material complementar',
+      items: linkItems,
+    })
+  }
+
+  if (Array.isArray(moduleItem.checklist) && moduleItem.checklist.length > 0) {
+    normalized.push({
+      type: 'checklist',
+      title: 'Checklist de prevenção',
+      items: moduleItem.checklist,
+    })
+  }
+
+  if (moduleItem.practicalActivity) {
+    normalized.push({
+      type: 'activity',
+      title: moduleItem.practicalActivity.title || 'Atividade prática',
+      prompt:
+        moduleItem.practicalActivity.description ||
+        moduleItem.practicalActivity.prompt ||
+        'Atividade prática do módulo.',
+      reflection:
+        Array.isArray(moduleItem.practicalActivity.steps)
+          ? moduleItem.practicalActivity.steps.join(' ')
+          : moduleItem.practicalActivity.reflection ||
+            'Registre os sinais de alerta, a conduta segura e as evidências que devem ser preservadas.',
+    })
+  }
+
+  return normalized
+}
+
 function defaultProgress() {
   const moduleState = Object.fromEntries(
     modules.map((m, index) => [
@@ -244,64 +302,6 @@ function renderLessonContent(blocks) {
   )
 }
 
-function getModuleContent(moduleItem) {
-  const baseContent = Array.isArray(moduleItem.content)
-    ? moduleItem.content
-    : Array.isArray(moduleItem.lessons)
-      ? moduleItem.lessons
-      : []
-
-  const normalized = [...baseContent]
-
-  if (moduleItem.video) {
-    normalized.push({
-      type: 'video',
-      title: moduleItem.video.title || 'Videoaula do módulo',
-      description:
-        moduleItem.video.script ||
-        moduleItem.video.description ||
-        'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
-      duration: moduleItem.video.duration || 'Em preparação',
-    })
-  }
-
-  const linkItems = moduleItem.links || moduleItem.resources || moduleItem.complementaryLinks || []
-
-  if (Array.isArray(linkItems) && linkItems.length > 0) {
-    normalized.push({
-      type: 'links',
-      title: 'Material complementar',
-      items: linkItems,
-    })
-  }
-
-  if (Array.isArray(moduleItem.checklist) && moduleItem.checklist.length > 0) {
-    normalized.push({
-      type: 'checklist',
-      title: 'Checklist de prevenção',
-      items: moduleItem.checklist,
-    })
-  }
-
-  if (moduleItem.practicalActivity) {
-    normalized.push({
-      type: 'activity',
-      title: moduleItem.practicalActivity.title || 'Atividade prática',
-      prompt:
-        moduleItem.practicalActivity.description ||
-        moduleItem.practicalActivity.prompt ||
-        'Atividade prática do módulo.',
-      reflection:
-        Array.isArray(moduleItem.practicalActivity.steps)
-          ? moduleItem.practicalActivity.steps.join(' ')
-          : moduleItem.practicalActivity.reflection ||
-            'Registre os sinais de alerta, a conduta segura e as evidências que devem ser preservadas.',
-    })
-  }
-
-  return normalized
-}
-
 function ScreenCard({ title, children, icon: Icon }) {
   return (
     <Card>
@@ -342,11 +342,9 @@ export default function App() {
   )
 
   const selectedModuleState =
-  progressState.moduleState[selectedModule.id] || defaultProgress().moduleState[selectedModule.id]
+    progressState.moduleState[selectedModule.id] || defaultProgress().moduleState[selectedModule.id]
 
   const selectedModuleContent = getModuleContent(selectedModule)
-  
-
   const currentItem = selectedModuleContent[screenIndex] || selectedModuleContent[0] || null
 
   const allModulesCompleted = modules.every((m) => progressState.moduleState[m.id]?.completed)
@@ -498,6 +496,36 @@ export default function App() {
         },
       },
     }))
+  }
+
+  function completeCurrentStepAndAdvance() {
+    setProgressState((prev) => {
+      const currentModuleState = prev.moduleState[selectedModule.id]
+
+      return {
+        ...prev,
+        moduleState: {
+          ...prev.moduleState,
+          [selectedModule.id]: {
+            ...currentModuleState,
+            contentSeen: {
+              ...currentModuleState.contentSeen,
+              [screenIndex]: true,
+            },
+            videoDone:
+              currentItem?.type === 'video'
+                ? true
+                : currentModuleState.videoDone,
+            activityDone:
+              currentItem?.type === 'activity'
+                ? true
+                : currentModuleState.activityDone,
+          },
+        },
+      }
+    })
+
+    setScreenIndex((s) => Math.min(selectedModuleContent.length, s + 1))
   }
 
   function answerModuleQuiz(idx, answer) {
@@ -761,10 +789,8 @@ export default function App() {
                   <div className="line-list">
                     <div>Conteúdo principal</div>
                     <div>Videoaula do módulo</div>
-                    <div>Dica de especialista</div>
-                    <div>Momento É Golpe!</div>
+                    <div>Material complementar</div>
                     <div>Checklist</div>
-                    <div>Leitura complementar</div>
                     <div>Atividade prática</div>
                     <div>Quiz do módulo</div>
                   </div>
@@ -790,16 +816,16 @@ export default function App() {
           {currentView === 'module' && selectedModule && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
               <ScreenCard title={selectedModule.title} icon={selectedModule.icon}>
-                 <p className="muted-body">{selectedModule.subtitle || selectedModule.theme}</p>
+                <p className="muted-body">{selectedModule.subtitle || selectedModule.theme}</p>
 
-                 <div className="muted-small">
-    		   <strong>Objetivo:</strong>{' '}
-    		   {selectedModule.goal || selectedModule.objectives?.[0] || selectedModule.summary}
-  		 </div>
+                <div className="muted-small">
+                  <strong>Objetivo:</strong>{' '}
+                  {selectedModule.goal || selectedModule.objectives?.[0] || selectedModule.summary}
+                </div>
 
-  		 <ModuleProgress mod={selectedModule} state={selectedModuleState} />
+                <ModuleProgress mod={selectedModule} state={selectedModuleState} />
 
-                 <div className="tags-row">
+                <div className="tags-row">
                   <SectionTag>Etapa {modules.findIndex((m) => m.id === selectedModule.id) + 1}</SectionTag>
                   {selectedModuleState.completed ? <SectionTag>Concluído</SectionTag> : null}
                 </div>
@@ -808,7 +834,7 @@ export default function App() {
               {screenIndex < selectedModuleContent.length && currentItem && (
                 <ScreenCard
                   title={currentItem.title}
-		  icon={
+                  icon={
                     currentItem.type === 'video'
                       ? PlayCircle
                       : currentItem.type === 'links'
@@ -822,15 +848,15 @@ export default function App() {
                 >
                   {currentItem.content && renderLessonContent(currentItem.content)}
 
- 		  {currentItem.type === 'text' && Array.isArray(currentItem.body) && (
-  		     <div className="stack-md">
-    		       {currentItem.body.map((p) => (
-     			 <p className="muted-body" key={p}>
-        		   {p}
-     			 </p>
-  		       ))}
-		      </div>
-		    )}
+                  {currentItem.type === 'text' && Array.isArray(currentItem.body) && (
+                    <div className="stack-md">
+                      {currentItem.body.map((p) => (
+                        <p className="muted-body" key={p}>
+                          {p}
+                        </p>
+                      ))}
+                    </div>
+                  )}
 
                   {currentItem.type === 'scenario' && <div className="scenario-box">{currentItem.prompt}</div>}
                   {currentItem.type === 'tip' && <div className="tip-box">{currentItem.text}</div>}
@@ -902,7 +928,7 @@ export default function App() {
                       </button>
                     </div>
                   )}
-                  
+
                   <div className="actions-between">
                     <button
                       className="button button-outline"
@@ -913,14 +939,11 @@ export default function App() {
                     </button>
 
                     <button
-  		      className="button"
-		      onClick={() => {
-		      markSeen(screenIndex)
-		      setScreenIndex((s) => Math.min(selectedModuleContent.length, s + 1))
-		    }}
-		   >
-		    Próxima etapa
-		  </button>
+                      className="button"
+                      onClick={completeCurrentStepAndAdvance}
+                    >
+                      Próxima etapa
+                    </button>
                   </div>
                 </ScreenCard>
               )}
@@ -1087,6 +1110,10 @@ export default function App() {
                       <div>Carga horária sugerida: 12 a 18 horas</div>
                       <div>Status: concluído com aproveitamento</div>
                     </div>
+
+                    <p className="muted-body">
+                      Para emitir o certificado, digite o nome completo do participante e clique em “Baixar certificado em PDF”.
+                    </p>
 
                     <div className="stack-sm" style={{ marginTop: '12px' }}>
                       <label htmlFor="participantName" className="muted-body">
