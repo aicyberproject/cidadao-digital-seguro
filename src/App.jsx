@@ -21,6 +21,27 @@ import { modules } from './content/modules'
 import { finalAssessment } from './content/finalAssessment'
 
 const STORAGE_KEY = 'cidadao-digital-seguro-progress-v2'
+const COURSE_VERSION = '1.1.0'
+const CERTIFICATE_WORKLOAD = '12 a 18 horas'
+
+function formatCertificateDate(date) {
+  return date.toLocaleDateString('pt-BR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+}
+
+function createCertificateCode(name, date, timestamp) {
+  const source = `${name.trim().toLowerCase()}|${date.toISOString().slice(0, 10)}|${timestamp}`
+  let hash = 0
+
+  for (let i = 0; i < source.length; i += 1) {
+    hash = (hash * 31 + source.charCodeAt(i)) >>> 0
+  }
+
+  return `CDS-${COURSE_VERSION.replace(/\D/g, '')}-${hash.toString(36).toUpperCase().padStart(7, '0')}`
+}
 
 function loadProgress() {
   try {
@@ -376,53 +397,107 @@ export default function App() {
   function generateCertificatePdf() {
     if (!progressState.certificateUnlocked) return
 
-    const cleanName = participantName.trim() || 'Participante'
-    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' })
-    const today = new Date().toLocaleDateString('pt-BR')
+    const cleanName = participantName.trim()
 
-    doc.setFillColor(248, 245, 240)
+    if (!cleanName) {
+      window.alert('Informe o nome completo do participante antes de emitir o certificado.')
+      return
+    }
+
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' })
+    const issuedAt = new Date()
+    const completionDate = formatCertificateDate(issuedAt)
+    const verificationCode = createCertificateCode(cleanName, issuedAt, issuedAt.getTime())
+    const courseName = courseIntro.title
+
+    doc.setFillColor(248, 247, 244)
     doc.rect(0, 0, 297, 210, 'F')
 
-    doc.setDrawColor(139, 94, 52)
-    doc.setLineWidth(2)
-    doc.rect(10, 10, 277, 190)
-    doc.setLineWidth(0.6)
-    doc.rect(14, 14, 269, 182)
+    doc.setFillColor(255, 255, 255)
+    doc.roundedRect(14, 14, 269, 182, 2, 2, 'F')
 
-    doc.setTextColor(91, 70, 51)
+    doc.setDrawColor(35, 55, 82)
+    doc.setLineWidth(1.4)
+    doc.rect(10, 10, 277, 190)
+    doc.setLineWidth(0.4)
+    doc.rect(16, 16, 265, 178)
+
+    doc.setFillColor(35, 55, 82)
+    doc.rect(10, 10, 277, 14, 'F')
+    doc.setTextColor(255, 255, 255)
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(10)
+    doc.text('CIDADÃO DIGITAL SEGURO', 148.5, 19, { align: 'center' })
+
+    doc.setTextColor(35, 55, 82)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(26)
-    doc.text('CERTIFICADO DE CONCLUSAO', 148.5, 38, { align: 'center' })
-
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(13)
-    doc.text('Certificamos que', 148.5, 58, { align: 'center' })
-
-    doc.setFont('helvetica', 'bold')
-    doc.setFontSize(24)
-    doc.text(cleanName.toUpperCase(), 148.5, 76, { align: 'center' })
-
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(13)
-    const lines = doc.splitTextToSize(
-      'concluiu com aproveitamento o curso Cidadão Digital Seguro: Prevenção e Combate a Crimes Cibernéticos, em formato online autoinstrucional, com carga horária sugerida de 12 a 18 horas, contemplando identificação de riscos, prevenção de fraudes e resposta a incidentes digitais.',
-      220,
-    )
-    doc.text(lines, 148.5, 92, { align: 'center' })
-
-    doc.setFontSize(12)
-    doc.text(`Data de conclusão: ${today}`, 148.5, 132, { align: 'center' })
-    doc.text('Status: aprovado na avaliação final integradora', 148.5, 141, { align: 'center' })
+    doc.text('CERTIFICADO DE CONCLUSÃO', 148.5, 43, { align: 'center' })
 
     doc.setDrawColor(139, 94, 52)
-    doc.line(95, 164, 202, 164)
-    doc.setFont('helvetica', 'bold')
-    doc.text('Cidadão Digital Seguro', 148.5, 171, { align: 'center' })
+    doc.setLineWidth(0.6)
+    doc.line(92, 49, 205, 49)
+
     doc.setFont('helvetica', 'normal')
-    doc.text('Certificação digital gerada pela aplicação do curso', 148.5, 178, { align: 'center' })
+    doc.setFontSize(13)
+    doc.setTextColor(72, 77, 86)
+    doc.text('Certificamos que', 148.5, 62, { align: 'center' })
+
+    doc.setFillColor(244, 247, 250)
+    doc.roundedRect(42, 69, 213, 22, 1.5, 1.5, 'F')
+    doc.setDrawColor(205, 214, 224)
+    doc.roundedRect(42, 69, 213, 22, 1.5, 1.5, 'S')
+
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(22)
+    doc.setTextColor(35, 55, 82)
+    doc.text(cleanName.toUpperCase(), 148.5, 83, { align: 'center', maxWidth: 200 })
+
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(13)
+    doc.setTextColor(72, 77, 86)
+    const lines = doc.splitTextToSize(
+      `concluiu com aproveitamento o curso ${courseName}, em formato online autoinstrucional, com carga horária sugerida de ${CERTIFICATE_WORKLOAD}.`,
+      220,
+    )
+    doc.text(lines, 148.5, 105, { align: 'center' })
+
+    doc.setFillColor(250, 249, 247)
+    doc.roundedRect(38, 121, 221, 32, 1.5, 1.5, 'F')
+    doc.setDrawColor(222, 216, 206)
+    doc.roundedRect(38, 121, 221, 32, 1.5, 1.5, 'S')
+
+    doc.setFontSize(10)
+    doc.setTextColor(91, 70, 51)
+    doc.setFont('helvetica', 'bold')
+    doc.text('DADOS DO CERTIFICADO', 148.5, 129, { align: 'center' })
+
+    doc.setFont('helvetica', 'normal')
+    doc.setTextColor(72, 77, 86)
+    doc.text(`Curso: ${courseName}`, 46, 138, { maxWidth: 120 })
+    doc.text(`Carga horária sugerida: ${CERTIFICATE_WORKLOAD}`, 46, 146)
+    doc.text(`Data de conclusão: ${completionDate}`, 164, 138)
+    doc.text('Status: aprovado', 164, 146)
+    doc.text(`Versão do curso: ${COURSE_VERSION}`, 46, 154)
+    doc.text(`Código verificador: ${verificationCode}`, 164, 154)
+
+    doc.setDrawColor(139, 94, 52)
+    doc.line(95, 171, 202, 171)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(35, 55, 82)
+    doc.text('Cidadão Digital Seguro', 148.5, 178, { align: 'center' })
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.setTextColor(100, 104, 112)
+    doc.text('Certificação digital gerada pela aplicação do curso', 148.5, 185, { align: 'center' })
+    doc.text(`Emitido em ${completionDate}. Validação local pelo código ${verificationCode}.`, 148.5, 191, {
+      align: 'center',
+    })
 
     const fileName = `certificado-cidadao-digital-seguro-${cleanName
       .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9]+/gi, '-')}.pdf`
 
     doc.save(fileName)
@@ -1099,7 +1174,9 @@ export default function App() {
                   <p>
                     Você concluiu a trilha formativa e foi aprovado na avaliação final integradora. O curso reforça a tríade: identificar o risco, prevenir com método e reagir com segurança.
                   </p>
-                  <div className="muted-small">Certificado em PDF disponível para emissão imediata</div>
+                  <div className="muted-small">
+                    Preencha o nome do participante abaixo para emitir o certificado em PDF.
+                  </div>
                 </div>
 
                 <div className="tabs-grid">
@@ -1112,7 +1189,7 @@ export default function App() {
                     </div>
 
                     <p className="muted-body">
-                      Para emitir o certificado, digite o nome completo do participante e clique em “Baixar certificado em PDF”.
+                      Digite o nome completo exatamente como deve aparecer no certificado e clique em “Baixar certificado em PDF”. O documento será gerado no navegador com data de conclusão, versão do curso e código verificador.
                     </p>
 
                     <div className="stack-sm" style={{ marginTop: '12px' }}>
