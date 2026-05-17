@@ -19,9 +19,10 @@ import {
 import { courseIntro } from './content/courseIntro'
 import { modules } from './content/modules'
 import { finalAssessment } from './content/finalAssessment'
+import packageInfo from '../package.json'
 
 const STORAGE_KEY = 'cidadao-digital-seguro-progress-v2'
-const COURSE_VERSION = '1.1.0'
+const COURSE_VERSION = packageInfo.version
 const CERTIFICATE_WORKLOAD = '12 a 18 horas'
 
 function formatCertificateDate(date) {
