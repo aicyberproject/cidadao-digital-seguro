@@ -24,6 +24,24 @@ import packageInfo from '../package.json'
 const STORAGE_KEY = 'cidadao-digital-seguro-progress-v2'
 const COURSE_VERSION = packageInfo.version
 const CERTIFICATE_WORKLOAD = '12 a 18 horas'
+const FINAL_ASSESSMENT_VERSION = createFinalAssessmentVersion(finalAssessment)
+
+function createFinalAssessmentVersion(assessment) {
+  const source = assessment
+    .map(({ question, options, answer }) => {
+      const optionText = Array.isArray(options) ? options.join('|') : ''
+
+      return `${question}|${optionText}|${answer}`
+    })
+    .join('||')
+  let hash = 0
+
+  for (let i = 0; i < source.length; i += 1) {
+    hash = (hash * 31 + source.charCodeAt(i)) >>> 0
+  }
+
+  return `${assessment.length}-${hash.toString(36)}`
+}
 
 function formatCertificateDate(date) {
   return date.toLocaleDateString('pt-BR', {
@@ -55,7 +73,13 @@ function loadProgress() {
 }
 
 function saveProgress(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify({
+      ...data,
+      finalAssessmentVersion: FINAL_ASSESSMENT_VERSION,
+    }),
+  )
 }
 
 function shuffleArray(items) {
@@ -181,6 +205,7 @@ function defaultProgress() {
     moduleState,
     quizVariants: {},
     finalAssessmentAnswers: {},
+    finalAssessmentVersion: FINAL_ASSESSMENT_VERSION,
     finalAssessmentPassed: false,
     certificateUnlocked: false,
   }
@@ -212,14 +237,24 @@ function normalizeProgress(loaded) {
     }
   })
 
+  const finalAssessmentVersionMatches =
+    loaded.finalAssessmentVersion === FINAL_ASSESSMENT_VERSION
+  const finalAssessmentAnswers = finalAssessmentVersionMatches
+    ? loaded.finalAssessmentAnswers || {}
+    : {}
+  const finalAssessmentPassed = finalAssessmentVersionMatches
+    ? scoreQuiz(finalAssessment, finalAssessmentAnswers).passed
+    : false
+
   return {
     ...fresh,
     ...loaded,
     moduleState: normalizedModuleState,
     quizVariants: loaded.quizVariants || {},
-    finalAssessmentAnswers: loaded.finalAssessmentAnswers || {},
-    finalAssessmentPassed: !!loaded.finalAssessmentPassed,
-    certificateUnlocked: !!loaded.certificateUnlocked,
+    finalAssessmentAnswers,
+    finalAssessmentVersion: FINAL_ASSESSMENT_VERSION,
+    finalAssessmentPassed,
+    certificateUnlocked: finalAssessmentPassed,
   }
 }
 
@@ -697,6 +732,7 @@ export default function App() {
       return {
         ...prev,
         finalAssessmentAnswers: nextAnswers,
+        finalAssessmentVersion: FINAL_ASSESSMENT_VERSION,
         finalAssessmentPassed: result.passed,
         certificateUnlocked: result.passed,
       }
