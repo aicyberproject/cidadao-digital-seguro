@@ -279,27 +279,31 @@ const module5 = {
   },
   
   resources: [
-  {
-    label: 'CERT.br — Fascículo Códigos Maliciosos',
-    url: 'https://cartilha.cert.br/fasciculos/codigos-maliciosos/fasciculo-codigos-maliciosos.pdf',
-  },
-  {
-    label: 'CERT.br — Fascículo Boatos',
-    url: 'https://cartilha.cert.br/fasciculos/boatos/fasciculo-boatos.pdf',
-  },
-  {
-    label: 'CERT.br — Fascículo Vazamento de Dados',
-    url: 'https://cartilha.cert.br/fasciculos/vazamento-de-dados/fasciculo-vazamento-de-dados.pdf',
-  },
-  {
-    label: 'CERT.br — Fascículo Redes Sociais',
-    url: 'https://cartilha.cert.br/fasciculos/redes-sociais/fasciculo-redes-sociais.pdf',
-  },
-  {
-    label: 'INTERPOL — Think Twice Campaign',
-    url: 'https://www.interpol.int/Crimes/Cybercrime',
-  },
-],
+    {
+      label: 'CERT.br — Fascículo Golpes: Não se Deixe Enganar',
+      url: 'https://cartilha.cert.br/fasciculos/golpes/fasciculo-golpes.pdf',
+    },
+    {
+      label: 'CERT.br — Fascículo Golpes: Evite Fraudes',
+      url: 'https://cartilha.cert.br/fasciculos/golpes-evite-fraudes/fasciculo-golpes-evite-fraudes.pdf',
+    },
+    {
+      label: 'CERT.br — Fascículo Códigos Maliciosos',
+      url: 'https://cartilha.cert.br/fasciculos/codigos-maliciosos/fasciculo-codigos-maliciosos.pdf',
+    },
+    {
+      label: 'CERT.br — Fascículo Boatos',
+      url: 'https://cartilha.cert.br/fasciculos/boatos/fasciculo-boatos.pdf',
+    },
+    {
+      label: 'CERT.br — Fascículo Redes Sociais',
+      url: 'https://cartilha.cert.br/fasciculos/redes-sociais/fasciculo-redes-sociais.pdf',
+    },
+    {
+      label: 'CERT.br — Fascículo Vazamento de Dados',
+      url: 'https://cartilha.cert.br/fasciculos/vazamento-de-dados/fasciculo-vazamento-de-dados.pdf',
+    },
+  ],
 
   questionBank: questionBank.m5,
   quizSize: 10,
