@@ -260,11 +260,11 @@ const module4 = {
       'Liste as evidências que devem ser guardadas em caso de tentativa ou consumação do golpe.',
     ],
   },
-    video: {
-    title: 'Videoaula — Transações e consumo seguro',
+  video: {
+    title: 'Videoaula do módulo',
     duration: 'Em preparação',
     script:
-      'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial sobre banco via internet, Pix, boletos, QR Codes, compras online, marketplaces e sinais de golpes financeiros.',
+      'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
   },
   resources: [
     {

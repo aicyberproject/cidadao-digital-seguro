@@ -154,8 +154,8 @@ export const module3 = {
       type: 'video',
       title: 'Videoaula do módulo',
       description:
-        'Explique como proteger celulares, computadores, roteadores, redes Wi-Fi, conexões públicas e rotinas de trabalho remoto, destacando atualização, apps oficiais, bloqueio de tela, SIM, IMEI, antimalware, firewall e criptografia.',
-      duration: '10 min',
+        'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+      duration: 'Em preparação',
     },
     {
       type: 'tip',
