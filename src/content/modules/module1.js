@@ -128,8 +128,8 @@ export const module1 = {
       type: 'video',
       title: 'Videoaula do módulo',
       description:
-        'Explique segurança digital como tema de cidadania, apresente o papel institucional de PF, MJSP e FEBRABAN, diferencie prevenção, orientação e investigação, e mostre como reconhecer sinais iniciais de fraude.',
-      duration: '8 min',
+        'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+      duration: 'Em preparação',
     },
     {
       type: 'tip',

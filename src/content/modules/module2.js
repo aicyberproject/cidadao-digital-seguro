@@ -136,8 +136,8 @@ export const module2 = {
       type: 'video',
       title: 'Videoaula do módulo',
       description:
-        'Explique os pilares da higiene digital: senhas únicas, 2FA/MFA, proteção do e-mail, backup resiliente, privacidade, minimização de dados, permissões e atualizações.',
-      duration: '10 min',
+        'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+      duration: 'Em preparação',
     },
     {
       type: 'tip',
