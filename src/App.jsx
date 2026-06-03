@@ -14,11 +14,13 @@ import {
   Home,
   RotateCcw,
   ExternalLink,
+  Search,
 } from 'lucide-react'
 
 import { courseIntro } from './content/courseIntro'
 import { modules } from './content/modules'
 import { finalAssessment } from './content/finalAssessment'
+import { glossaryCategories, glossaryEntries } from './content/glossary'
 import packageInfo from '../package.json'
 
 const STORAGE_KEY = 'cidadao-digital-seguro-progress-v2'
@@ -87,6 +89,13 @@ function shuffleArray(items) {
     .map((item) => ({ item, sort: Math.random() }))
     .sort((a, b) => a.sort - b.sort)
     .map(({ item }) => item)
+}
+
+function normalizeSearchText(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
 }
 
 function getQuizSource(moduleItem) {
@@ -383,6 +392,8 @@ export default function App() {
   const [selectedModuleId, setSelectedModuleId] = useState(modules[0].id)
   const [screenIndex, setScreenIndex] = useState(0)
   const [participantName, setParticipantName] = useState('')
+  const [glossaryQuery, setGlossaryQuery] = useState('')
+  const [selectedGlossaryCategory, setSelectedGlossaryCategory] = useState('Todos')
 
   useEffect(() => {
     const loaded = loadProgress()
@@ -408,6 +419,20 @@ export default function App() {
   const activeModuleQuiz = progressState.quizVariants?.[selectedModule.id] || selectedModule.quiz || []
   const moduleQuizResult = scoreQuiz(activeModuleQuiz, selectedModuleState.quizAnswers || {})
   const finalResult = scoreQuiz(finalAssessment, progressState.finalAssessmentAnswers || {})
+  const glossaryCategoryOptions = useMemo(() => ['Todos', ...glossaryCategories], [])
+  const filteredGlossaryEntries = useMemo(() => {
+    const query = normalizeSearchText(glossaryQuery)
+
+    return glossaryEntries.filter((entry) => {
+      const matchesCategory =
+        selectedGlossaryCategory === 'Todos' || entry.category === selectedGlossaryCategory
+      const searchableText = normalizeSearchText(
+        `${entry.term} ${entry.category} ${entry.module} ${entry.definition} ${entry.guidance}`,
+      )
+
+      return matchesCategory && (!query || searchableText.includes(query))
+    })
+  }, [glossaryQuery, selectedGlossaryCategory])
 
   useEffect(() => {
     const isQuizScreen = screenIndex === selectedModuleContent.length
@@ -763,6 +788,9 @@ export default function App() {
           <button className="button button-outline" onClick={goHome}>
             <Home size={16} /> Início
           </button>
+          <button className="button button-outline" onClick={() => setCurrentView('glossary')}>
+            <BookOpen size={16} /> Glossário
+          </button>
           <button className="button button-outline" onClick={resetCourse}>
             <RotateCcw size={16} /> Reiniciar
           </button>
@@ -859,6 +887,9 @@ export default function App() {
                   <button className="button button-outline" onClick={() => setCurrentView('structure')}>
                     Como funciona a trilha
                   </button>
+                  <button className="button button-outline" onClick={() => setCurrentView('glossary')}>
+                    Consultar glossário
+                  </button>
                 </div>
               </ScreenCard>
 
@@ -889,7 +920,82 @@ export default function App() {
                     O certificado é liberado ao final da trilha, após aprovação na avaliação integradora.
                   </div>
                 </Card>
+
+                <Card>
+                  <div className="card-header">
+                    <h2>Glossário</h2>
+                  </div>
+                  <div className="card-body muted-body">
+                    Termos essenciais ficam disponíveis para consulta durante todo o curso, sem afetar a progressão dos módulos.
+                  </div>
+                </Card>
               </div>
+            </motion.div>
+          )}
+
+          {currentView === 'glossary' && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
+              <ScreenCard title="Glossário inicial" icon={BookOpen}>
+                <p className="muted-body">
+                  Consulte termos essenciais do curso em linguagem simples. Use a busca ou filtre por categoria para revisar conceitos antes, durante ou depois dos módulos.
+                </p>
+
+                <div className="glossary-controls">
+                  <label className="search-field">
+                    <Search size={18} />
+                    <input
+                      className="text-input glossary-search"
+                      type="search"
+                      value={glossaryQuery}
+                      onChange={(event) => setGlossaryQuery(event.target.value)}
+                      placeholder="Buscar termo, orientação ou módulo"
+                      aria-label="Buscar termo no glossário"
+                    />
+                  </label>
+
+                  <div className="filter-row" role="tablist" aria-label="Filtrar glossário por categoria">
+                    {glossaryCategoryOptions.map((category) => (
+                      <button
+                        key={category}
+                        type="button"
+                        className={`filter-chip ${selectedGlossaryCategory === category ? 'active' : ''}`}
+                        onClick={() => setSelectedGlossaryCategory(category)}
+                      >
+                        {category}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="muted-small">
+                    {filteredGlossaryEntries.length} de {glossaryEntries.length} termos exibidos.
+                  </div>
+                </div>
+
+                {filteredGlossaryEntries.length > 0 ? (
+                  <div className="glossary-grid">
+                    {filteredGlossaryEntries.map((entry) => (
+                      <article key={entry.term} className="glossary-card">
+                        <div className="glossary-card-head">
+                          <h3>{entry.term}</h3>
+                          <span className="tag">{entry.module}</span>
+                        </div>
+                        <div className="mini-muted">{entry.category}</div>
+                        <p className="muted-body">{entry.definition}</p>
+                        {entry.guidance ? (
+                          <div className="tip-box glossary-tip">
+                            <strong>Orientação prática</strong>
+                            <p>{entry.guidance}</p>
+                          </div>
+                        ) : null}
+                      </article>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="info-box muted-body">
+                    Nenhum termo encontrado para a busca ou categoria selecionada.
+                  </div>
+                )}
+              </ScreenCard>
             </motion.div>
           )}
 

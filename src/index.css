@@ -482,3 +482,93 @@ p {
   border-color: #8b5e34;
   box-shadow: 0 0 0 3px rgba(139, 94, 52, 0.12);
 }
+
+.glossary-controls {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #d7cfc1;
+  background: #fff;
+  border-radius: 16px;
+  padding: 0 12px;
+  color: #6b7280;
+}
+
+.glossary-search {
+  border: 0;
+  box-shadow: none;
+  padding-left: 0;
+}
+
+.glossary-search:focus {
+  box-shadow: none;
+}
+
+.filter-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  border: 1px solid #d7cfc1;
+  background: #fff;
+  color: #4b5563;
+  border-radius: 999px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.filter-chip:hover,
+.filter-chip.active {
+  border-color: #8b5e34;
+  background: #f0e7db;
+  color: #5b4633;
+}
+
+.glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.glossary-card {
+  border: 1px solid #e7e2da;
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.glossary-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.glossary-card h3 {
+  font-size: 1.05rem;
+}
+
+.glossary-tip {
+  padding: 12px;
+}
+
+.glossary-tip p {
+  margin-top: 4px;
+}
+
+@media (max-width: 1024px) {
+  .glossary-grid {
+    grid-template-columns: 1fr;
+  }
+}
