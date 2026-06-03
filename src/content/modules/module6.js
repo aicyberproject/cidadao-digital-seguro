@@ -278,10 +278,10 @@ const module6 = {
     ],
   },
   video: {
-    title: 'Videoaula — Resposta a incidentes e denúncia',
+    title: 'Videoaula do módulo',
     duration: 'Em preparação',
     script:
-      'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial sobre primeiras medidas após golpe, fraude, furto de celular, vazamento de dados, invasão de conta, preservação de evidências, canais oficiais e registro de ocorrência.',
+      'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
   },
   resources: [
     {
