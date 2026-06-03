@@ -285,24 +285,32 @@ const module6 = {
   },
   resources: [
     {
+      label: 'MJSP — Sofri um golpe, e agora?',
+      url: 'https://www.gov.br/mj/pt-br/acesso-a-informacao/acoes-e-programas/sofri-um-golpe-e-agora',
+    },
+    {
+      label: 'CERT.br — Fascículo Golpes: Caiu? Veja o que Fazer',
+      url: 'https://cartilha.cert.br/fasciculos/golpes-o-que-fazer/fasciculo-golpes-o-que-fazer.pdf',
+    },
+    {
+      label: 'Polícia Federal — Combate a Crimes Cibernéticos',
+      url: 'https://www.gov.br/pf/pt-br/assuntos/combate-a-crimes-ciberneticos',
+    },
+    {
+      label: 'Polícia Federal — Comunica PF',
+      url: 'https://www.gov.br/pf/pt-br/canais_atendimento/comunicacao-de-crimes',
+    },
+    {
       label: 'CERT.br — Fascículo Furto de Celular',
-      url: 'https://cartilha.cert.br/fasciculos/furto-de-celular/fasciculo-furto-celular.pdf',
+      url: 'https://cartilha.cert.br/fasciculos/furto-de-celular/fasciculo-furto-de-celular.pdf',
     },
     {
       label: 'CERT.br — Fascículo Vazamento de Dados',
       url: 'https://cartilha.cert.br/fasciculos/vazamento-de-dados/fasciculo-vazamento-de-dados.pdf',
     },
     {
-      label: 'CERT.br — Fascículo Proteção de Dados',
-      url: 'https://cartilha.cert.br/fasciculos/protecao-de-dados/fasciculo-protecao-de-dados.pdf',
-    },
-    {
-      label: 'CERT.br — Fascículo Backup',
-      url: 'https://cartilha.cert.br/fasciculos/backup/fasciculo-backup.pdf',
-    },
-    {
       label: 'Campanha #DigaNãoAosGolpes — FEBRABAN',
-      url: 'https://antifraudes.febraban.org.br/',
+      url: 'https://portal.febraban.org.br/AntiFraude/',
     },
   ],
   questionBank: questionBank.m6,

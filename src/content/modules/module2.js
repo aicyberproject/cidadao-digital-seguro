@@ -1,6 +1,28 @@
 import { Lock } from 'lucide-react'
-import { officialLinks } from '../officialLinks'
 import { questionBank } from '../questionBank'
+
+const module2Resources = [
+  {
+    label: 'CERT.br — Fascículo Autenticação',
+    url: 'https://cartilha.cert.br/fasciculos/autenticacao/fasciculo-autenticacao.pdf',
+  },
+  {
+    label: 'CERT.br — Fascículo Backup',
+    url: 'https://cartilha.cert.br/fasciculos/backup/fasciculo-backup.pdf',
+  },
+  {
+    label: 'CERT.br — Fascículo Privacidade',
+    url: 'https://cartilha.cert.br/fasciculos/privacidade/fasciculo-privacidade.pdf',
+  },
+  {
+    label: 'CERT.br — Fascículo Proteção de Dados',
+    url: 'https://cartilha.cert.br/fasciculos/protecao-de-dados/fasciculo-protecao-de-dados.pdf',
+  },
+  {
+    label: 'CERT.br — Fascículo Vazamento de Dados',
+    url: 'https://cartilha.cert.br/fasciculos/vazamento-de-dados/fasciculo-vazamento-de-dados.pdf',
+  },
+]
 
 export const module2 = {
   id: 'm2',
@@ -171,7 +193,7 @@ export const module2 = {
     {
       type: 'links',
       title: 'Leitura complementar e links oficiais',
-      items: officialLinks,
+      items: module2Resources,
     },
     {
       type: 'activity',
