@@ -1,6 +1,28 @@
 import { Shield } from 'lucide-react'
-import { officialLinks } from '../officialLinks'
 import { questionBank } from '../questionBank'
+
+const module1Resources = [
+  {
+    label: 'Polícia Federal — Combate a Crimes Cibernéticos',
+    url: 'https://www.gov.br/pf/pt-br/assuntos/combate-a-crimes-ciberneticos',
+  },
+  {
+    label: 'Polícia Federal — Comunica PF',
+    url: 'https://www.gov.br/pf/pt-br/canais_atendimento/comunicacao-de-crimes',
+  },
+  {
+    label: 'MJSP — Aliança Nacional de Combate a Fraudes Bancárias Digitais',
+    url: 'https://www.gov.br/mj/pt-br/assuntos/alianca-nacional-de-combate-a-fraudes-bancarias-digitais',
+  },
+  {
+    label: 'FEBRABAN — Aliança de Combate a Fraudes Digitais Bancárias',
+    url: 'https://portal.febraban.org.br/pagina/3411/1136/pt-br/alianca-nacional',
+  },
+  {
+    label: 'CERT.br — Fascículos da Cartilha de Segurança para Internet',
+    url: 'https://cartilha.cert.br/fasciculos/',
+  },
+]
 
 export const module1 = {
   id: 'm1',
@@ -162,7 +184,7 @@ export const module1 = {
     {
       type: 'links',
       title: 'Leitura complementar e links oficiais',
-      items: officialLinks,
+      items: module1Resources,
     },
     {
       type: 'activity',

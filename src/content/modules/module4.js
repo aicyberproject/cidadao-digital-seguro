@@ -276,12 +276,16 @@ const module4 = {
       url: 'https://cartilha.cert.br/fasciculos/comercio-via-internet/fasciculo-comercio-via-internet.pdf',
     },
     {
-      label: 'CERT.br — Fascículo Furto de Celular',
-      url: 'https://cartilha.cert.br/fasciculos/furto-de-celular/fasciculo-furto-celular.pdf',
+      label: 'CERT.br — Fascículo Golpes: Evite Fraudes',
+      url: 'https://cartilha.cert.br/fasciculos/golpes-evite-fraudes/fasciculo-golpes-evite-fraudes.pdf',
     },
     {
       label: 'Campanha #DigaNãoAosGolpes — FEBRABAN',
-      url: 'https://antifraudes.febraban.org.br/',
+      url: 'https://portal.febraban.org.br/AntiFraude/',
+    },
+    {
+      label: 'MJSP — Sofri um golpe, e agora?',
+      url: 'https://www.gov.br/mj/pt-br/acesso-a-informacao/acoes-e-programas/sofri-um-golpe-e-agora',
     },
   ],
   questionBank: questionBank.m4,
