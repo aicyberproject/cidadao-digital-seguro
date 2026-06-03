@@ -272,10 +272,10 @@ const module5 = {
     ],
   },
   video: {
-    title: 'Catálogo de ameaças e golpes digitais',
-    duration: '9 a 11 min',
+    title: 'Videoaula do módulo',
+    duration: 'Em preparação',
     script:
-      'Apresente o catálogo como ferramenta de reconhecimento de padrões. Explique phishing, malware, ransomware, perfis falsos, falsas vendas, golpes de marketplace, boatos, deepfakes e vazamentos de dados. Use a lógica: sinal de alerta, ação esperada pelo criminoso, conduta segura e evidência a preservar.',
+      'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
   },
   
   resources: [
