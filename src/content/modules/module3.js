@@ -1,6 +1,32 @@
 import { Wifi } from 'lucide-react'
-import { officialLinks } from '../officialLinks'
 import { questionBank } from '../questionBank'
+
+const module3Resources = [
+  {
+    label: 'CERT.br — Fascículo Celulares e Tablets',
+    url: 'https://cartilha.cert.br/fasciculos/celulares-e-tablets/fasciculo-celulares-e-tablets.pdf',
+  },
+  {
+    label: 'CERT.br — Fascículo Computadores',
+    url: 'https://cartilha.cert.br/fasciculos/computadores/fasciculo-computadores.pdf',
+  },
+  {
+    label: 'CERT.br — Fascículo Redes',
+    url: 'https://cartilha.cert.br/fasciculos/redes/fasciculo-redes.pdf',
+  },
+  {
+    label: 'CERT.br — Fascículo Trabalho Remoto',
+    url: 'https://cartilha.cert.br/fasciculos/trabalho-remoto/fasciculo-trabalho-remoto.pdf',
+  },
+  {
+    label: 'CERT.br — Fascículo Códigos Maliciosos',
+    url: 'https://cartilha.cert.br/fasciculos/codigos-maliciosos/fasciculo-codigos-maliciosos.pdf',
+  },
+  {
+    label: 'CERT.br — Fascículo Furto de Celular',
+    url: 'https://cartilha.cert.br/fasciculos/furto-de-celular/fasciculo-furto-de-celular.pdf',
+  },
+]
 
 export const module3 = {
   id: 'm3',
@@ -195,7 +221,7 @@ export const module3 = {
     {
       type: 'links',
       title: 'Leitura complementar e links oficiais',
-      items: officialLinks,
+      items: module3Resources,
     },
     {
       type: 'activity',
