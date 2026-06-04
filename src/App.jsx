@@ -5,6 +5,7 @@ import {
   Shield,
   AlertTriangle,
   FileCheck,
+  FileText,
   CheckCircle2,
   PlayCircle,
   BookOpen,
@@ -21,6 +22,7 @@ import { courseIntro } from './content/courseIntro'
 import { modules } from './content/modules'
 import { finalAssessment } from './content/finalAssessment'
 import { glossaryCategories, glossaryEntries } from './content/glossary'
+import { libraryDocuments, librarySources, libraryThemes, libraryTypes } from './content/library'
 import packageInfo from '../package.json'
 
 const STORAGE_KEY = 'cidadao-digital-seguro-progress-v2'
@@ -394,6 +396,10 @@ export default function App() {
   const [participantName, setParticipantName] = useState('')
   const [glossaryQuery, setGlossaryQuery] = useState('')
   const [selectedGlossaryCategory, setSelectedGlossaryCategory] = useState('Todos')
+  const [libraryQuery, setLibraryQuery] = useState('')
+  const [selectedLibrarySource, setSelectedLibrarySource] = useState('Todos')
+  const [selectedLibraryType, setSelectedLibraryType] = useState('Todos')
+  const [selectedLibraryTheme, setSelectedLibraryTheme] = useState('Todos')
 
   useEffect(() => {
     const loaded = loadProgress()
@@ -433,6 +439,25 @@ export default function App() {
       return matchesCategory && (!query || searchableText.includes(query))
     })
   }, [glossaryQuery, selectedGlossaryCategory])
+  const librarySourceOptions = useMemo(() => ['Todos', ...librarySources], [])
+  const libraryTypeOptions = useMemo(() => ['Todos', ...libraryTypes], [])
+  const libraryThemeOptions = useMemo(() => ['Todos', ...libraryThemes], [])
+  const filteredLibraryDocuments = useMemo(() => {
+    const query = normalizeSearchText(libraryQuery)
+
+    return libraryDocuments.filter((documentItem) => {
+      const matchesSource =
+        selectedLibrarySource === 'Todos' || documentItem.source === selectedLibrarySource
+      const matchesType = selectedLibraryType === 'Todos' || documentItem.type === selectedLibraryType
+      const matchesTheme =
+        selectedLibraryTheme === 'Todos' || documentItem.theme === selectedLibraryTheme
+      const searchableText = normalizeSearchText(
+        `${documentItem.title} ${documentItem.description} ${documentItem.source} ${documentItem.type} ${documentItem.theme} ${documentItem.relatedModule} ${documentItem.url}`,
+      )
+
+      return matchesSource && matchesType && matchesTheme && (!query || searchableText.includes(query))
+    })
+  }, [libraryQuery, selectedLibrarySource, selectedLibraryTheme, selectedLibraryType])
 
   useEffect(() => {
     const isQuizScreen = screenIndex === selectedModuleContent.length
@@ -791,6 +816,9 @@ export default function App() {
           <button className="button button-outline" onClick={() => setCurrentView('glossary')}>
             <BookOpen size={16} /> Glossário
           </button>
+          <button className="button button-outline" onClick={() => setCurrentView('library')}>
+            <FileText size={16} /> Biblioteca
+          </button>
           <button className="button button-outline" onClick={resetCourse}>
             <RotateCcw size={16} /> Reiniciar
           </button>
@@ -890,6 +918,9 @@ export default function App() {
                   <button className="button button-outline" onClick={() => setCurrentView('glossary')}>
                     Consultar glossário
                   </button>
+                  <button className="button button-outline" onClick={() => setCurrentView('library')}>
+                    Ver biblioteca
+                  </button>
                 </div>
               </ScreenCard>
 
@@ -927,6 +958,15 @@ export default function App() {
                   </div>
                   <div className="card-body muted-body">
                     Termos essenciais ficam disponíveis para consulta durante todo o curso, sem afetar a progressão dos módulos.
+                  </div>
+                </Card>
+
+                <Card>
+                  <div className="card-header">
+                    <h2>Biblioteca</h2>
+                  </div>
+                  <div className="card-body muted-body">
+                    Documentos públicos oficiais ficam reunidos em área transversal, separados da trilha principal.
                   </div>
                 </Card>
               </div>
@@ -993,6 +1033,110 @@ export default function App() {
                 ) : (
                   <div className="info-box muted-body">
                     Nenhum termo encontrado para a busca ou categoria selecionada.
+                  </div>
+                )}
+              </ScreenCard>
+            </motion.div>
+          )}
+
+          {currentView === 'library' && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
+              <ScreenCard title="Biblioteca de documentos públicos" icon={FileText}>
+                <p className="muted-body">
+                  Consulte materiais oficiais e públicos usados como apoio ao curso. A biblioteca é transversal e não interfere na progressão dos módulos.
+                </p>
+
+                <div className="glossary-controls">
+                  <label className="search-field">
+                    <Search size={18} />
+                    <input
+                      className="text-input glossary-search"
+                      type="search"
+                      value={libraryQuery}
+                      onChange={(event) => setLibraryQuery(event.target.value)}
+                      placeholder="Buscar título, fonte, tema, módulo ou URL"
+                      aria-label="Buscar documento na biblioteca"
+                    />
+                  </label>
+
+                  <div className="library-filter-grid">
+                    <label className="stack-sm">
+                      <span className="mini-muted">Fonte</span>
+                      <select
+                        className="text-input"
+                        value={selectedLibrarySource}
+                        onChange={(event) => setSelectedLibrarySource(event.target.value)}
+                      >
+                        {librarySourceOptions.map((source) => (
+                          <option key={source} value={source}>
+                            {source}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label className="stack-sm">
+                      <span className="mini-muted">Tipo</span>
+                      <select
+                        className="text-input"
+                        value={selectedLibraryType}
+                        onChange={(event) => setSelectedLibraryType(event.target.value)}
+                      >
+                        {libraryTypeOptions.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label className="stack-sm">
+                      <span className="mini-muted">Tema</span>
+                      <select
+                        className="text-input"
+                        value={selectedLibraryTheme}
+                        onChange={(event) => setSelectedLibraryTheme(event.target.value)}
+                      >
+                        {libraryThemeOptions.map((theme) => (
+                          <option key={theme} value={theme}>
+                            {theme}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+
+                  <div className="muted-small">
+                    {filteredLibraryDocuments.length} de {libraryDocuments.length} documentos exibidos.
+                  </div>
+                </div>
+
+                {filteredLibraryDocuments.length > 0 ? (
+                  <div className="library-grid">
+                    {filteredLibraryDocuments.map((documentItem) => (
+                      <article key={documentItem.url} className="library-card">
+                        <div className="glossary-card-head">
+                          <h3>{documentItem.title}</h3>
+                          <span className="tag">{documentItem.type}</span>
+                        </div>
+
+                        <p className="muted-body">{documentItem.description}</p>
+
+                        <div className="library-card-meta">
+                          <span>Fonte: {documentItem.source}</span>
+                          <span>Tema: {documentItem.theme}</span>
+                          <span>{documentItem.relatedModule}</span>
+                        </div>
+
+                        <a href={documentItem.url} target="_blank" rel="noreferrer" className="button button-outline library-link">
+                          Abrir documento <ExternalLink size={16} />
+                        </a>
+                      </article>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="info-box muted-body">
+                    Nenhum documento encontrado para a busca ou filtros selecionados.
                   </div>
                 )}
               </ScreenCard>
