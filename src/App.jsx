@@ -23,6 +23,7 @@ import { modules } from './content/modules'
 import { finalAssessment } from './content/finalAssessment'
 import { glossaryCategories, glossaryEntries } from './content/glossary'
 import { libraryDocuments, librarySources, libraryThemes, libraryTypes } from './content/library'
+import { educationalVideos, videoModules, videoSources, videoThemes } from './content/videos'
 import packageInfo from '../package.json'
 
 const STORAGE_KEY = 'cidadao-digital-seguro-progress-v2'
@@ -400,6 +401,10 @@ export default function App() {
   const [selectedLibrarySource, setSelectedLibrarySource] = useState('Todos')
   const [selectedLibraryType, setSelectedLibraryType] = useState('Todos')
   const [selectedLibraryTheme, setSelectedLibraryTheme] = useState('Todos')
+  const [videoQuery, setVideoQuery] = useState('')
+  const [selectedVideoSource, setSelectedVideoSource] = useState('Todos')
+  const [selectedVideoTheme, setSelectedVideoTheme] = useState('Todos')
+  const [selectedVideoModule, setSelectedVideoModule] = useState('Todos')
 
   useEffect(() => {
     const loaded = loadProgress()
@@ -442,6 +447,10 @@ export default function App() {
   const librarySourceOptions = useMemo(() => ['Todos', ...librarySources], [])
   const libraryTypeOptions = useMemo(() => ['Todos', ...libraryTypes], [])
   const libraryThemeOptions = useMemo(() => ['Todos', ...libraryThemes], [])
+  const videoSourceOptions = useMemo(() => ['Todos', ...videoSources], [])
+  const videoThemeOptions = useMemo(() => ['Todos', ...videoThemes], [])
+  const videoModuleOptions = useMemo(() => ['Todos', ...videoModules], [])
+
   const filteredLibraryDocuments = useMemo(() => {
     const query = normalizeSearchText(libraryQuery)
 
@@ -458,6 +467,30 @@ export default function App() {
       return matchesSource && matchesType && matchesTheme && (!query || searchableText.includes(query))
     })
   }, [libraryQuery, selectedLibrarySource, selectedLibraryTheme, selectedLibraryType])
+
+  const filteredVideos = useMemo(() => {
+    const query = normalizeSearchText(videoQuery)
+
+    return educationalVideos.filter((videoItem) => {
+      const matchesSource =
+        selectedVideoSource === 'Todos' || videoItem.source === selectedVideoSource
+      const matchesTheme =
+        selectedVideoTheme === 'Todos' || videoItem.theme === selectedVideoTheme
+      const matchesModule =
+        selectedVideoModule === 'Todos' || videoItem.relatedModule === selectedVideoModule
+
+      const searchableText = normalizeSearchText(
+        `${videoItem.title} ${videoItem.description} ${videoItem.source} ${videoItem.theme} ${videoItem.relatedModule} ${videoItem.url} ${videoItem.status}`,
+      )
+
+      return (
+        matchesSource &&
+        matchesTheme &&
+        matchesModule &&
+        (!query || searchableText.includes(query))
+      )
+    })
+  }, [videoQuery, selectedVideoSource, selectedVideoTheme, selectedVideoModule])
 
   useEffect(() => {
     const isQuizScreen = screenIndex === selectedModuleContent.length
@@ -819,6 +852,9 @@ export default function App() {
           <button className="button button-outline" onClick={() => setCurrentView('library')}>
             <FileText size={16} /> Biblioteca
           </button>
+          <button className="button button-outline" onClick={() => setCurrentView('videos')}>
+            <PlayCircle size={16} /> Vídeos
+          </button>
           <button className="button button-outline" onClick={resetCourse}>
             <RotateCcw size={16} /> Reiniciar
           </button>
@@ -920,6 +956,9 @@ export default function App() {
                   </button>
                   <button className="button button-outline" onClick={() => setCurrentView('library')}>
                     Ver biblioteca
+                  </button>
+                  <button className="button button-outline" onClick={() => setCurrentView('videos')}>
+                    Vídeos educativos
                   </button>
                 </div>
               </ScreenCard>
@@ -1137,6 +1176,119 @@ export default function App() {
                 ) : (
                   <div className="info-box muted-body">
                     Nenhum documento encontrado para a busca ou filtros selecionados.
+                  </div>
+                )}
+              </ScreenCard>
+            </motion.div>
+          )}
+
+          {currentView === 'videos' && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
+              <ScreenCard title="Vídeos educativos" icon={PlayCircle}>
+                <p className="muted-body">
+                  Assista a vídeos complementares sobre segurança digital. Estes vídeos são materiais de apoio transversal e não substituem as videoaulas obrigatórias de cada módulo.
+                </p>
+
+                <div className="glossary-controls">
+                  <label className="search-field">
+                    <Search size={18} />
+                    <input
+                      className="text-input glossary-search"
+                      type="search"
+                      value={videoQuery}
+                      onChange={(event) => setVideoQuery(event.target.value)}
+                      placeholder="Buscar título, descrição, fonte ou tema"
+                      aria-label="Buscar vídeo educativo"
+                    />
+                  </label>
+
+                  <div className="library-filter-grid">
+                    <label className="stack-sm">
+                      <span className="mini-muted">Módulo relacionado</span>
+                      <select
+                        className="text-input"
+                        value={selectedVideoModule}
+                        onChange={(event) => setSelectedVideoModule(event.target.value)}
+                      >
+                        {videoModuleOptions.map((mod) => (
+                          <option key={mod} value={mod}>
+                            {mod}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label className="stack-sm">
+                      <span className="mini-muted">Fonte</span>
+                      <select
+                        className="text-input"
+                        value={selectedVideoSource}
+                        onChange={(event) => setSelectedVideoSource(event.target.value)}
+                      >
+                        {videoSourceOptions.map((source) => (
+                          <option key={source} value={source}>
+                            {source}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label className="stack-sm">
+                      <span className="mini-muted">Tema</span>
+                      <select
+                        className="text-input"
+                        value={selectedVideoTheme}
+                        onChange={(event) => setSelectedVideoTheme(event.target.value)}
+                      >
+                        {videoThemeOptions.map((theme) => (
+                          <option key={theme} value={theme}>
+                            {theme}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+
+                  <div className="muted-small">
+                    {filteredVideos.length} de {educationalVideos.length} vídeos exibidos.
+                  </div>
+                </div>
+
+                {filteredVideos.length > 0 ? (
+                  <div className="library-grid">
+                    {filteredVideos.map((videoItem) => (
+                      <article key={videoItem.title} className="library-card">
+                        <div className="glossary-card-head">
+                          <h3>{videoItem.title}</h3>
+                          <span className={`tag ${videoItem.status === 'Disponível' ? '' : 'muted'}`}>
+                            {videoItem.status}
+                          </span>
+                        </div>
+
+                        <p className="muted-body">{videoItem.description}</p>
+
+                        <div className="library-card-meta">
+                          <span>Fonte: {videoItem.source}</span>
+                          <span>Tema: {videoItem.theme}</span>
+                          <span>{videoItem.relatedModule}</span>
+                        </div>
+
+                        {videoItem.status === 'Disponível' && videoItem.url ? (
+                          <a href={videoItem.url} target="_blank" rel="noreferrer" className="button button-outline library-link">
+                            Assistir vídeo <ExternalLink size={16} />
+                          </a>
+                        ) : (
+                          <div className="info-box muted-body" style={{ margin: 0 }}>
+                            <PlayCircle size={16} style={{ verticalAlign: 'middle', marginRight: '8px' }} />
+                            Vídeo em produção ou URL não disponível publicamente.
+                          </div>
+                        )}
+                      </article>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="info-box muted-body">
+                    Nenhum vídeo encontrado para a busca ou filtros selecionados.
                   </div>
                 )}
               </ScreenCard>
