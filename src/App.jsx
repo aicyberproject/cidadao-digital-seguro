@@ -357,10 +357,13 @@ function renderLessonContent(blocks) {
         }
 
         if (block.type === 'callout') {
+          const title = normalizeSearchText(block.title)
           const isAlert =
-            normalizeSearchText(block.title).includes('alerta') ||
-            normalizeSearchText(block.title).includes('risco') ||
-            normalizeSearchText(block.title).includes('cuidado')
+            title.includes('alerta') ||
+            title.includes('risco') ||
+            title.includes('cuidado') ||
+            title.includes('atencao') ||
+            title.includes('golpe')
 
           return (
             <div key={index} className={`ludic-box ${isAlert ? 'scam' : 'expert'}`}>
