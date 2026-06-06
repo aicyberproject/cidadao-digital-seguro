@@ -357,10 +357,20 @@ function renderLessonContent(blocks) {
         }
 
         if (block.type === 'callout') {
+          const isAlert =
+            normalizeSearchText(block.title).includes('alerta') ||
+            normalizeSearchText(block.title).includes('risco') ||
+            normalizeSearchText(block.title).includes('cuidado')
+
           return (
-            <div key={index} className="tip-box">
-              {block.title ? <strong>{block.title}</strong> : null}
-              {block.text ? <p>{block.text}</p> : null}
+            <div key={index} className={`ludic-box ${isAlert ? 'scam' : 'expert'}`}>
+              <div className="ludic-header">
+                <div className="ludic-icon">
+                  {isAlert ? <AlertTriangle size={18} /> : <Shield size={18} />}
+                </div>
+                <span className="ludic-title">{block.title || (isAlert ? 'Atenção' : 'Dica')}</span>
+              </div>
+              <div className="ludic-body">{block.text}</div>
             </div>
           )
         }
@@ -1061,9 +1071,14 @@ export default function App() {
                         <div className="mini-muted">{entry.category}</div>
                         <p className="muted-body">{entry.definition}</p>
                         {entry.guidance ? (
-                          <div className="tip-box glossary-tip">
-                            <strong>Orientação prática</strong>
-                            <p>{entry.guidance}</p>
+                          <div className="ludic-box expert glossary-tip" style={{ padding: '16px', margin: '8px 0 0' }}>
+                            <div className="ludic-header">
+                              <div className="ludic-icon" style={{ width: '24px', height: '24px' }}>
+                                <Shield size={14} />
+                              </div>
+                              <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Orientação prática</span>
+                            </div>
+                            <div className="ludic-body" style={{ fontSize: '0.875rem' }}>{entry.guidance}</div>
                           </div>
                         ) : null}
                       </article>
@@ -1373,8 +1388,30 @@ export default function App() {
                   )}
 
                   {currentItem.type === 'scenario' && <div className="scenario-box">{currentItem.prompt}</div>}
-                  {currentItem.type === 'tip' && <div className="tip-box">{currentItem.text}</div>}
-                  {currentItem.type === 'scam' && <div className="scam-box">{currentItem.text}</div>}
+                  
+                  {currentItem.type === 'tip' && (
+                    <div className="ludic-box expert">
+                      <div className="ludic-header">
+                        <div className="ludic-icon">
+                          <Shield size={18} />
+                        </div>
+                        <span className="ludic-title">{currentItem.title || 'Palavra do Especialista'}</span>
+                      </div>
+                      <div className="ludic-body">{currentItem.text}</div>
+                    </div>
+                  )}
+
+                  {currentItem.type === 'scam' && (
+                    <div className="ludic-box scam">
+                      <div className="ludic-header">
+                        <div className="ludic-icon">
+                          <AlertTriangle size={18} />
+                        </div>
+                        <span className="ludic-title">{currentItem.title || 'Momento É Golpe!'}</span>
+                      </div>
+                      <div className="ludic-body">{currentItem.text}</div>
+                    </div>
+                  )}
 
                   {currentItem.type === 'video' && (
                     <div className="stack-md">
