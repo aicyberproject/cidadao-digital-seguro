@@ -372,7 +372,7 @@ function renderLessonContent(blocks) {
                 <div className="ludic-icon">
                   <CharacterAvatar type={isAlert ? 'radar' : 'siga'} size={36} />
                   <div className="ludic-status-badge">
-                    {isAlert ? <AlertTriangle size={12} /> : <Shield size={12} />}
+                    {isAlert ? <AlertTriangle size={12} aria-hidden="true" focusable="false" /> : <Shield size={12} aria-hidden="true" focusable="false" />}
                   </div>
                 </div>
                 <span className="ludic-title">{block.title || (isAlert ? 'Atenção' : 'Dica')}</span>
@@ -1083,7 +1083,7 @@ export default function App() {
                               <div className="ludic-icon" style={{ width: '32px', height: '32px' }}>
                                 <CharacterAvatar type="siga" size={24} />
                                 <div className="ludic-status-badge">
-                                  <Shield size={10} />
+                                  <Shield size={10} aria-hidden="true" focusable="false" />
                                 </div>
                               </div>
                               <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Orientação prática</span>
