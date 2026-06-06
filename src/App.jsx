@@ -24,6 +24,7 @@ import { finalAssessment } from './content/finalAssessment'
 import { glossaryCategories, glossaryEntries } from './content/glossary'
 import { libraryDocuments, librarySources, libraryThemes, libraryTypes } from './content/library'
 import { educationalVideos, videoModules, videoSources, videoThemes } from './content/videos'
+import { CharacterAvatar } from './components/CharacterAvatar'
 import packageInfo from '../package.json'
 
 const STORAGE_KEY = 'cidadao-digital-seguro-progress-v2'
@@ -369,7 +370,10 @@ function renderLessonContent(blocks) {
             <div key={index} className={`ludic-box ${isAlert ? 'scam' : 'expert'}`}>
               <div className="ludic-header">
                 <div className="ludic-icon">
-                  {isAlert ? <AlertTriangle size={18} /> : <Shield size={18} />}
+                  <CharacterAvatar type={isAlert ? 'radar' : 'siga'} size={36} />
+                  <div className="ludic-status-badge">
+                    {isAlert ? <AlertTriangle size={12} /> : <Shield size={12} />}
+                  </div>
                 </div>
                 <span className="ludic-title">{block.title || (isAlert ? 'Atenção' : 'Dica')}</span>
               </div>
@@ -1076,8 +1080,11 @@ export default function App() {
                         {entry.guidance ? (
                           <div className="ludic-box expert glossary-tip" style={{ padding: '16px', margin: '8px 0 0' }}>
                             <div className="ludic-header">
-                              <div className="ludic-icon" style={{ width: '24px', height: '24px' }}>
-                                <Shield size={14} />
+                              <div className="ludic-icon" style={{ width: '32px', height: '32px' }}>
+                                <CharacterAvatar type="siga" size={24} />
+                                <div className="ludic-status-badge">
+                                  <Shield size={10} />
+                                </div>
                               </div>
                               <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Orientação prática</span>
                             </div>
@@ -1396,7 +1403,10 @@ export default function App() {
                     <div className="ludic-box expert">
                       <div className="ludic-header">
                         <div className="ludic-icon">
-                          <Shield size={18} />
+                          <CharacterAvatar type="siga" size={36} />
+                          <div className="ludic-status-badge">
+                            <Shield size={12} />
+                          </div>
                         </div>
                         <span className="ludic-title">{currentItem.title || 'Palavra do Especialista'}</span>
                       </div>
@@ -1408,7 +1418,10 @@ export default function App() {
                     <div className="ludic-box scam">
                       <div className="ludic-header">
                         <div className="ludic-icon">
-                          <AlertTriangle size={18} />
+                          <CharacterAvatar type="radar" size={36} />
+                          <div className="ludic-status-badge">
+                            <AlertTriangle size={12} />
+                          </div>
                         </div>
                         <span className="ludic-title">{currentItem.title || 'Momento É Golpe!'}</span>
                       </div>
