@@ -14,8 +14,8 @@ export const CharacterAvatar = ({ type, size = 32, className = '' }) => {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className={className}
-        role="img"
-        aria-label="Radar - Detector de Riscos"
+        aria-hidden="true"
+        focusable="false"
       >
         <rect x="15" y="25" width="70" height="60" rx="20" fill="currentColor" />
         <rect x="25" y="40" width="50" height="25" rx="10" fill="white" fillOpacity="0.3" />
@@ -36,8 +36,8 @@ export const CharacterAvatar = ({ type, size = 32, className = '' }) => {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className={className}
-        role="img"
-        aria-label="Siga - Guia Orientadora"
+        aria-hidden="true"
+        focusable="false"
       >
         <circle cx="50" cy="35" r="22" fill="currentColor" />
         <path
