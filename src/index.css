@@ -33,6 +33,17 @@
   --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -4px rgba(15, 23, 42, 0.05);
   --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   
+  /* Tokens Lúdicos - Blocos Especiais */
+  --expert-bg: #eff6ff;
+  --expert-border: #93c5fd;
+  --expert-text: #1e40af;
+  --expert-icon-bg: #2563eb;
+
+  --scam-bg: #fff1f2;
+  --scam-border: #fecdd3;
+  --scam-text: #9f1239;
+  --scam-icon-bg: #e11d48;
+  
   color: var(--text-main);
   background: var(--bg-app);
 }
@@ -252,8 +263,9 @@ p {
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
-  color: #5b4633;
-  background: #f0e7db;
+  color: var(--primary);
+  background: var(--primary-light);
+  border: 1px solid rgba(37, 99, 235, 0.18);
 }
 
 .tags-row,
@@ -271,15 +283,15 @@ p {
 .muted,
 .muted-small,
 .link-card-url {
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .muted-small {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 
 .muted-body {
-  color: #4b5563;
+  color: var(--text-main);
 }
 
 .info-box,
@@ -294,7 +306,7 @@ p {
 .module-chip,
 .link-card,
 .check-row {
-  border-radius: 18px;
+  border-radius: var(--border-radius-md);
 }
 
 .info-box,
@@ -305,25 +317,75 @@ p {
   padding: 20px;
 }
 
+.ludic-box {
+  border-radius: var(--border-radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-width: 1px;
+  border-style: solid;
+  margin: 12px 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.ludic-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ludic-title {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.8125rem;
+}
+
+.ludic-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.ludic-body {
+  line-height: 1.6;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* Scams specific - É Golpe */
+.ludic-box.scam, .scam-box {
+  background: var(--scam-bg);
+  border: 1px solid var(--scam-border);
+  color: var(--scam-text);
+}
+.ludic-box.scam .ludic-icon {
+  background: var(--scam-icon-bg);
+}
+
+/* Expert specific - Palavra do Especialista */
+.ludic-box.expert, .tip-box {
+  background: var(--expert-bg);
+  border: 1px solid var(--expert-border);
+  color: var(--expert-text);
+}
+.ludic-box.expert .ludic-icon {
+  background: var(--expert-icon-bg);
+}
+
 .scenario-box {
-  border: 1px solid #93c5fd;
-  background: #eff6ff;
-  color: #1e40af;
-  padding: 20px;
-}
-
-.tip-box {
-  border: 1px solid #6ee7b7;
-  background: #ecfdf5;
-  color: #065f46;
-  padding: 20px;
-}
-
-.scam-box {
-  border: 1px solid #fca5a5;
-  background: #fef2f2;
-  color: #991b1b;
-  padding: 20px;
+  border-left: 4px solid var(--primary);
+  background: #ffffff;
+  color: var(--text-main);
+  padding: 20px 24px;
+  border-top: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .video-box {
