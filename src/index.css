@@ -343,13 +343,35 @@ p {
 }
 
 .ludic-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
   display: grid;
   place-items: center;
   color: #fff;
   flex-shrink: 0;
+  position: relative;
+}
+
+.ludic-status-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background: #ffffff;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.ludic-box.scam .ludic-status-badge {
+  color: var(--scam-icon-bg);
+}
+
+.ludic-box.expert .ludic-status-badge {
+  color: var(--expert-icon-bg);
 }
 
 .ludic-body {
@@ -366,6 +388,7 @@ p {
 }
 .ludic-box.scam .ludic-icon {
   background: var(--scam-icon-bg);
+  color: #fff;
 }
 
 /* Expert specific - Palavra do Especialista */
@@ -376,6 +399,7 @@ p {
 }
 .ludic-box.expert .ludic-icon {
   background: var(--expert-icon-bg);
+  color: #fff;
 }
 
 .scenario-box {
