@@ -1405,7 +1405,7 @@ export default function App() {
                         <div className="ludic-icon">
                           <CharacterAvatar type="siga" size={36} />
                           <div className="ludic-status-badge">
-                            <Shield size={12} />
+                            <Shield size={12} aria-hidden="true" focusable="false" />
                           </div>
                         </div>
                         <span className="ludic-title">{currentItem.title || 'Palavra do Especialista'}</span>
@@ -1420,7 +1420,7 @@ export default function App() {
                         <div className="ludic-icon">
                           <CharacterAvatar type="radar" size={36} />
                           <div className="ludic-status-badge">
-                            <AlertTriangle size={12} />
+                            <AlertTriangle size={12} aria-hidden="true" focusable="false" />
                           </div>
                         </div>
                         <span className="ludic-title">{currentItem.title || 'Momento É Golpe!'}</span>
