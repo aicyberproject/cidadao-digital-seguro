@@ -230,7 +230,7 @@ export const module3 = {
     title: 'Videoaula do módulo',
     duration: 'Em preparação',
     script:
-      'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+      'Nesta videoaula, o celular é tratado como uma carteira digital: ele reúne banco, documentos, mensagens, fotos, contatos e acesso a serviços públicos e privados. Por isso, o primeiro cuidado é bloquear a tela, proteger o chip e instalar aplicativos apenas de lojas oficiais, conferindo o desenvolvedor correto. O módulo também explica riscos de malware, anexos suspeitos e programas falsos em computadores, além do papel de antivírus, firewall e atualizações. Na rede doméstica, a atenção vai para o roteador, a senha administrativa, a senha do Wi-Fi, o nome da rede e a atualização do equipamento. Em Wi-Fi público e trabalho remoto, a regra é evitar operações sensíveis, usar conexões confiáveis e confirmar políticas da instituição.',
     status: 'Em preparação',
     objectives: [
       'Reduzir riscos em celulares, computadores, roteadores e redes Wi-Fi.',

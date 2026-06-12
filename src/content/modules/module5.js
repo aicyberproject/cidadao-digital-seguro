@@ -275,7 +275,7 @@ const module5 = {
     title: 'Videoaula do módulo',
     duration: 'Em preparação',
     script:
-      'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+      'Nesta videoaula, o catálogo de ameaças funciona como um mapa para reconhecer golpes antes de agir. O módulo apresenta phishing, engenharia social, malware, ransomware, aplicativos falsos, perfis falsos, boatos, deepfakes e vazamentos de dados em linguagem direta. O objetivo não é decorar nomes técnicos, mas perceber padrões: mensagens com urgência, medo, vantagem excessiva, promessa de prêmio, ameaça de bloqueio, pedido de sigilo ou solicitação de código e senha. Também são tratados contatos que simulam familiares, bancos, empresas, suporte técnico ou autoridades. A resposta preventiva é parar, verificar por canal independente, não instalar nada sob pressão, não compartilhar credenciais e preservar registros quando houver tentativa ou prejuízo.',
     status: 'Em preparação',
     objectives: [
       'Classificar golpes e ameaças digitais recorrentes.',

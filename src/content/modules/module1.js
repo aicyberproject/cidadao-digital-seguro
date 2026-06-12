@@ -193,7 +193,7 @@ export const module1 = {
     title: 'Videoaula do módulo',
     duration: 'Em preparação',
     script:
-      'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+      'Nesta videoaula, a segurança digital é apresentada como parte da cidadania. A proteção contra golpes não depende apenas de conhecimento técnico: envolve atenção do cidadão, orientação das instituições públicas, boas práticas do setor privado e uso de canais oficiais. O módulo mostra como reconhecer sinais iniciais de fraude, como pressa artificial, pedido de sigilo, link inesperado ou contato que se passa por banco, órgão público ou conhecido. Também orienta a parar antes de agir, confirmar informações por meios independentes e preservar evidências, como mensagens, comprovantes, horários, perfis e números usados no contato. A ideia central é simples: prevenir, registrar e comunicar corretamente reduz danos e fortalece a responsabilidade compartilhada.',
     status: 'Em preparação',
     objectives: [
       'Compreender segurança digital como responsabilidade compartilhada.',
