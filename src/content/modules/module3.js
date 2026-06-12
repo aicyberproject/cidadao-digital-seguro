@@ -177,13 +177,6 @@ export const module3 = {
       ],
     },
     {
-      type: 'video',
-      title: 'Videoaula do módulo',
-      description:
-        'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
-      duration: 'Em preparação',
-    },
-    {
       type: 'tip',
       title: 'Dica de Especialista',
       text:
@@ -233,6 +226,12 @@ export const module3 = {
     },
   ],
 
+  video: {
+    title: 'Videoaula do módulo',
+    duration: 'Em preparação',
+    script:
+      'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+  },
   questionBank: questionBank.m3,
   quizSize: 10,
   quiz: questionBank.m3.slice(0, 10),
