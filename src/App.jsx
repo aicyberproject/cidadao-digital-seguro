@@ -160,6 +160,9 @@ function getModuleContent(moduleItem) {
         moduleItem.video.description ||
         'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
       duration: moduleItem.video.duration || 'Em preparação',
+      status: moduleItem.video.status,
+      objectives: moduleItem.video.objectives,
+      topics: moduleItem.video.topics,
     })
   }
 
@@ -1870,6 +1873,34 @@ export default function App() {
                         <div className="video-title">{currentItem.description}</div>
                         <div className="muted-small">Duração sugerida: {currentItem.duration}</div>
                       </div>
+
+                      {currentItem.status ? (
+                        <div className="tags-row">
+                          <SectionTag>Status: {currentItem.status}</SectionTag>
+                        </div>
+                      ) : null}
+
+                      {Array.isArray(currentItem.objectives) && currentItem.objectives.length > 0 ? (
+                        <div className="info-box">
+                          <div className="link-card-title">Objetivos da videoaula</div>
+                          <ul className="muted-body">
+                            {currentItem.objectives.map((objective) => (
+                              <li key={objective}>{objective}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : null}
+
+                      {Array.isArray(currentItem.topics) && currentItem.topics.length > 0 ? (
+                        <div className="info-box">
+                          <div className="link-card-title">Tópicos abordados</div>
+                          <ul className="muted-body">
+                            {currentItem.topics.map((topic) => (
+                              <li key={topic}>{topic}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : null}
 
                       <button
                         className="button"
