@@ -22,7 +22,7 @@ import { courseIntro } from './content/courseIntro'
 import { modules } from './content/modules'
 import { finalAssessment } from './content/finalAssessment'
 import { glossaryCategories, glossaryEntries } from './content/glossary'
-import { libraryDocuments, librarySources, libraryThemes, libraryTypes } from './content/library'
+import { libraryDocuments, librarySources, libraryCategories, libraryTypes } from './content/library'
 import { educationalVideos, videoModules, videoSources, videoThemes } from './content/videos'
 import { CharacterAvatar } from './components/CharacterAvatar'
 import packageInfo from '../package.json'
@@ -417,7 +417,7 @@ export default function App() {
   const [libraryQuery, setLibraryQuery] = useState('')
   const [selectedLibrarySource, setSelectedLibrarySource] = useState('Todos')
   const [selectedLibraryType, setSelectedLibraryType] = useState('Todos')
-  const [selectedLibraryTheme, setSelectedLibraryTheme] = useState('Todos')
+  const [selectedLibraryCategory, setSelectedLibraryCategory] = useState('Todos')
   const [videoQuery, setVideoQuery] = useState('')
   const [selectedVideoSource, setSelectedVideoSource] = useState('Todos')
   const [selectedVideoTheme, setSelectedVideoTheme] = useState('Todos')
