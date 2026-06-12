@@ -1031,9 +1031,9 @@ export default function App() {
 
           {currentView === 'glossary' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
-              <ScreenCard title="Glossário inicial" icon={BookOpen}>
+              <ScreenCard title="Glossário" icon={BookOpen}>
                 <p className="muted-body">
-                  Consulte termos essenciais do curso em linguagem simples. Use a busca ou filtre por categoria para revisar conceitos antes, durante ou depois dos módulos.
+                  Consulte termos e conceitos essenciais sobre segurança digital em linguagem simples e orientada à ação. Use a busca ou os filtros por categoria para navegar.
                 </p>
 
                 <div className="glossary-controls">
