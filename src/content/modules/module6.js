@@ -281,7 +281,7 @@ const module6 = {
     title: 'Videoaula do módulo',
     duration: 'Em preparação',
     script:
-      'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+      'Esta videoaula organiza a resposta a incidentes digitais sem culpabilizar a vítima. Quando há golpe, conta invadida, celular furtado, pagamento indevido ou vazamento de dados, a prioridade é conter o dano e preservar evidências. O roteiro orienta registrar mensagens, telas, comprovantes, horários, números, perfis, links e protocolos antes de apagar conteúdo. Em seguida, é preciso acionar banco, plataforma, loja, operadora ou serviço afetado pelos canais oficiais, trocar senhas, encerrar sessões, bloquear cartões, chip ou contas quando necessário e revisar dispositivos confiáveis. Também aborda o registro de ocorrência, a comunicação responsável e o acompanhamento do caso, com foco em reduzir prejuízos e recuperar o controle.',
     status: 'Em preparação',
     objectives: [
       'Organizar resposta inicial a incidentes digitais.',

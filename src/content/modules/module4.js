@@ -264,7 +264,7 @@ const module4 = {
     title: 'Videoaula do módulo',
     duration: 'Em preparação',
     script:
-      'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+      'Esta videoaula organiza cuidados para transações digitais e consumo seguro. Bancos digitais, Pix, boletos, QR Codes e compras online facilitam a vida, mas exigem confirmação antes do pagamento. O roteiro mostra como desconfiar de falsa central, contato por mensagem, anúncio patrocinado suspeito ou pedido para instalar aplicativo de suporte. A orientação é acessar canais oficiais por conta própria, conferir destinatário, valor, chave Pix, código de barras e dados do vendedor antes de concluir a operação. Em comércio eletrônico e marketplaces, entram reputação, histórico, política da plataforma e sinais de preço irreal. Também é essencial guardar comprovantes, conversas, anúncios, notas e protocolos para contestar cobranças ou comunicar fraude.',
     status: 'Em preparação',
     objectives: [
       'Reconhecer riscos em bancos digitais, Pix, boletos, QR Codes e compras online.',

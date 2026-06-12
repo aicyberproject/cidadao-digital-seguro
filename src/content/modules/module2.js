@@ -202,7 +202,7 @@ export const module2 = {
     title: 'Videoaula do módulo',
     duration: 'Em preparação',
     script:
-      'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+      'Esta videoaula apresenta higiene digital como uma rotina preventiva, parecida com cuidados diários de saúde e organização. O foco é reduzir oportunidades para golpes e invasões antes que o problema aconteça. O roteiro explica por que senhas fortes, longas e únicas devem ser usadas em cada serviço, por que a autenticação em duas etapas protege contas críticas e por que o e-mail precisa de atenção especial, já que muitas recuperações de senha passam por ele. Também aborda backups, privacidade, permissões de aplicativos, minimização de dados pessoais e atualizações de sistemas. A orientação é prática: revisar hábitos, limitar exposição, manter recursos de recuperação confiáveis e transformar pequenas ações em proteção constante.',
     status: 'Em preparação',
     objectives: [
       'Transformar higiene digital em rotina preventiva.',
