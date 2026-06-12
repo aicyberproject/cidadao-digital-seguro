@@ -282,6 +282,17 @@ const module6 = {
     duration: 'Em preparação',
     script:
       'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+    status: 'Em preparação',
+    objectives: [
+      'Organizar resposta inicial a incidentes digitais.',
+      'Preservar evidências, acionar canais oficiais e registrar ocorrência quando necessário.',
+    ],
+    topics: [
+      'Contenção do dano',
+      'Preservação de evidências digitais',
+      'Comunicação a bancos, plataformas e operadoras',
+      'Registro de ocorrência e acompanhamento',
+    ],
   },
   resources: [
     {
