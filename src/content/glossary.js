@@ -1,226 +1,200 @@
 export const glossaryCategories = [
-  'Contas e acesso',
-  'Golpes e ameaças',
-  'Transações seguras',
+  'Golpes e fraudes',
+  'Autenticação',
+  'Privacidade e proteção de dados',
   'Dispositivos e redes',
   'Resposta a incidentes',
+  'Desinformação e conteúdo falso',
 ]
 
 export const glossaryEntries = [
   {
-    term: 'Autenticação',
-    category: 'Contas e acesso',
-    module: 'Módulo 2',
-    definition:
-      'Processo usado para confirmar que uma pessoa é realmente quem diz ser ao acessar uma conta, aplicativo ou serviço.',
-    guidance:
-      'Proteja contas importantes com senha forte e, sempre que possível, verificação em duas etapas.',
-  },
-  {
-    term: 'Senha forte',
-    category: 'Contas e acesso',
-    module: 'Módulo 2',
-    definition:
-      'Senha longa, única e difícil de adivinhar, que não usa datas, nomes, sequências simples ou informações pessoais.',
-    guidance:
-      'Use senhas diferentes para cada serviço e considere um gerenciador de senhas confiável.',
-  },
-  {
-    term: 'Verificação em duas etapas',
-    category: 'Contas e acesso',
-    module: 'Módulo 2',
-    definition:
-      'Camada adicional de proteção que exige uma segunda confirmação além da senha, como aplicativo autenticador, chave de segurança ou código.',
-    guidance:
-      'Ative primeiro no e-mail principal, bancos, redes sociais e serviços de nuvem.',
-  },
-  {
-    term: 'Canal oficial',
-    category: 'Contas e acesso',
-    module: 'Módulo 1',
-    definition:
-      'Meio de atendimento ou comunicação divulgado pela própria instituição, como site oficial, aplicativo legítimo, telefone do cartão ou portal institucional.',
-    guidance:
-      'Não use telefone, link ou perfil informado por mensagem suspeita; confirme por fonte independente.',
-  },
-  {
-    term: 'Golpe digital',
-    category: 'Golpes e ameaças',
-    module: 'Módulo 1',
-    definition:
-      'Situação em que criminosos usam meios digitais para enganar a vítima e levá-la a pagar, clicar, instalar, informar dados ou autorizar uma ação prejudicial.',
-    guidance:
-      'Desconfie de urgência, ameaça, vantagem exagerada, pedido de sigilo ou solicitação de senha e código.',
+    term: 'Phishing',
+    category: 'Golpes e fraudes',
+    module: 'Módulo 5',
+    definition: 'Tentativa de obter dados, senhas, códigos ou pagamentos por mensagens, e-mails, sites, ligações ou links falsos.',
+    guidance: 'Não clique em links inesperados; acesse o serviço digitando o endereço oficial ou usando o aplicativo legítimo.',
   },
   {
     term: 'Engenharia social',
-    category: 'Golpes e ameaças',
+    category: 'Golpes e fraudes',
     module: 'Módulo 1',
-    definition:
-      'Uso de manipulação, pressão emocional ou falsa confiança para induzir a vítima a tomar uma decisão insegura.',
-    guidance:
-      'Pause antes de agir e confirme a situação por outro canal quando houver pressão ou urgência.',
+    definition: 'Uso de manipulação, pressão emocional ou falsa confiança para induzir a vítima a tomar uma decisão insegura.',
+    guidance: 'Pause antes de agir e confirme a situação por outro canal quando houver pressão ou urgência.',
   },
   {
-    term: 'Phishing',
-    category: 'Golpes e ameaças',
-    module: 'Módulo 5',
-    definition:
-      'Tentativa de obter dados, senhas, códigos ou pagamentos por mensagens, e-mails, sites, ligações ou links falsos.',
-    guidance:
-      'Não clique em links inesperados; acesse o serviço digitando o endereço oficial ou usando o aplicativo legítimo.',
-  },
-  {
-    term: 'Falsa central',
-    category: 'Golpes e ameaças',
+    term: 'Falsa central de atendimento',
+    category: 'Golpes e fraudes',
     module: 'Módulo 4',
-    definition:
-      'Golpe em que o criminoso se passa por central de atendimento, geralmente de banco, loja ou plataforma, para pedir dados, códigos, instalação de aplicativo ou transferência.',
-    guidance:
-      'Encerre o contato e procure a instituição por canal oficial independente.',
+    definition: 'Golpe em que o criminoso se passa por central de atendimento de banco ou empresa para pedir dados, códigos ou transferências.',
+    guidance: 'Encerre o contato e procure a instituição por canal oficial independente. Bancos não pedem senhas ou transferências por telefone.',
+  },
+  {
+    term: 'Perfil falso',
+    category: 'Golpes e fraudes',
+    module: 'Módulo 5',
+    definition: 'Conta em rede social criada para se passar por outra pessoa ou empresa, geralmente para aplicar golpes em contatos próximos.',
+    guidance: 'Se receber pedido de dinheiro de conhecido por número novo, ligue para a pessoa pelo número antigo para confirmar.',
+  },
+  {
+    term: 'Link malicioso',
+    category: 'Golpes e fraudes',
+    module: 'Módulo 5',
+    definition: 'Endereço eletrônico que, ao ser clicado, direciona para sites falsos ou inicia o download de vírus.',
+    guidance: 'Passe o mouse (ou pressione longamente) sobre o link para ver o endereço real antes de clicar.',
+  },
+  {
+    term: 'QR Code falso',
+    category: 'Golpes e fraudes',
+    module: 'Módulo 4',
+    definition: 'Código visual adulterado que direciona o pagamento ou o acesso para criminosos em vez do destino legítimo.',
+    guidance: 'Antes de confirmar o pagamento via QR Code, confira o nome do recebedor na tela do seu aplicativo.',
   },
   {
     term: 'Malware',
-    category: 'Golpes e ameaças',
+    category: 'Golpes e fraudes',
     module: 'Módulo 5',
-    definition:
-      'Programa ou arquivo malicioso criado para comprometer dispositivos, capturar informações, espionar atividades ou causar danos.',
-    guidance:
-      'Instale aplicativos apenas por fontes oficiais e mantenha sistema, navegador e antimalware atualizados.',
+    definition: 'Programa ou arquivo malicioso criado para comprometer dispositivos, capturar informações ou espionar atividades.',
+    guidance: 'Instale aplicativos apenas por lojas oficiais e mantenha o sistema atualizado.',
   },
   {
     term: 'Ransomware',
-    category: 'Golpes e ameaças',
+    category: 'Golpes e fraudes',
     module: 'Módulo 5',
-    definition:
-      'Tipo de malware que bloqueia ou cifra arquivos e exige pagamento para uma suposta recuperação.',
-    guidance:
-      'Mantenha backups confiáveis e evite abrir anexos ou links inesperados.',
+    definition: 'Tipo de malware que bloqueia arquivos do usuário e exige pagamento (resgate) para liberá-los.',
+    guidance: 'A melhor defesa é ter backups (cópias de segurança) atualizados e fora do dispositivo principal.',
+  },
+  {
+    term: 'Golpe do falso prêmio',
+    category: 'Golpes e fraudes',
+    module: 'Módulo 5',
+    definition: 'Mensagem informando que você ganhou um sorteio ou brinde, condicionada ao pagamento de uma "taxa de envio" ou fornecimento de dados.',
+    guidance: 'Se você não participou de um sorteio, não há prêmio a receber. Nunca pague para receber um prêmio.',
+  },
+  {
+    term: 'Falsa venda / Marketplace',
+    category: 'Golpes e fraudes',
+    module: 'Módulo 4',
+    definition: 'Anúncios de produtos com preços muito abaixo do mercado em plataformas de venda direta, onde o vendedor desaparece após o pagamento.',
+    guidance: 'Dê preferência a pagamentos dentro da plataforma e evite transferências diretas antes de ver o produto.',
+  },
+  {
+    term: 'Autenticação forte',
+    category: 'Autenticação',
+    module: 'Módulo 2',
+    definition: 'Uso de múltiplos fatores para confirmar a identidade, tornando o acesso muito mais seguro do que apenas com senha.',
+    guidance: 'Sempre que possível, use biometria ou chaves físicas como fator de autenticação.',
+  },
+  {
+    term: 'Verificação em duas etapas',
+    category: 'Autenticação',
+    module: 'Módulo 2',
+    definition: 'Camada adicional de proteção que exige uma segunda confirmação (código, aplicativo ou biometria) além da senha.',
+    guidance: 'Ative em todas as contas importantes, especialmente e-mail, redes sociais e aplicativos de mensagens.',
+  },
+  {
+    term: 'Senha forte',
+    category: 'Autenticação',
+    module: 'Módulo 2',
+    definition: 'Sequência longa e complexa, que mistura letras, números e símbolos, sendo difícil de ser adivinhada por humanos ou máquinas.',
+    guidance: 'Não reutilize a mesma senha em sites diferentes. Se uma vazar, as outras estarão seguras.',
+  },
+  {
+    term: 'Gerenciador de senhas',
+    category: 'Autenticação',
+    module: 'Módulo 2',
+    definition: 'Aplicativo que armazena todas as suas senhas de forma segura, permitindo usar senhas complexas e únicas para cada site.',
+    guidance: 'Com um gerenciador, você só precisa decorar uma única "senha mestra" muito forte.',
+  },
+  {
+    term: 'Canal oficial',
+    category: 'Autenticação',
+    module: 'Módulo 1',
+    definition: 'Meio de comunicação legítimo da empresa (site oficial, app da loja, telefone oficial) para realizar operações seguras.',
+    guidance: 'Sempre procure o canal oficial por conta própria em vez de usar links enviados por terceiros.',
+  },
+  {
+    term: 'Privacidade',
+    category: 'Privacidade e proteção de dados',
+    module: 'Módulo 2',
+    definition: 'Direito de controlar como suas informações pessoais são coletadas, usadas e compartilhadas por empresas e pessoas.',
+    guidance: 'Leia as permissões que os aplicativos pedem e negue o acesso a dados que não são necessários para a função do app.',
+  },
+  {
+    term: 'Cookies',
+    category: 'Privacidade e proteção de dados',
+    module: 'Módulo 2',
+    definition: 'Arquivos salvos pelo navegador que lembram suas preferências e atividades em sites, mas que também podem ser usados para rastreamento.',
+    guidance: 'Limpe periodicamente os cookies do seu navegador e recuse cookies de rastreamento não essenciais.',
   },
   {
     term: 'Vazamento de dados',
-    category: 'Golpes e ameaças',
+    category: 'Privacidade e proteção de dados',
     module: 'Módulo 5',
-    definition:
-      'Exposição indevida de dados pessoais, senhas, contatos, documentos ou informações de contas.',
-    guidance:
-      'Troque senhas expostas, ative verificação em duas etapas e monitore mensagens suspeitas posteriores.',
-  },
-  {
-    term: 'Furto de identidade',
-    category: 'Golpes e ameaças',
-    module: 'Módulo 5',
-    definition:
-      'Uso indevido de dados ou contas de uma pessoa para se passar por ela, abrir cadastros, aplicar golpes ou realizar transações.',
-    guidance:
-      'Reduza exposição de dados, proteja o e-mail principal e preserve registros se houver suspeita.',
-  },
-  {
-    term: 'Pix',
-    category: 'Transações seguras',
-    module: 'Módulo 4',
-    definition:
-      'Meio de pagamento instantâneo usado para transferências e compras. Por ser rápido, exige conferência cuidadosa antes da confirmação.',
-    guidance:
-      'Confira nome do recebedor, CPF ou CNPJ, valor e contexto da cobrança antes de confirmar.',
-  },
-  {
-    term: 'Boleto falso',
-    category: 'Transações seguras',
-    module: 'Módulo 4',
-    definition:
-      'Boleto criado ou alterado para direcionar o pagamento a criminosos em vez do credor verdadeiro.',
-    guidance:
-      'Confira beneficiário, CNPJ, banco emissor, valor e origem do boleto no canal oficial.',
-  },
-  {
-    term: 'QR Code',
-    category: 'Transações seguras',
-    module: 'Módulo 4',
-    definition:
-      'Código visual que pode abrir links ou iniciar pagamentos. Pode ser legítimo, mas também pode ser substituído ou enviado em golpes.',
-    guidance:
-      'Antes de pagar, confira na tela do aplicativo quem receberá o valor e se a cobrança faz sentido.',
+    definition: 'Incidente onde informações confidenciais são acessadas ou expostas indevidamente para pessoas não autorizadas.',
+    guidance: 'Se seus dados vazarem, troque as senhas envolvidas e fique alerta a tentativas de Phishing direcionadas.',
   },
   {
     term: 'Backup',
     category: 'Dispositivos e redes',
     module: 'Módulo 2',
-    definition:
-      'Cópia de segurança de arquivos e dados importantes para permitir recuperação em caso de perda, furto, falha ou ataque.',
-    guidance:
-      'Tenha cópias atualizadas e teste a restauração periodicamente.',
+    definition: 'Cópia de segurança de arquivos importantes guardada em local diferente do original (nuvem ou HD externo).',
+    guidance: 'Mantenha o backup automático ativado no celular para fotos e contatos.',
+  },
+  {
+    term: 'Antivírus',
+    category: 'Dispositivos e redes',
+    module: 'Módulo 3',
+    definition: 'Software que detecta, previne e remove programas maliciosos (vírus) do seu computador ou celular.',
+    guidance: 'Não basta ter o antivírus instalado; ele precisa estar sempre atualizado para reconhecer novas ameaças.',
   },
   {
     term: 'Firewall',
     category: 'Dispositivos e redes',
     module: 'Módulo 3',
-    definition:
-      'Recurso de proteção que ajuda a controlar conexões de entrada e saída do dispositivo ou da rede.',
-    guidance:
-      'Mantenha o firewall ativo no computador e siga as orientações da instituição no trabalho remoto.',
+    definition: 'Barreira de segurança que monitora o tráfego de rede e bloqueia conexões suspeitas que tentam entrar ou sair do dispositivo.',
+    guidance: 'Mantenha o firewall do sistema operacional sempre ativado.',
   },
   {
-    term: 'Antivírus/antimalware',
+    term: 'Rede Wi-Fi',
     category: 'Dispositivos e redes',
     module: 'Módulo 3',
-    definition:
-      'Ferramenta que ajuda a identificar, bloquear ou remover programas maliciosos.',
-    guidance:
-      'Use ferramenta confiável, mantenha-a atualizada e não ignore alertas de segurança.',
+    definition: 'Tecnologia de conexão sem fio. Redes públicas (shoppings, aeroportos) são menos seguras que redes domésticas protegidas.',
+    guidance: 'Evite acessar contas bancárias ou fazer compras usando redes Wi-Fi públicas e abertas.',
   },
   {
-    term: 'Rede Wi-Fi segura',
+    term: 'Roteador',
     category: 'Dispositivos e redes',
     module: 'Módulo 3',
-    definition:
-      'Rede sem fio protegida por senha forte, criptografia atual e roteador configurado de forma adequada.',
-    guidance:
-      'Troque senhas padrão do roteador e evite transações sensíveis em Wi-Fi público.',
+    definition: 'Aparelho que distribui a internet na sua casa. Se estiver mal configurado, pode ser uma porta de entrada para invasores.',
+    guidance: 'Troque a senha de administração que vem de fábrica no seu roteador.',
   },
   {
-    term: 'Atualização de segurança',
-    category: 'Dispositivos e redes',
-    module: 'Módulo 3',
-    definition:
-      'Correção disponibilizada pelo fabricante para reduzir falhas e melhorar a proteção de sistemas, aplicativos ou equipamentos.',
-    guidance:
-      'Ative atualizações automáticas sempre que possível.',
-  },
-  {
-    term: 'Evidência digital',
+    term: 'Preservação de evidências',
     category: 'Resposta a incidentes',
     module: 'Módulo 6',
-    definition:
-      'Registro que ajuda a demonstrar o que aconteceu em um incidente, como prints, links, perfis, mensagens, e-mails, comprovantes e protocolos.',
-    guidance:
-      'Preserve evidências antes de apagar conversas, bloquear perfis ou encerrar contas.',
+    definition: 'Ato de guardar provas de um crime digital (prints, e-mails, extratos) sem alterá-las, para uso em investigações.',
+    guidance: 'Não apague as conversas com o golpista antes de registrar a ocorrência ou fazer uma ata notarial.',
   },
   {
     term: 'Denúncia',
     category: 'Resposta a incidentes',
     module: 'Módulo 6',
-    definition:
-      'Comunicação de uma situação suspeita ou criminosa a uma instituição, plataforma, banco, operadora ou autoridade competente.',
-    guidance:
-      'Use canais oficiais e reúna informações objetivas, como datas, valores, perfis, links e protocolos.',
+    definition: 'Informar formalmente um crime ou fraude às autoridades (Boletim de Ocorrência) ou às plataformas envolvidas.',
+    guidance: 'Denuncie perfis golpistas nas próprias redes sociais para que a conta seja suspensa.',
   },
   {
-    term: 'Contenção de danos',
-    category: 'Resposta a incidentes',
-    module: 'Módulo 6',
-    definition:
-      'Conjunto de medidas imediatas para impedir que um incidente continue causando prejuízo.',
-    guidance:
-      'Bloqueie cartões, conteste transações, troque senhas em dispositivo confiável e acione a instituição envolvida.',
+    term: 'Boato / Fake News',
+    category: 'Desinformação e conteúdo falso',
+    module: 'Módulo 1',
+    definition: 'Informação falsa ou distorcida espalhada como se fosse verdade, geralmente para causar pânico ou influenciar opiniões.',
+    guidance: 'Sempre cheque a informação em sites confiáveis antes de compartilhar mensagens alarmistas.',
   },
   {
-    term: 'Registro de ocorrência',
-    category: 'Resposta a incidentes',
-    module: 'Módulo 6',
-    definition:
-      'Registro formal de um fato junto ao canal policial competente, com descrição do ocorrido e evidências disponíveis.',
-    guidance:
-      'Organize um resumo cronológico e inclua comprovantes, protocolos, contatos e identificadores envolvidos.',
+    term: 'Deepfake',
+    category: 'Desinformação e conteúdo falso',
+    module: 'Módulo 5',
+    definition: 'Vídeo ou áudio criado com inteligência artificial para imitar a voz e o rosto de uma pessoa real dizendo coisas que ela nunca disse.',
+    guidance: 'Desconfie de vídeos de autoridades ou famosos pedindo transferências ou promovendo investimentos "milagrosos".',
   },
 ]
