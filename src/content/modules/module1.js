@@ -194,6 +194,17 @@ export const module1 = {
     duration: 'Em preparação',
     script:
       'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+    status: 'Em preparação',
+    objectives: [
+      'Compreender segurança digital como responsabilidade compartilhada.',
+      'Reconhecer atores institucionais, sinais iniciais de golpe e condutas de resposta.',
+    ],
+    topics: [
+      'Cidadania digital e responsabilidade compartilhada',
+      'Fraude, golpe e engenharia social',
+      'Papéis de PF, MJSP, FEBRABAN e cidadão',
+      'Primeira resposta e preservação de evidências',
+    ],
   },
   questionBank: questionBank.m1,
   quizSize: 10,
