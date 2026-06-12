@@ -1153,17 +1153,19 @@ export default function App() {
                 </div>
 
                 {filteredGlossaryEntries.length > 0 ? (
-                  <div className="glossary-grid">
+                  <div className="resource-grid">
                     {filteredGlossaryEntries.map((entry) => (
-                      <article key={entry.term} className="glossary-card">
-                        <div className="glossary-card-head">
+                      <article key={entry.term} className="resource-card">
+                        <div className="resource-card-head">
                           <h3>{entry.term}</h3>
                           <span className="tag">{entry.module}</span>
                         </div>
                         <div className="mini-muted">{entry.category}</div>
-                        <p className="muted-body">{entry.definition}</p>
+                        <div className="resource-card-body">
+                          <p className="muted-body">{entry.definition}</p>
+                        </div>
                         {entry.guidance ? (
-                          <div className="ludic-box expert glossary-tip" style={{ padding: '16px', margin: '8px 0 0' }}>
+                          <div className="ludic-box expert glossary-tip" style={{ padding: '16px', margin: '0' }}>
                             <div className="ludic-header">
                               <div className="ludic-icon" style={{ width: '32px', height: '32px' }}>
                                 <CharacterAvatar type="siga" size={24} />
@@ -1261,23 +1263,25 @@ export default function App() {
                 </div>
 
                 {filteredLibraryDocuments.length > 0 ? (
-                  <div className="library-grid">
+                  <div className="resource-grid">
                     {filteredLibraryDocuments.map((documentItem) => (
-                      <article key={documentItem.url} className="library-card">
-                        <div className="glossary-card-head">
+                      <article key={documentItem.url} className="resource-card">
+                        <div className="resource-card-head">
                           <h3>{documentItem.title}</h3>
                           <span className="tag">{documentItem.type}</span>
                         </div>
 
-                        <p className="muted-body">{documentItem.description}</p>
-
-                        <div className="library-card-meta">
-                          <span>Fonte: {documentItem.source}</span>
-                          <span>Categoria: {documentItem.category}</span>
-                          <span>{documentItem.relatedModule}</span>
+                        <div className="resource-card-body">
+                          <p className="muted-body">{documentItem.description}</p>
                         </div>
 
-                        <a href={documentItem.url} target="_blank" rel="noreferrer" className="button button-outline library-link">
+                        <div className="resource-card-meta">
+                          <span className="resource-meta-chip">Fonte: {documentItem.source}</span>
+                          <span className="resource-meta-chip">Categoria: {documentItem.category}</span>
+                          <span className="resource-meta-chip">{documentItem.relatedModule}</span>
+                        </div>
+
+                        <a href={documentItem.url} target="_blank" rel="noreferrer" className="button button-outline full">
                           Abrir documento <ExternalLink size={16} />
                         </a>
                       </article>
@@ -1365,28 +1369,30 @@ export default function App() {
                 </div>
 
                 {filteredVideos.length > 0 ? (
-                  <div className="library-grid">
+                  <div className="resource-grid">
                     {filteredVideos.map((videoItem) => (
-                      <article key={videoItem.title} className="library-card">
-                        <div className="glossary-card-head">
+                      <article key={videoItem.title} className="resource-card">
+                        <div className="resource-card-head">
                           <h3>{videoItem.title}</h3>
                           <span className={`tag ${videoItem.status === 'Disponível' ? '' : 'muted'}`}>
                             {videoItem.status}
                           </span>
                         </div>
 
-                        <p className="muted-body">{videoItem.description}</p>
+                        <div className="resource-card-body">
+                          <p className="muted-body">{videoItem.description}</p>
+                        </div>
 
-                        <div className="library-card-meta">
-                          <span>Fonte: {videoItem.source}</span>
-                          <span>Tema: {videoItem.theme}</span>
-                          {videoItem.type && <span>{videoItem.type}</span>}
-                          {videoItem.duration && <span>Duração: {videoItem.duration}</span>}
-                          <span>{videoItem.relatedModule}</span>
+                        <div className="resource-card-meta">
+                          <span className="resource-meta-chip">Fonte: {videoItem.source}</span>
+                          <span className="resource-meta-chip">Tema: {videoItem.theme}</span>
+                          {videoItem.type && <span className="resource-meta-chip">{videoItem.type}</span>}
+                          {videoItem.duration && <span className="resource-meta-chip">Duração: {videoItem.duration}</span>}
+                          <span className="resource-meta-chip">{videoItem.relatedModule}</span>
                         </div>
 
                         {videoItem.status === 'Disponível' && videoItem.url ? (
-                          <a href={videoItem.url} target="_blank" rel="noreferrer" className="button button-outline library-link">
+                          <a href={videoItem.url} target="_blank" rel="noreferrer" className="button button-outline full">
                             Assistir vídeo <ExternalLink size={16} />
                           </a>
                         ) : (
@@ -1465,7 +1471,7 @@ export default function App() {
                 </div>
 
                 {filteredChecklists.length > 0 ? (
-                  <div className="library-grid">
+                  <div className="resource-grid">
                     {filteredChecklists.map((checklist) => {
                       const checkedItems = checkedChecklistItems[checklist.id] || {}
                       const checkedCount = Object.values(checkedItems).filter(Boolean).length
@@ -1473,50 +1479,51 @@ export default function App() {
                       const progress = Math.round((checkedCount / totalItems) * 100)
 
                       return (
-                        <article key={checklist.id} className="library-card">
-                          <div className="glossary-card-head">
+                        <article key={checklist.id} className="resource-card">
+                          <div className="resource-card-head">
                             <h3>{checklist.title}</h3>
                             <span className="tag">{checklist.category}</span>
                           </div>
 
-                          <div className="info-box" style={{ margin: '8px 0' }}>
+                          <div className="info-box" style={{ padding: '12px' }}>
                             <div className="mini-muted">Situação:</div>
-                            <div className="muted-body" style={{ fontStyle: 'italic' }}>{checklist.situation}</div>
+                            <div className="muted-body" style={{ fontStyle: 'italic', fontSize: '0.875rem' }}>{checklist.situation}</div>
                           </div>
 
-                          <p className="muted-body">{checklist.description}</p>
-
-                          <div className="stack-sm" style={{ margin: '16px 0' }}>
-                            {checklist.items.map((item, idx) => (
-                              <label key={idx} className="check-row" style={{ opacity: checkedItems[idx] ? 0.6 : 1 }}>
-                                <input
-                                  type="checkbox"
-                                  checked={!!checkedItems[idx]}
-                                  onChange={() => toggleCheckedChecklistItem(checklist.id, idx)}
-                                />
-                                <span style={{ textDecoration: checkedItems[idx] ? 'line-through' : 'none' }}>
-                                  {item}
-                                </span>
-                              </label>
-                            ))}
+                          <div className="resource-card-body">
+                            <p className="muted-body" style={{ marginBottom: '12px' }}>{checklist.description}</p>
+                            <div className="stack-sm">
+                              {checklist.items.map((item, idx) => (
+                                <label key={idx} className="checklist-item-row" style={{ opacity: checkedItems[idx] ? 0.6 : 1 }}>
+                                  <input
+                                    type="checkbox"
+                                    checked={!!checkedItems[idx]}
+                                    onChange={() => toggleCheckedChecklistItem(checklist.id, idx)}
+                                  />
+                                  <span style={{ textDecoration: checkedItems[idx] ? 'line-through' : 'none', fontSize: '0.9rem' }}>
+                                    {item}
+                                  </span>
+                                </label>
+                              ))}
+                            </div>
                           </div>
 
-                          <div className="ludic-box expert" style={{ padding: '12px', margin: '0 0 16px' }}>
+                          <div className="ludic-box expert" style={{ padding: '12px', margin: '0' }}>
                             <div className="ludic-header">
                               <Shield size={14} className="success-icon" />
                               <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Orientação final</span>
                             </div>
-                            <div className="ludic-body" style={{ fontSize: '0.875rem' }}>{checklist.finalGuidance}</div>
+                            <div className="ludic-body" style={{ fontSize: '0.8125rem' }}>{checklist.finalGuidance}</div>
                           </div>
 
-                          <div className="stack-sm">
-                            <div className="actions-between">
+                          <div className="checklist-progress-container">
+                            <div className="actions-between" style={{ marginBottom: '8px' }}>
                               <span className="mini-muted">
                                 {checkedCount} de {totalItems} concluídos ({progress}%)
                               </span>
                               <button
-                                className="button button-outline small"
-                                style={{ padding: '4px 8px', fontSize: '0.75rem' }}
+                                className="button button-outline"
+                                style={{ padding: '4px 8px', fontSize: '0.7rem', height: 'auto' }}
                                 onClick={() => clearChecklist(checklist.id)}
                                 disabled={checkedCount === 0}
                               >
@@ -1526,7 +1533,7 @@ export default function App() {
                             <ProgressBar value={progress} />
                           </div>
                           
-                          <div className="mini-muted" style={{ marginTop: '12px' }}>
+                          <div className="mini-muted">
                             Relacionado ao {checklist.relatedModule}
                           </div>
                         </article>
@@ -1600,98 +1607,101 @@ export default function App() {
                 </div>
 
                 {filteredSimulations.length > 0 ? (
-                  <div className="library-grid">
+                  <div className="resource-grid">
                     {filteredSimulations.map((sim) => {
                       const selectedOptionIndex = simulationAnswers[sim.id]
                       const hasAnswered = typeof selectedOptionIndex === 'number'
                       const isCorrect = hasAnswered && sim.options[selectedOptionIndex].isCorrect
 
                       return (
-                        <article key={sim.id} className="library-card">
-                          <div className="glossary-card-head">
+                        <article key={sim.id} className="resource-card">
+                          <div className="resource-card-head">
                             <h3>{sim.title}</h3>
                             <span className="tag">{sim.category}</span>
                           </div>
 
-                          <div className="info-box" style={{ margin: '8px 0' }}>
+                          <div className="info-box" style={{ padding: '12px' }}>
                             <div className="mini-muted">Situação:</div>
-                            <div className="muted-body" style={{ fontStyle: 'italic' }}>{sim.situation}</div>
+                            <div className="muted-body" style={{ fontStyle: 'italic', fontSize: '0.875rem' }}>{sim.situation}</div>
                           </div>
 
-                          <div className="ludic-box scam" style={{ margin: '16px 0', borderStyle: 'dashed' }}>
+                          <div className="ludic-box scam simulation-scenario">
                             <div className="ludic-header">
                               <AlertTriangle size={14} className="error-icon" />
                               <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Cenário simulado</span>
                             </div>
-                            <div className="ludic-body" style={{ fontStyle: 'italic', fontSize: '1rem', color: 'var(--text-main)' }}>
+                            <div className="ludic-body">
                               "{sim.scenario}"
                             </div>
                           </div>
 
-                          {!hasAnswered ? (
-                            <div className="stack-sm">
-                              <div className="mini-muted">O que você faria?</div>
-                              {sim.options.map((opt, idx) => (
-                                <button
-                                  key={idx}
-                                  className="button button-outline full"
-                                  style={{ textAlign: 'left', height: 'auto', padding: '12px' }}
-                                  onClick={() => setSimulationAnswers(prev => ({ ...prev, [sim.id]: idx }))}
-                                >
-                                  {opt.label}
-                                </button>
-                              ))}
-                            </div>
-                          ) : (
-                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="stack-md">
-                              <div className={`info-box ${isCorrect ? 'success' : 'error'}`} style={{ borderLeftWidth: '4px' }}>
-                                <div className="ludic-header" style={{ marginBottom: '8px' }}>
-                                  {isCorrect ? <CheckCircle2 size={18} className="success-icon" /> : <XCircle size={18} className="error-icon" />}
-                                  <span className="ludic-title" style={{ fontSize: '0.875rem' }}>
-                                    {isCorrect ? 'Conduta Segura!' : 'Risco Identificado'}
-                                  </span>
-                                </div>
-                                <div className="muted-body" style={{ color: 'var(--text-main)' }}>
-                                  {sim.options[selectedOptionIndex].feedback}
-                                </div>
+                          <div className="resource-card-body">
+                            {!hasAnswered ? (
+                              <div className="stack-sm">
+                                <div className="mini-muted">O que você faria?</div>
+                                {sim.options.map((opt, idx) => (
+                                  <button
+                                    key={idx}
+                                    className="button button-outline interactive-option-btn full"
+                                    onClick={() => setSimulationAnswers(prev => ({ ...prev, [sim.id]: idx }))}
+                                  >
+                                    {opt.label}
+                                  </button>
+                                ))}
                               </div>
+                            ) : (
+                              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="stack-md">
+                                <div className={`info-box ${isCorrect ? 'success' : 'error'}`} style={{ borderLeftWidth: '4px' }}>
+                                  <div className="ludic-header" style={{ marginBottom: '8px' }}>
+                                    {isCorrect ? <CheckCircle2 size={18} className="success-icon" /> : <XCircle size={18} className="error-icon" />}
+                                    <span className="ludic-title" style={{ fontSize: '0.875rem' }}>
+                                      {isCorrect ? 'Conduta Segura!' : 'Risco Identificado'}
+                                    </span>
+                                  </div>
+                                  <div className="muted-body" style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>
+                                    {sim.options[selectedOptionIndex].feedback}
+                                  </div>
+                                </div>
 
-                              <div className="info-box">
-                                <div className="ludic-header" style={{ marginBottom: '8px' }}>
-                                  <AlertOctagon size={16} className="error-icon" />
-                                  <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Sinais de alerta</span>
+                                <div className="info-box" style={{ padding: '12px' }}>
+                                  <div className="ludic-header" style={{ marginBottom: '8px' }}>
+                                    <AlertOctagon size={16} className="error-icon" />
+                                    <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Sinais de alerta</span>
+                                  </div>
+                                  <div className="tags-row" style={{ marginTop: '4px' }}>
+                                    {sim.warningSigns.map(tag => (
+                                      <span key={tag} className="tag muted" style={{ fontSize: '0.65rem', padding: '2px 8px' }}>{tag}</span>
+                                    ))}
+                                  </div>
                                 </div>
-                                <div className="tags-row" style={{ marginTop: '4px' }}>
-                                  {sim.warningSigns.map(tag => (
-                                    <span key={tag} className="tag muted" style={{ fontSize: '0.7rem' }}>{tag}</span>
-                                  ))}
-                                </div>
-                              </div>
 
-                              <div className="ludic-box expert" style={{ padding: '12px', margin: '0' }}>
-                                <div className="ludic-header">
-                                  <Shield size={14} className="success-icon" />
-                                  <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Dica do Especialista</span>
+                                <div className="ludic-box expert" style={{ padding: '12px', margin: '0' }}>
+                                  <div className="ludic-header">
+                                    <Shield size={14} className="success-icon" />
+                                    <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Dica do Especialista</span>
+                                  </div>
+                                  <div className="ludic-body" style={{ fontSize: '0.8125rem' }}>{sim.finalGuidance}</div>
                                 </div>
-                                <div className="ludic-body" style={{ fontSize: '0.875rem' }}>{sim.finalGuidance}</div>
-                              </div>
+                              </motion.div>
+                            )}
+                          </div>
 
-                              <div className="actions-between">
-                                <div className="mini-muted">Relacionado ao {sim.relatedModule}</div>
-                                <button
-                                  className="button button-outline small"
-                                  style={{ padding: '4px 8px', fontSize: '0.75rem' }}
-                                  onClick={() => setSimulationAnswers(prev => {
-                                    const next = { ...prev }
-                                    delete next[sim.id]
-                                    return next
-                                  })}
-                                >
-                                  <RotateCcw size={12} /> Tentar novamente
-                                </button>
-                              </div>
-                            </motion.div>
-                          )}
+                          <div className="actions-between" style={{ marginTop: 'auto', paddingTop: '12px', borderTop: '1px solid var(--border-color)' }}>
+                            <div className="mini-muted" style={{ fontSize: '0.7rem' }}>Relacionado ao {sim.relatedModule}</div>
+                            {hasAnswered && (
+                              <button
+                                className="button button-outline"
+                                style={{ padding: '4px 8px', fontSize: '0.7rem', height: 'auto' }}
+                                onClick={() => setSimulationAnswers(prev => {
+                                  const next = { ...prev }
+                                  delete next[sim.id]
+                                  return next
+                                })}
+                              >
+                                <RotateCcw size={12} /> Tentar novamente
+                              </button>
+                            )}
+                          </div>
                         </article>
                       )
                     })}
