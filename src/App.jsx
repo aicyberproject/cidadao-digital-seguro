@@ -16,6 +16,9 @@ import {
   RotateCcw,
   ExternalLink,
   Search,
+  MessageSquare,
+  XCircle,
+  AlertOctagon,
 } from 'lucide-react'
 
 import { courseIntro } from './content/courseIntro'
@@ -25,6 +28,7 @@ import { glossaryCategories, glossaryEntries } from './content/glossary'
 import { libraryDocuments, librarySources, libraryCategories, libraryTypes } from './content/library'
 import { educationalVideos, videoModules, videoSources, videoThemes } from './content/videos'
 import { practicalChecklists, checklistCategories, checklistModules } from './content/checklists'
+import { quickSimulations, simulationCategories, simulationModules } from './content/simulations'
 import { CharacterAvatar } from './components/CharacterAvatar'
 import packageInfo from '../package.json'
 
@@ -427,6 +431,10 @@ export default function App() {
   const [selectedChecklistCategory, setSelectedChecklistCategory] = useState('Todos')
   const [selectedChecklistModule, setSelectedChecklistModule] = useState('Todos')
   const [checkedChecklistItems, setCheckedChecklistItems] = useState({})
+  const [simulationQuery, setSimulationQuery] = useState('')
+  const [selectedSimulationCategory, setSelectedSimulationCategory] = useState('Todos')
+  const [selectedSimulationModule, setSelectedSimulationModule] = useState('Todos')
+  const [simulationAnswers, setSimulationAnswers] = useState({})
 
   useEffect(() => {
     const loaded = loadProgress()
@@ -476,6 +484,9 @@ export default function App() {
   const checklistCategoryOptions = useMemo(() => ['Todos', ...checklistCategories], [])
   const checklistModuleOptions = useMemo(() => ['Todos', ...checklistModules], [])
 
+  const simulationCategoryOptions = useMemo(() => ['Todos', ...simulationCategories], [])
+  const simulationModuleOptions = useMemo(() => ['Todos', ...simulationModules], [])
+
   const filteredChecklists = useMemo(() => {
     const query = normalizeSearchText(checklistQuery)
 
@@ -492,6 +503,23 @@ export default function App() {
       return matchesCategory && matchesModule && (!query || searchableText.includes(query))
     })
   }, [checklistQuery, selectedChecklistCategory, selectedChecklistModule])
+
+  const filteredSimulations = useMemo(() => {
+    const query = normalizeSearchText(simulationQuery)
+
+    return quickSimulations.filter((item) => {
+      const matchesCategory =
+        selectedSimulationCategory === 'Todos' || item.category === selectedSimulationCategory
+      const matchesModule =
+        selectedSimulationModule === 'Todos' || item.relatedModule === selectedSimulationModule
+
+      const searchableText = normalizeSearchText(
+        `${item.title} ${item.situation} ${item.category} ${item.relatedModule} ${item.scenario} ${item.warningSigns.join(' ')} ${item.finalGuidance}`,
+      )
+
+      return matchesCategory && matchesModule && (!query || searchableText.includes(query))
+    })
+  }, [simulationQuery, selectedSimulationCategory, selectedSimulationModule])
 
   const filteredLibraryDocuments = useMemo(() => {
     const query = normalizeSearchText(libraryQuery)
@@ -923,6 +951,9 @@ export default function App() {
           <button className="button button-outline" onClick={() => setCurrentView('checklists')}>
             <ListChecks size={16} /> Checklists
           </button>
+          <button className="button button-outline" onClick={() => setCurrentView('simulations')}>
+            <MessageSquare size={16} /> Simulações
+          </button>
           <button className="button button-outline" onClick={resetCourse}>
             <RotateCcw size={16} /> Reiniciar
           </button>
@@ -1027,6 +1058,9 @@ export default function App() {
                   </button>
                   <button className="button button-outline" onClick={() => setCurrentView('videos')}>
                     Vídeos educativos
+                  </button>
+                  <button className="button button-outline" onClick={() => setCurrentView('simulations')}>
+                    Simulações rápidas
                   </button>
                 </div>
               </ScreenCard>
@@ -1502,6 +1536,169 @@ export default function App() {
                 ) : (
                   <div className="info-box muted-body">
                     Nenhum checklist encontrado para a busca ou filtros selecionados.
+                  </div>
+                )}
+              </ScreenCard>
+            </motion.div>
+          )}
+
+          {currentView === 'simulations' && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
+              <ScreenCard title="Simulações Rápidas" icon={MessageSquare}>
+                <p className="muted-body">
+                  <strong>Você identificaria o golpe?</strong> Treine sua tomada de decisão diante de situações reais de risco digital. Escolha a melhor conduta e receba orientações do especialista.
+                </p>
+
+                <div className="glossary-controls">
+                  <label className="search-field">
+                    <Search size={18} />
+                    <input
+                      className="text-input glossary-search"
+                      type="search"
+                      value={simulationQuery}
+                      onChange={(event) => setSimulationQuery(event.target.value)}
+                      placeholder="Buscar título, situação ou categoria"
+                      aria-label="Buscar simulação"
+                    />
+                  </label>
+
+                  <div className="library-filter-grid">
+                    <label className="stack-sm">
+                      <span className="mini-muted">Categoria</span>
+                      <select
+                        className="text-input"
+                        value={selectedSimulationCategory}
+                        onChange={(event) => setSelectedSimulationCategory(event.target.value)}
+                      >
+                        {simulationCategoryOptions.map((cat) => (
+                          <option key={cat} value={cat}>
+                            {cat}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label className="stack-sm">
+                      <span className="mini-muted">Módulo</span>
+                      <select
+                        className="text-input"
+                        value={selectedSimulationModule}
+                        onChange={(event) => setSelectedSimulationModule(event.target.value)}
+                      >
+                        {simulationModuleOptions.map((mod) => (
+                          <option key={mod} value={mod}>
+                            {mod}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+
+                  <div className="muted-small">
+                    {filteredSimulations.length} de {quickSimulations.length} simulações exibidas.
+                  </div>
+                </div>
+
+                {filteredSimulations.length > 0 ? (
+                  <div className="library-grid">
+                    {filteredSimulations.map((sim) => {
+                      const selectedOptionIndex = simulationAnswers[sim.id]
+                      const hasAnswered = typeof selectedOptionIndex === 'number'
+                      const isCorrect = hasAnswered && sim.options[selectedOptionIndex].isCorrect
+
+                      return (
+                        <article key={sim.id} className="library-card">
+                          <div className="glossary-card-head">
+                            <h3>{sim.title}</h3>
+                            <span className="tag">{sim.category}</span>
+                          </div>
+
+                          <div className="info-box" style={{ margin: '8px 0' }}>
+                            <div className="mini-muted">Situação:</div>
+                            <div className="muted-body" style={{ fontStyle: 'italic' }}>{sim.situation}</div>
+                          </div>
+
+                          <div className="ludic-box scam" style={{ margin: '16px 0', borderStyle: 'dashed' }}>
+                            <div className="ludic-header">
+                              <AlertTriangle size={14} className="error-icon" />
+                              <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Cenário simulado</span>
+                            </div>
+                            <div className="ludic-body" style={{ fontStyle: 'italic', fontSize: '1rem', color: 'var(--text-main)' }}>
+                              "{sim.scenario}"
+                            </div>
+                          </div>
+
+                          {!hasAnswered ? (
+                            <div className="stack-sm">
+                              <div className="mini-muted">O que você faria?</div>
+                              {sim.options.map((opt, idx) => (
+                                <button
+                                  key={idx}
+                                  className="button button-outline full"
+                                  style={{ textAlign: 'left', height: 'auto', padding: '12px' }}
+                                  onClick={() => setSimulationAnswers(prev => ({ ...prev, [sim.id]: idx }))}
+                                >
+                                  {opt.label}
+                                </button>
+                              ))}
+                            </div>
+                          ) : (
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="stack-md">
+                              <div className={`info-box ${isCorrect ? 'success' : 'error'}`} style={{ borderLeftWidth: '4px' }}>
+                                <div className="ludic-header" style={{ marginBottom: '8px' }}>
+                                  {isCorrect ? <CheckCircle2 size={18} className="success-icon" /> : <XCircle size={18} className="error-icon" />}
+                                  <span className="ludic-title" style={{ fontSize: '0.875rem' }}>
+                                    {isCorrect ? 'Conduta Segura!' : 'Risco Identificado'}
+                                  </span>
+                                </div>
+                                <div className="muted-body" style={{ color: 'var(--text-main)' }}>
+                                  {sim.options[selectedOptionIndex].feedback}
+                                </div>
+                              </div>
+
+                              <div className="info-box">
+                                <div className="ludic-header" style={{ marginBottom: '8px' }}>
+                                  <AlertOctagon size={16} className="error-icon" />
+                                  <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Sinais de alerta</span>
+                                </div>
+                                <div className="tags-row" style={{ marginTop: '4px' }}>
+                                  {sim.warningSigns.map(tag => (
+                                    <span key={tag} className="tag muted" style={{ fontSize: '0.7rem' }}>{tag}</span>
+                                  ))}
+                                </div>
+                              </div>
+
+                              <div className="ludic-box expert" style={{ padding: '12px', margin: '0' }}>
+                                <div className="ludic-header">
+                                  <Shield size={14} className="success-icon" />
+                                  <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Dica do Especialista</span>
+                                </div>
+                                <div className="ludic-body" style={{ fontSize: '0.875rem' }}>{sim.finalGuidance}</div>
+                              </div>
+
+                              <div className="actions-between">
+                                <div className="mini-muted">Relacionado ao {sim.relatedModule}</div>
+                                <button
+                                  className="button button-outline small"
+                                  style={{ padding: '4px 8px', fontSize: '0.75rem' }}
+                                  onClick={() => setSimulationAnswers(prev => {
+                                    const next = { ...prev }
+                                    delete next[sim.id]
+                                    return next
+                                  })}
+                                >
+                                  <RotateCcw size={12} /> Tentar novamente
+                                </button>
+                              </div>
+                            </motion.div>
+                          )}
+                        </article>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <div className="info-box muted-body">
+                    Nenhuma simulação encontrada para a busca ou filtros selecionados.
                   </div>
                 )}
               </ScreenCard>
