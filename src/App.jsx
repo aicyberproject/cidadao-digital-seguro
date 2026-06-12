@@ -1870,6 +1870,7 @@ export default function App() {
                     <div className="stack-md">
                       <div className="video-box">
                         <PlayCircle size={42} aria-hidden="true" focusable="false" />
+                        <div className="video-title">{currentItem.title}</div>
                         <div className="muted-small">Duração sugerida: {currentItem.duration}</div>
                       </div>
 
@@ -1879,13 +1880,13 @@ export default function App() {
                         </div>
                       ) : null}
 
-                      <div className="info-box">
+                      <div className="info-box video-detail-box video-script-box">
                         <div className="link-card-title">Roteiro preliminar</div>
                         <p className="muted-body">{currentItem.description}</p>
                       </div>
 
                       {Array.isArray(currentItem.objectives) && currentItem.objectives.length > 0 ? (
-                        <div className="info-box">
+                        <div className="info-box video-detail-box">
                           <div className="link-card-title">Objetivos da videoaula</div>
                           <ul className="muted-body">
                             {currentItem.objectives.map((objective) => (
@@ -1896,7 +1897,7 @@ export default function App() {
                       ) : null}
 
                       {Array.isArray(currentItem.topics) && currentItem.topics.length > 0 ? (
-                        <div className="info-box">
+                        <div className="info-box video-detail-box">
                           <div className="link-card-title">Tópicos abordados</div>
                           <ul className="muted-body">
                             {currentItem.topics.map((topic) => (
@@ -1907,7 +1908,7 @@ export default function App() {
                       ) : null}
 
                       <button
-                        className="button"
+                        className="button video-complete-button"
                         onClick={() => {
                           setVideoDone()
                           markSeen(screenIndex)
