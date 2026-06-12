@@ -451,6 +451,24 @@ p {
   color: var(--text-title);
 }
 
+.video-detail-box {
+  display: grid;
+  gap: 10px;
+}
+
+.video-detail-box ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.video-script-box {
+  border-left: 4px solid var(--primary);
+}
+
+.video-complete-button {
+  align-self: flex-start;
+}
+
 .progress-shell {
   width: 100%;
   height: 8px;
