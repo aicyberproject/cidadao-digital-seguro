@@ -290,9 +290,16 @@ function scoreQuiz(quiz, answers) {
   }
 }
 
-function ProgressBar({ value }) {
+function ProgressBar({ value, label = 'Progresso' }) {
   return (
-    <div className="progress-shell">
+    <div
+      className="progress-shell"
+      role="progressbar"
+      aria-valuenow={value}
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-label={label}
+    >
       <div className="progress-fill" style={{ width: `${value}%` }} />
     </div>
   )
@@ -400,7 +407,7 @@ function ScreenCard({ title, children, icon: Icon }) {
         <div className="icon-title">
           {Icon ? (
             <div className="icon-box">
-              <Icon size={18} />
+              <Icon size={18} aria-hidden="true" focusable="false" />
             </div>
           ) : null}
           <h2>{title}</h2>
@@ -929,7 +936,7 @@ export default function App() {
       <div className="topbar">
         <div>
           <div className="eyebrow">
-            <Shield size={14} /> Curso online com progressão por conclusão de atividades
+            <Shield size={14} aria-hidden="true" focusable="false" /> Curso online com progressão por conclusão de atividades
           </div>
           <h1>{courseIntro.title}</h1>
           <p className="subtitle">{courseIntro.subtitle}</p>
@@ -937,25 +944,25 @@ export default function App() {
 
         <div className="top-actions">
           <button className="button button-outline" onClick={goHome}>
-            <Home size={16} /> Início
+            <Home size={16} aria-hidden="true" focusable="false" /> Início
           </button>
           <button className="button button-outline" onClick={() => setCurrentView('glossary')}>
-            <BookOpen size={16} /> Glossário
+            <BookOpen size={16} aria-hidden="true" focusable="false" /> Glossário
           </button>
           <button className="button button-outline" onClick={() => setCurrentView('library')}>
-            <FileText size={16} /> Biblioteca
+            <FileText size={16} aria-hidden="true" focusable="false" /> Biblioteca
           </button>
           <button className="button button-outline" onClick={() => setCurrentView('videos')}>
-            <PlayCircle size={16} /> Vídeos
+            <PlayCircle size={16} aria-hidden="true" focusable="false" /> Vídeos
           </button>
           <button className="button button-outline" onClick={() => setCurrentView('checklists')}>
-            <ListChecks size={16} /> Checklists
+            <ListChecks size={16} aria-hidden="true" focusable="false" /> Checklists
           </button>
           <button className="button button-outline" onClick={() => setCurrentView('simulations')}>
-            <MessageSquare size={16} /> Simulações
+            <MessageSquare size={16} aria-hidden="true" focusable="false" /> Simulações
           </button>
           <button className="button button-outline" onClick={resetCourse}>
-            <RotateCcw size={16} /> Reiniciar
+            <RotateCcw size={16} aria-hidden="true" focusable="false" /> Reiniciar
           </button>
         </div>
       </div>
@@ -985,18 +992,19 @@ export default function App() {
                       setScreenIndex(0)
                     }}
                     disabled={!state.unlocked}
+                    aria-label={`Módulo ${idx + 1}: ${m.shortTitle}. ${state.completed ? 'Concluído' : state.unlocked ? 'Disponível' : 'Bloqueado'}`}
                   >
                     <div className="module-chip-head">
                       <div className="module-chip-left">
                         <div className="icon-box small">
-                          <Icon size={16} />
+                          <Icon size={16} aria-hidden="true" focusable="false" />
                         </div>
                         <div>
                           <div className="mini-muted">Etapa {idx + 1}</div>
                           <div className="module-chip-title">{m.shortTitle}</div>
                         </div>
                       </div>
-                      {state.completed ? <CheckCircle2 className="success-icon" size={18} /> : null}
+                      {state.completed ? <CheckCircle2 className="success-icon" size={18} aria-hidden="true" focusable="false" /> : null}
                     </div>
                     <ModuleProgress mod={m} state={state} />
                   </button>
@@ -1007,7 +1015,7 @@ export default function App() {
                 <div className="final-box-head">
                   <span>Avaliação final</span>
                   {progressState.finalAssessmentPassed ? (
-                    <CheckCircle2 className="success-icon" size={18} />
+                    <CheckCircle2 className="success-icon" size={18} aria-hidden="true" focusable="false" />
                   ) : null}
                 </div>
 
@@ -1045,7 +1053,7 @@ export default function App() {
 
                 <div className="actions-row">
                   <button className="button" onClick={startCourse}>
-                    Começar agora <ChevronRight size={16} />
+                    Começar agora <ChevronRight size={16} aria-hidden="true" focusable="false" />
                   </button>
                   <button className="button button-outline" onClick={() => setCurrentView('structure')}>
                     Como funciona a trilha
@@ -1122,8 +1130,8 @@ export default function App() {
                 </p>
 
                 <div className="glossary-controls">
-                  <label className="search-field">
-                    <Search size={18} />
+                  <div className="search-field">
+                    <Search size={18} aria-hidden="true" focusable="false" />
                     <input
                       className="text-input glossary-search"
                       type="search"
@@ -1132,22 +1140,23 @@ export default function App() {
                       placeholder="Buscar termo, orientação ou módulo"
                       aria-label="Buscar termo no glossário"
                     />
-                  </label>
+                  </div>
 
-                  <div className="filter-row" role="tablist" aria-label="Filtrar glossário por categoria">
+                  <nav className="filter-row" aria-label="Filtrar glossário por categoria">
                     {glossaryCategoryOptions.map((category) => (
                       <button
                         key={category}
                         type="button"
                         className={`filter-chip ${selectedGlossaryCategory === category ? 'active' : ''}`}
                         onClick={() => setSelectedGlossaryCategory(category)}
+                        aria-pressed={selectedGlossaryCategory === category}
                       >
                         {category}
                       </button>
                     ))}
-                  </div>
+                  </nav>
 
-                  <div className="muted-small">
+                  <div className="muted-small" aria-live="polite">
                     {filteredGlossaryEntries.length} de {glossaryEntries.length} termos exibidos.
                   </div>
                 </div>
@@ -1198,8 +1207,8 @@ export default function App() {
                 </p>
 
                 <div className="glossary-controls">
-                  <label className="search-field">
-                    <Search size={18} />
+                  <div className="search-field">
+                    <Search size={18} aria-hidden="true" focusable="false" />
                     <input
                       className="text-input glossary-search"
                       type="search"
@@ -1208,7 +1217,7 @@ export default function App() {
                       placeholder="Buscar título, fonte, tema, módulo ou URL"
                       aria-label="Buscar documento na biblioteca"
                     />
-                  </label>
+                  </div>
 
                   <div className="library-filter-grid">
                     <label className="stack-sm">
@@ -1217,6 +1226,7 @@ export default function App() {
                         className="text-input"
                         value={selectedLibrarySource}
                         onChange={(event) => setSelectedLibrarySource(event.target.value)}
+                        aria-label="Filtrar por fonte"
                       >
                         {librarySourceOptions.map((source) => (
                           <option key={source} value={source}>
@@ -1232,6 +1242,7 @@ export default function App() {
                         className="text-input"
                         value={selectedLibraryType}
                         onChange={(event) => setSelectedLibraryType(event.target.value)}
+                        aria-label="Filtrar por tipo de material"
                       >
                         {libraryTypeOptions.map((type) => (
                           <option key={type} value={type}>
@@ -1247,6 +1258,7 @@ export default function App() {
                         className="text-input"
                         value={selectedLibraryCategory}
                         onChange={(event) => setSelectedLibraryCategory(event.target.value)}
+                        aria-label="Filtrar por categoria"
                       >
                         {libraryCategoryOptions.map((category) => (
                           <option key={category} value={category}>
@@ -1257,7 +1269,7 @@ export default function App() {
                     </label>
                   </div>
 
-                  <div className="muted-small">
+                  <div className="muted-small" aria-live="polite">
                     {filteredLibraryDocuments.length} de {libraryDocuments.length} documentos exibidos.
                   </div>
                 </div>
@@ -1268,7 +1280,7 @@ export default function App() {
                       <article key={documentItem.url} className="resource-card">
                         <div className="resource-card-head">
                           <h3>{documentItem.title}</h3>
-                          <span className="tag">{documentItem.type}</span>
+                          <span className="tag" aria-label={`Tipo: ${documentItem.type}`}>{documentItem.type}</span>
                         </div>
 
                         <div className="resource-card-body">
@@ -1281,14 +1293,20 @@ export default function App() {
                           <span className="resource-meta-chip">{documentItem.relatedModule}</span>
                         </div>
 
-                        <a href={documentItem.url} target="_blank" rel="noreferrer" className="button button-outline full">
-                          Abrir documento <ExternalLink size={16} />
+                        <a
+                          href={documentItem.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="button button-outline full"
+                          aria-label={`Abrir documento ${documentItem.title} em nova aba (material externo)`}
+                        >
+                          Abrir documento <ExternalLink size={16} aria-hidden="true" focusable="false" />
                         </a>
                       </article>
                     ))}
                   </div>
                 ) : (
-                  <div className="info-box muted-body">
+                  <div className="info-box muted-body" role="alert">
                     Nenhum documento encontrado para a busca ou filtros selecionados.
                   </div>
                 )}
@@ -1304,8 +1322,8 @@ export default function App() {
                 </p>
 
                 <div className="glossary-controls">
-                  <label className="search-field">
-                    <Search size={18} />
+                  <div className="search-field">
+                    <Search size={18} aria-hidden="true" focusable="false" />
                     <input
                       className="text-input glossary-search"
                       type="search"
@@ -1314,7 +1332,7 @@ export default function App() {
                       placeholder="Buscar título, descrição, fonte ou tema"
                       aria-label="Buscar vídeo educativo"
                     />
-                  </label>
+                  </div>
 
                   <div className="library-filter-grid">
                     <label className="stack-sm">
@@ -1323,6 +1341,7 @@ export default function App() {
                         className="text-input"
                         value={selectedVideoModule}
                         onChange={(event) => setSelectedVideoModule(event.target.value)}
+                        aria-label="Filtrar por módulo relacionado"
                       >
                         {videoModuleOptions.map((mod) => (
                           <option key={mod} value={mod}>
@@ -1338,6 +1357,7 @@ export default function App() {
                         className="text-input"
                         value={selectedVideoSource}
                         onChange={(event) => setSelectedVideoSource(event.target.value)}
+                        aria-label="Filtrar por fonte do vídeo"
                       >
                         {videoSourceOptions.map((source) => (
                           <option key={source} value={source}>
@@ -1353,6 +1373,7 @@ export default function App() {
                         className="text-input"
                         value={selectedVideoTheme}
                         onChange={(event) => setSelectedVideoTheme(event.target.value)}
+                        aria-label="Filtrar por tema do vídeo"
                       >
                         {videoThemeOptions.map((theme) => (
                           <option key={theme} value={theme}>
@@ -1363,7 +1384,7 @@ export default function App() {
                     </label>
                   </div>
 
-                  <div className="muted-small">
+                  <div className="muted-small" aria-live="polite">
                     {filteredVideos.length} de {educationalVideos.length} vídeos exibidos.
                   </div>
                 </div>
@@ -1374,7 +1395,7 @@ export default function App() {
                       <article key={videoItem.title} className="resource-card">
                         <div className="resource-card-head">
                           <h3>{videoItem.title}</h3>
-                          <span className={`tag ${videoItem.status === 'Disponível' ? '' : 'muted'}`}>
+                          <span className={`tag ${videoItem.status === 'Disponível' ? '' : 'muted'}`} aria-label={`Status: ${videoItem.status}`}>
                             {videoItem.status}
                           </span>
                         </div>
@@ -1392,12 +1413,18 @@ export default function App() {
                         </div>
 
                         {videoItem.status === 'Disponível' && videoItem.url ? (
-                          <a href={videoItem.url} target="_blank" rel="noreferrer" className="button button-outline full">
-                            Assistir vídeo <ExternalLink size={16} />
+                          <a
+                            href={videoItem.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="button button-outline full"
+                            aria-label={`Assistir vídeo ${videoItem.title} em nova aba (material externo)`}
+                          >
+                            Assistir vídeo <ExternalLink size={16} aria-hidden="true" focusable="false" />
                           </a>
                         ) : (
-                          <div className="info-box muted-body" style={{ margin: 0 }}>
-                            <PlayCircle size={16} style={{ verticalAlign: 'middle', marginRight: '8px' }} />
+                          <div className="info-box muted-body" style={{ margin: 0 }} role="status">
+                            <PlayCircle size={16} style={{ verticalAlign: 'middle', marginRight: '8px' }} aria-hidden="true" focusable="false" />
                             Vídeo em produção ou URL não disponível publicamente.
                           </div>
                         )}
@@ -1405,7 +1432,7 @@ export default function App() {
                     ))}
                   </div>
                 ) : (
-                  <div className="info-box muted-body">
+                  <div className="info-box muted-body" role="alert">
                     Nenhum vídeo encontrado para a busca ou filtros selecionados.
                   </div>
                 )}
@@ -1421,8 +1448,8 @@ export default function App() {
                 </p>
 
                 <div className="glossary-controls">
-                  <label className="search-field">
-                    <Search size={18} />
+                  <div className="search-field">
+                    <Search size={18} aria-hidden="true" focusable="false" />
                     <input
                       className="text-input glossary-search"
                       type="search"
@@ -1431,7 +1458,7 @@ export default function App() {
                       placeholder="Buscar situação, categoria ou item"
                       aria-label="Buscar checklist"
                     />
-                  </label>
+                  </div>
 
                   <div className="library-filter-grid">
                     <label className="stack-sm">
@@ -1440,6 +1467,7 @@ export default function App() {
                         className="text-input"
                         value={selectedChecklistCategory}
                         onChange={(event) => setSelectedChecklistCategory(event.target.value)}
+                        aria-label="Filtrar por categoria do checklist"
                       >
                         {checklistCategoryOptions.map((cat) => (
                           <option key={cat} value={cat}>
@@ -1455,6 +1483,7 @@ export default function App() {
                         className="text-input"
                         value={selectedChecklistModule}
                         onChange={(event) => setSelectedChecklistModule(event.target.value)}
+                        aria-label="Filtrar por módulo relacionado"
                       >
                         {checklistModuleOptions.map((mod) => (
                           <option key={mod} value={mod}>
@@ -1465,7 +1494,7 @@ export default function App() {
                     </label>
                   </div>
 
-                  <div className="muted-small">
+                  <div className="muted-small" aria-live="polite">
                     {filteredChecklists.length} de {practicalChecklists.length} checklists exibidos.
                   </div>
                 </div>
@@ -1482,7 +1511,7 @@ export default function App() {
                         <article key={checklist.id} className="resource-card">
                           <div className="resource-card-head">
                             <h3>{checklist.title}</h3>
-                            <span className="tag">{checklist.category}</span>
+                            <span className="tag" aria-label={`Categoria: ${checklist.category}`}>{checklist.category}</span>
                           </div>
 
                           <div className="info-box" style={{ padding: '12px' }}>
@@ -1492,25 +1521,27 @@ export default function App() {
 
                           <div className="resource-card-body">
                             <p className="muted-body" style={{ marginBottom: '12px' }}>{checklist.description}</p>
-                            <div className="stack-sm">
+                            <fieldset className="stack-sm" style={{ border: 'none', padding: 0, margin: 0 }}>
+                              <legend className="sr-only">Itens do checklist: {checklist.title}</legend>
                               {checklist.items.map((item, idx) => (
                                 <label key={idx} className="checklist-item-row" style={{ opacity: checkedItems[idx] ? 0.6 : 1 }}>
                                   <input
                                     type="checkbox"
                                     checked={!!checkedItems[idx]}
                                     onChange={() => toggleCheckedChecklistItem(checklist.id, idx)}
+                                    aria-label={item}
                                   />
                                   <span style={{ textDecoration: checkedItems[idx] ? 'line-through' : 'none', fontSize: '0.9rem' }}>
                                     {item}
                                   </span>
                                 </label>
                               ))}
-                            </div>
+                            </fieldset>
                           </div>
 
                           <div className="ludic-box expert" style={{ padding: '12px', margin: '0' }}>
                             <div className="ludic-header">
-                              <Shield size={14} className="success-icon" />
+                              <Shield size={14} className="success-icon" aria-hidden="true" focusable="false" />
                               <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Orientação final</span>
                             </div>
                             <div className="ludic-body" style={{ fontSize: '0.8125rem' }}>{checklist.finalGuidance}</div>
@@ -1518,7 +1549,7 @@ export default function App() {
 
                           <div className="checklist-progress-container">
                             <div className="actions-between" style={{ marginBottom: '8px' }}>
-                              <span className="mini-muted">
+                              <span className="mini-muted" aria-live="polite">
                                 {checkedCount} de {totalItems} concluídos ({progress}%)
                               </span>
                               <button
@@ -1526,11 +1557,15 @@ export default function App() {
                                 style={{ padding: '4px 8px', fontSize: '0.7rem', height: 'auto' }}
                                 onClick={() => clearChecklist(checklist.id)}
                                 disabled={checkedCount === 0}
+                                aria-label={`Limpar checklist: ${checklist.title}`}
                               >
-                                <RotateCcw size={12} /> Limpar
+                                <RotateCcw size={12} aria-hidden="true" focusable="false" /> Limpar
                               </button>
                             </div>
-                            <ProgressBar value={progress} />
+                            <ProgressBar
+                              value={progress}
+                              label={`Progresso do checklist ${checklist.title}: ${checkedCount} de ${totalItems} concluídos`}
+                            />
                           </div>
                           
                           <div className="mini-muted">
@@ -1541,7 +1576,7 @@ export default function App() {
                     })}
                   </div>
                 ) : (
-                  <div className="info-box muted-body">
+                  <div className="info-box muted-body" role="alert">
                     Nenhum checklist encontrado para a busca ou filtros selecionados.
                   </div>
                 )}
@@ -1557,8 +1592,8 @@ export default function App() {
                 </p>
 
                 <div className="glossary-controls">
-                  <label className="search-field">
-                    <Search size={18} />
+                  <div className="search-field">
+                    <Search size={18} aria-hidden="true" focusable="false" />
                     <input
                       className="text-input glossary-search"
                       type="search"
@@ -1567,7 +1602,7 @@ export default function App() {
                       placeholder="Buscar título, situação ou categoria"
                       aria-label="Buscar simulação"
                     />
-                  </label>
+                  </div>
 
                   <div className="library-filter-grid">
                     <label className="stack-sm">
@@ -1576,6 +1611,7 @@ export default function App() {
                         className="text-input"
                         value={selectedSimulationCategory}
                         onChange={(event) => setSelectedSimulationCategory(event.target.value)}
+                        aria-label="Filtrar por categoria da simulação"
                       >
                         {simulationCategoryOptions.map((cat) => (
                           <option key={cat} value={cat}>
@@ -1591,6 +1627,7 @@ export default function App() {
                         className="text-input"
                         value={selectedSimulationModule}
                         onChange={(event) => setSelectedSimulationModule(event.target.value)}
+                        aria-label="Filtrar por módulo relacionado"
                       >
                         {simulationModuleOptions.map((mod) => (
                           <option key={mod} value={mod}>
@@ -1601,7 +1638,7 @@ export default function App() {
                     </label>
                   </div>
 
-                  <div className="muted-small">
+                  <div className="muted-small" aria-live="polite">
                     {filteredSimulations.length} de {quickSimulations.length} simulações exibidas.
                   </div>
                 </div>
@@ -1617,7 +1654,7 @@ export default function App() {
                         <article key={sim.id} className="resource-card">
                           <div className="resource-card-head">
                             <h3>{sim.title}</h3>
-                            <span className="tag">{sim.category}</span>
+                            <span className="tag" aria-label={`Categoria: ${sim.category}`}>{sim.category}</span>
                           </div>
 
                           <div className="info-box" style={{ padding: '12px' }}>
@@ -1627,33 +1664,34 @@ export default function App() {
 
                           <div className="ludic-box scam simulation-scenario">
                             <div className="ludic-header">
-                              <AlertTriangle size={14} className="error-icon" />
+                              <AlertTriangle size={14} className="error-icon" aria-hidden="true" focusable="false" />
                               <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Cenário simulado</span>
                             </div>
-                            <div className="ludic-body">
+                            <div className="ludic-body" aria-label={`Cenário: ${sim.scenario}`}>
                               "{sim.scenario}"
                             </div>
                           </div>
 
                           <div className="resource-card-body">
                             {!hasAnswered ? (
-                              <div className="stack-sm">
-                                <div className="mini-muted">O que você faria?</div>
+                              <nav className="stack-sm" aria-label={`Opções de resposta para: ${sim.title}`}>
+                                <div className="mini-muted" id={`label-options-${sim.id}`}>O que você faria?</div>
                                 {sim.options.map((opt, idx) => (
                                   <button
                                     key={idx}
                                     className="button button-outline interactive-option-btn full"
                                     onClick={() => setSimulationAnswers(prev => ({ ...prev, [sim.id]: idx }))}
+                                    aria-labelledby={`label-options-${sim.id}`}
                                   >
                                     {opt.label}
                                   </button>
                                 ))}
-                              </div>
+                              </nav>
                             ) : (
-                              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="stack-md">
+                              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="stack-md" role="region" aria-live="polite">
                                 <div className={`info-box ${isCorrect ? 'success' : 'error'}`} style={{ borderLeftWidth: '4px' }}>
                                   <div className="ludic-header" style={{ marginBottom: '8px' }}>
-                                    {isCorrect ? <CheckCircle2 size={18} className="success-icon" /> : <XCircle size={18} className="error-icon" />}
+                                    {isCorrect ? <CheckCircle2 size={18} className="success-icon" aria-hidden="true" focusable="false" /> : <XCircle size={18} className="error-icon" aria-hidden="true" focusable="false" />}
                                     <span className="ludic-title" style={{ fontSize: '0.875rem' }}>
                                       {isCorrect ? 'Conduta Segura!' : 'Risco Identificado'}
                                     </span>
@@ -1665,19 +1703,19 @@ export default function App() {
 
                                 <div className="info-box" style={{ padding: '12px' }}>
                                   <div className="ludic-header" style={{ marginBottom: '8px' }}>
-                                    <AlertOctagon size={16} className="error-icon" />
+                                    <AlertOctagon size={16} className="error-icon" aria-hidden="true" focusable="false" />
                                     <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Sinais de alerta</span>
                                   </div>
-                                  <div className="tags-row" style={{ marginTop: '4px' }}>
+                                  <ul className="warning-signs-list">
                                     {sim.warningSigns.map(tag => (
-                                      <span key={tag} className="tag muted" style={{ fontSize: '0.65rem', padding: '2px 8px' }}>{tag}</span>
+                                      <li key={tag} className="tag muted" style={{ fontSize: '0.65rem', padding: '2px 8px' }}>{tag}</li>
                                     ))}
-                                  </div>
+                                  </ul>
                                 </div>
 
                                 <div className="ludic-box expert" style={{ padding: '12px', margin: '0' }}>
                                   <div className="ludic-header">
-                                    <Shield size={14} className="success-icon" />
+                                    <Shield size={14} className="success-icon" aria-hidden="true" focusable="false" />
                                     <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Dica do Especialista</span>
                                   </div>
                                   <div className="ludic-body" style={{ fontSize: '0.8125rem' }}>{sim.finalGuidance}</div>
@@ -1697,8 +1735,9 @@ export default function App() {
                                   delete next[sim.id]
                                   return next
                                 })}
+                                aria-label={`Tentar novamente simulação: ${sim.title}`}
                               >
-                                <RotateCcw size={12} /> Tentar novamente
+                                <RotateCcw size={12} aria-hidden="true" focusable="false" /> Tentar novamente
                               </button>
                             )}
                           </div>
@@ -1707,7 +1746,7 @@ export default function App() {
                     })}
                   </div>
                 ) : (
-                  <div className="info-box muted-body">
+                  <div className="info-box muted-body" role="alert">
                     Nenhuma simulação encontrada para a busca ou filtros selecionados.
                   </div>
                 )}
@@ -1827,7 +1866,7 @@ export default function App() {
                   {currentItem.type === 'video' && (
                     <div className="stack-md">
                       <div className="video-box">
-                        <PlayCircle size={42} />
+                        <PlayCircle size={42} aria-hidden="true" focusable="false" />
                         <div className="video-title">{currentItem.description}</div>
                         <div className="muted-small">Duração sugerida: {currentItem.duration}</div>
                       </div>
