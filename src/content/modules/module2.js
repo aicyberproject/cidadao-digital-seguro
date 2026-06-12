@@ -155,13 +155,6 @@ export const module2 = {
       ],
     },
     {
-      type: 'video',
-      title: 'Videoaula do módulo',
-      description:
-        'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
-      duration: 'Em preparação',
-    },
-    {
       type: 'tip',
       title: 'Dica de Especialista',
       text:
@@ -205,6 +198,12 @@ export const module2 = {
     },
   ],
 
+  video: {
+    title: 'Videoaula do módulo',
+    duration: 'Em preparação',
+    script:
+      'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+  },
   questionBank: questionBank.m2,
   quizSize: 10,
   quiz: questionBank.m2.slice(0, 10),
