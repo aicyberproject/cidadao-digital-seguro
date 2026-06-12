@@ -2,7 +2,20 @@
 
 Aplicação web em React/Vite para o curso **Cidadão Digital Seguro: Prevenção e Combate a Crimes Cibernéticos**.
 
-O curso funciona como uma trilha autoinstrucional com módulos liberados progressivamente, conteúdos por etapa, videoaulas marcáveis, checklists, atividades práticas, quizzes, avaliação final integradora e emissão de certificado em PDF. O progresso do participante é salvo no navegador por `localStorage`.
+O curso funciona como uma trilha autoinstrucional com módulos liberados progressivamente, culminando em uma avaliação final e emissão de certificado digital. O progresso do participante é salvo no navegador por `localStorage`.
+
+## Recursos do Curso
+
+A plataforma oferece uma experiência de aprendizado completa e acessível:
+- **6 Módulos Principais**: Conteúdo estruturado com progressão de aprendizado.
+- **Avaliações**: Quizzes por módulo e Avaliação Final integradora.
+- **Certificação**: Emissão automática de certificado em PDF com código verificador.
+- **Glossário**: Dicionário pesquisável de termos técnicos em linguagem cidadã.
+- **Biblioteca**: Área transversal com cartilhas e documentos públicos oficiais.
+- **Vídeos Educativos**: Acervo institucional de campanhas e orientações.
+- **Checklists Interativos**: Guias de ação rápida para situações de risco.
+- **Simulações Rápidas**: Cenários práticos para treinar a tomada de decisão contra golpes.
+- **Acessibilidade**: Alta aderência a padrões ARIA, navegação por teclado e suporte a leitores de tela.
 
 ## Links principais
 
