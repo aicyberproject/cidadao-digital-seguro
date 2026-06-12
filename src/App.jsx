@@ -1870,7 +1870,6 @@ export default function App() {
                     <div className="stack-md">
                       <div className="video-box">
                         <PlayCircle size={42} aria-hidden="true" focusable="false" />
-                        <div className="video-title">{currentItem.description}</div>
                         <div className="muted-small">Duração sugerida: {currentItem.duration}</div>
                       </div>
 
@@ -1879,6 +1878,11 @@ export default function App() {
                           <SectionTag>Status: {currentItem.status}</SectionTag>
                         </div>
                       ) : null}
+
+                      <div className="info-box">
+                        <div className="link-card-title">Roteiro preliminar</div>
+                        <p className="muted-body">{currentItem.description}</p>
+                      </div>
 
                       {Array.isArray(currentItem.objectives) && currentItem.objectives.length > 0 ? (
                         <div className="info-box">
