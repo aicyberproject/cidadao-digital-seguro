@@ -265,6 +265,17 @@ const module4 = {
     duration: 'Em preparação',
     script:
       'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+    status: 'Em preparação',
+    objectives: [
+      'Reconhecer riscos em bancos digitais, Pix, boletos, QR Codes e compras online.',
+      'Aplicar verificações antes de transferir, pagar, comprar ou vender pela internet.',
+    ],
+    topics: [
+      'Falsa central e canais oficiais',
+      'Pix, boleto e QR Code',
+      'Comércio eletrônico e marketplaces',
+      'Preservação de comprovantes e evidências',
+    ],
   },
   resources: [
     {
