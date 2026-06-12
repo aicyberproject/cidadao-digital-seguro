@@ -463,7 +463,7 @@ export default function App() {
   }, [glossaryQuery, selectedGlossaryCategory])
   const librarySourceOptions = useMemo(() => ['Todos', ...librarySources], [])
   const libraryTypeOptions = useMemo(() => ['Todos', ...libraryTypes], [])
-  const libraryThemeOptions = useMemo(() => ['Todos', ...libraryThemes], [])
+  const libraryCategoryOptions = useMemo(() => ['Todos', ...libraryCategories], [])
   const videoSourceOptions = useMemo(() => ['Todos', ...videoSources], [])
   const videoThemeOptions = useMemo(() => ['Todos', ...videoThemes], [])
   const videoModuleOptions = useMemo(() => ['Todos', ...videoModules], [])
@@ -475,15 +475,15 @@ export default function App() {
       const matchesSource =
         selectedLibrarySource === 'Todos' || documentItem.source === selectedLibrarySource
       const matchesType = selectedLibraryType === 'Todos' || documentItem.type === selectedLibraryType
-      const matchesTheme =
-        selectedLibraryTheme === 'Todos' || documentItem.theme === selectedLibraryTheme
+      const matchesCategory =
+        selectedLibraryCategory === 'Todos' || documentItem.category === selectedLibraryCategory
       const searchableText = normalizeSearchText(
-        `${documentItem.title} ${documentItem.description} ${documentItem.source} ${documentItem.type} ${documentItem.theme} ${documentItem.relatedModule} ${documentItem.url}`,
+        `${documentItem.title} ${documentItem.description} ${documentItem.source} ${documentItem.type} ${documentItem.category} ${documentItem.relatedModule} ${documentItem.url}`,
       )
 
-      return matchesSource && matchesType && matchesTheme && (!query || searchableText.includes(query))
+      return matchesSource && matchesType && matchesCategory && (!query || searchableText.includes(query))
     })
-  }, [libraryQuery, selectedLibrarySource, selectedLibraryTheme, selectedLibraryType])
+  }, [libraryQuery, selectedLibrarySource, selectedLibraryCategory, selectedLibraryType])
 
   const filteredVideos = useMemo(() => {
     const query = normalizeSearchText(videoQuery)
@@ -1155,15 +1155,15 @@ export default function App() {
                     </label>
 
                     <label className="stack-sm">
-                      <span className="mini-muted">Tema</span>
+                      <span className="mini-muted">Categoria</span>
                       <select
                         className="text-input"
-                        value={selectedLibraryTheme}
-                        onChange={(event) => setSelectedLibraryTheme(event.target.value)}
+                        value={selectedLibraryCategory}
+                        onChange={(event) => setSelectedLibraryCategory(event.target.value)}
                       >
-                        {libraryThemeOptions.map((theme) => (
-                          <option key={theme} value={theme}>
-                            {theme}
+                        {libraryCategoryOptions.map((category) => (
+                          <option key={category} value={category}>
+                            {category}
                           </option>
                         ))}
                       </select>
@@ -1188,7 +1188,7 @@ export default function App() {
 
                         <div className="library-card-meta">
                           <span>Fonte: {documentItem.source}</span>
-                          <span>Tema: {documentItem.theme}</span>
+                          <span>Categoria: {documentItem.category}</span>
                           <span>{documentItem.relatedModule}</span>
                         </div>
 
