@@ -1295,6 +1295,8 @@ export default function App() {
                         <div className="library-card-meta">
                           <span>Fonte: {videoItem.source}</span>
                           <span>Tema: {videoItem.theme}</span>
+                          {videoItem.type && <span>{videoItem.type}</span>}
+                          {videoItem.duration && <span>Duração: {videoItem.duration}</span>}
                           <span>{videoItem.relatedModule}</span>
                         </div>
 
