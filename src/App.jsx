@@ -24,6 +24,7 @@ import { finalAssessment } from './content/finalAssessment'
 import { glossaryCategories, glossaryEntries } from './content/glossary'
 import { libraryDocuments, librarySources, libraryCategories, libraryTypes } from './content/library'
 import { educationalVideos, videoModules, videoSources, videoThemes } from './content/videos'
+import { practicalChecklists, checklistCategories, checklistModules } from './content/checklists'
 import { CharacterAvatar } from './components/CharacterAvatar'
 import packageInfo from '../package.json'
 
@@ -422,6 +423,10 @@ export default function App() {
   const [selectedVideoSource, setSelectedVideoSource] = useState('Todos')
   const [selectedVideoTheme, setSelectedVideoTheme] = useState('Todos')
   const [selectedVideoModule, setSelectedVideoModule] = useState('Todos')
+  const [checklistQuery, setChecklistQuery] = useState('')
+  const [selectedChecklistCategory, setSelectedChecklistCategory] = useState('Todos')
+  const [selectedChecklistModule, setSelectedChecklistModule] = useState('Todos')
+  const [checkedChecklistItems, setCheckedChecklistItems] = useState({})
 
   useEffect(() => {
     const loaded = loadProgress()
@@ -467,6 +472,26 @@ export default function App() {
   const videoSourceOptions = useMemo(() => ['Todos', ...videoSources], [])
   const videoThemeOptions = useMemo(() => ['Todos', ...videoThemes], [])
   const videoModuleOptions = useMemo(() => ['Todos', ...videoModules], [])
+
+  const checklistCategoryOptions = useMemo(() => ['Todos', ...checklistCategories], [])
+  const checklistModuleOptions = useMemo(() => ['Todos', ...checklistModules], [])
+
+  const filteredChecklists = useMemo(() => {
+    const query = normalizeSearchText(checklistQuery)
+
+    return practicalChecklists.filter((item) => {
+      const matchesCategory =
+        selectedChecklistCategory === 'Todos' || item.category === selectedChecklistCategory
+      const matchesModule =
+        selectedChecklistModule === 'Todos' || item.relatedModule === selectedChecklistModule
+
+      const searchableText = normalizeSearchText(
+        `${item.title} ${item.situation} ${item.category} ${item.relatedModule} ${item.description} ${item.items.join(' ')} ${item.finalGuidance}`,
+      )
+
+      return matchesCategory && matchesModule && (!query || searchableText.includes(query))
+    })
+  }, [checklistQuery, selectedChecklistCategory, selectedChecklistModule])
 
   const filteredLibraryDocuments = useMemo(() => {
     const query = normalizeSearchText(libraryQuery)
@@ -839,6 +864,29 @@ export default function App() {
     })
   }
 
+  function toggleCheckedChecklistItem(checklistId, itemIndex) {
+    setCheckedChecklistItems((prev) => {
+      const currentChecklist = prev[checklistId] || {}
+
+      return {
+        ...prev,
+        [checklistId]: {
+          ...currentChecklist,
+          [itemIndex]: !currentChecklist[itemIndex],
+        },
+      }
+    })
+  }
+
+  function clearChecklist(checklistId) {
+    setCheckedChecklistItems((prev) => {
+      const next = { ...prev }
+      delete next[checklistId]
+
+      return next
+    })
+  }
+
   function resetCourse() {
     const fresh = defaultProgress()
     setProgressState(fresh)
@@ -871,6 +919,9 @@ export default function App() {
           </button>
           <button className="button button-outline" onClick={() => setCurrentView('videos')}>
             <PlayCircle size={16} /> Vídeos
+          </button>
+          <button className="button button-outline" onClick={() => setCurrentView('checklists')}>
+            <ListChecks size={16} /> Checklists
           </button>
           <button className="button button-outline" onClick={resetCourse}>
             <RotateCcw size={16} /> Reiniciar
@@ -1316,6 +1367,141 @@ export default function App() {
                 ) : (
                   <div className="info-box muted-body">
                     Nenhum vídeo encontrado para a busca ou filtros selecionados.
+                  </div>
+                )}
+              </ScreenCard>
+            </motion.div>
+          )}
+
+          {currentView === 'checklists' && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
+              <ScreenCard title="Checklists Interativos" icon={ListChecks}>
+                <p className="muted-body">
+                  Listas práticas para orientar sua conduta em situações comuns de segurança digital. Use como guia rápido para identificar riscos e agir corretamente.
+                </p>
+
+                <div className="glossary-controls">
+                  <label className="search-field">
+                    <Search size={18} />
+                    <input
+                      className="text-input glossary-search"
+                      type="search"
+                      value={checklistQuery}
+                      onChange={(event) => setChecklistQuery(event.target.value)}
+                      placeholder="Buscar situação, categoria ou item"
+                      aria-label="Buscar checklist"
+                    />
+                  </label>
+
+                  <div className="library-filter-grid">
+                    <label className="stack-sm">
+                      <span className="mini-muted">Categoria</span>
+                      <select
+                        className="text-input"
+                        value={selectedChecklistCategory}
+                        onChange={(event) => setSelectedChecklistCategory(event.target.value)}
+                      >
+                        {checklistCategoryOptions.map((cat) => (
+                          <option key={cat} value={cat}>
+                            {cat}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label className="stack-sm">
+                      <span className="mini-muted">Módulo</span>
+                      <select
+                        className="text-input"
+                        value={selectedChecklistModule}
+                        onChange={(event) => setSelectedChecklistModule(event.target.value)}
+                      >
+                        {checklistModuleOptions.map((mod) => (
+                          <option key={mod} value={mod}>
+                            {mod}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+
+                  <div className="muted-small">
+                    {filteredChecklists.length} de {practicalChecklists.length} checklists exibidos.
+                  </div>
+                </div>
+
+                {filteredChecklists.length > 0 ? (
+                  <div className="library-grid">
+                    {filteredChecklists.map((checklist) => {
+                      const checkedItems = checkedChecklistItems[checklist.id] || {}
+                      const checkedCount = Object.values(checkedItems).filter(Boolean).length
+                      const totalItems = checklist.items.length
+                      const progress = Math.round((checkedCount / totalItems) * 100)
+
+                      return (
+                        <article key={checklist.id} className="library-card">
+                          <div className="glossary-card-head">
+                            <h3>{checklist.title}</h3>
+                            <span className="tag">{checklist.category}</span>
+                          </div>
+
+                          <div className="info-box" style={{ margin: '8px 0' }}>
+                            <div className="mini-muted">Situação:</div>
+                            <div className="muted-body" style={{ fontStyle: 'italic' }}>{checklist.situation}</div>
+                          </div>
+
+                          <p className="muted-body">{checklist.description}</p>
+
+                          <div className="stack-sm" style={{ margin: '16px 0' }}>
+                            {checklist.items.map((item, idx) => (
+                              <label key={idx} className="check-row" style={{ opacity: checkedItems[idx] ? 0.6 : 1 }}>
+                                <input
+                                  type="checkbox"
+                                  checked={!!checkedItems[idx]}
+                                  onChange={() => toggleCheckedChecklistItem(checklist.id, idx)}
+                                />
+                                <span style={{ textDecoration: checkedItems[idx] ? 'line-through' : 'none' }}>
+                                  {item}
+                                </span>
+                              </label>
+                            ))}
+                          </div>
+
+                          <div className="ludic-box expert" style={{ padding: '12px', margin: '0 0 16px' }}>
+                            <div className="ludic-header">
+                              <Shield size={14} className="success-icon" />
+                              <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Orientação final</span>
+                            </div>
+                            <div className="ludic-body" style={{ fontSize: '0.875rem' }}>{checklist.finalGuidance}</div>
+                          </div>
+
+                          <div className="stack-sm">
+                            <div className="actions-between">
+                              <span className="mini-muted">
+                                {checkedCount} de {totalItems} concluídos ({progress}%)
+                              </span>
+                              <button
+                                className="button button-outline small"
+                                style={{ padding: '4px 8px', fontSize: '0.75rem' }}
+                                onClick={() => clearChecklist(checklist.id)}
+                                disabled={checkedCount === 0}
+                              >
+                                <RotateCcw size={12} /> Limpar
+                              </button>
+                            </div>
+                            <ProgressBar value={progress} />
+                          </div>
+                          
+                          <div className="mini-muted" style={{ marginTop: '12px' }}>
+                            Relacionado ao {checklist.relatedModule}
+                          </div>
+                        </article>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <div className="info-box muted-body">
+                    Nenhum checklist encontrado para a busca ou filtros selecionados.
                   </div>
                 )}
               </ScreenCard>
