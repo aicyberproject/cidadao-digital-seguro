@@ -327,6 +327,30 @@ p {
   border-style: solid;
   margin: 12px 0;
   box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.ludic-box:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  outline: none;
+}
+
+.ludic-box.scam:hover {
+  border-color: var(--scam-icon-bg);
+}
+
+.ludic-box.expert:hover {
+  border-color: var(--expert-icon-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ludic-box {
+    transition: none;
+  }
+  .ludic-box:hover {
+    transform: none;
+  }
 }
 
 .ludic-header {
