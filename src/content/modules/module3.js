@@ -231,6 +231,17 @@ export const module3 = {
     duration: 'Em preparação',
     script:
       'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+    status: 'Em preparação',
+    objectives: [
+      'Reduzir riscos em celulares, computadores, roteadores e redes Wi-Fi.',
+      'Identificar configurações inseguras, aplicativos suspeitos e medidas de proteção técnica.',
+    ],
+    topics: [
+      'Celular como carteira digital',
+      'Aplicativos oficiais e proteção contra malware',
+      'Computador seguro, antivírus e firewall',
+      'Roteador, Wi-Fi e trabalho remoto seguro',
+    ],
   },
   questionBank: questionBank.m3,
   quizSize: 10,

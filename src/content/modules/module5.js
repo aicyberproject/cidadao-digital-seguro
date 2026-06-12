@@ -276,6 +276,17 @@ const module5 = {
     duration: 'Em preparação',
     script:
       'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+    status: 'Em preparação',
+    objectives: [
+      'Classificar golpes e ameaças digitais recorrentes.',
+      'Identificar sinais de alerta em phishing, malware, perfis falsos, boatos, deepfakes e vazamentos.',
+    ],
+    topics: [
+      'Phishing e mensagens maliciosas',
+      'Malware, ransomware e aplicativos falsos',
+      'Perfis falsos, boatos e deepfakes',
+      'Vazamento de dados e uso abusivo de credenciais',
+    ],
   },
   
   resources: [

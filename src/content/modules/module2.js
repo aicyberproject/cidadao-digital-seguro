@@ -203,6 +203,17 @@ export const module2 = {
     duration: 'Em preparação',
     script:
       'Videoaula em preparação. Na versão final, este espaço receberá a videoaula oficial do módulo.',
+    status: 'Em preparação',
+    objectives: [
+      'Transformar higiene digital em rotina preventiva.',
+      'Aplicar práticas de autenticação forte, backup, privacidade e redução de exposição.',
+    ],
+    topics: [
+      'Senhas fortes e únicas',
+      'Verificação em duas etapas, MFA e passkeys',
+      'Backup e recuperação',
+      'Privacidade, permissões e minimização de dados',
+    ],
   },
   questionBank: questionBank.m2,
   quizSize: 10,
