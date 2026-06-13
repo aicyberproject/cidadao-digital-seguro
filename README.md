@@ -30,6 +30,7 @@ A plataforma oferece uma experiência de aprendizado completa e acessível:
 - [Deploy](docs/deploy.md)
 - [Roadmap](docs/roadmap.md)
 - [Preview automático](docs/preview.md)
+- [Evolução das videoaulas v1.5.2 a v1.5.7](docs/videoaulas-v1.5.2-v1.5.7.md)
 
 ## Comandos essenciais
 
