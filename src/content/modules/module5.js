@@ -3,7 +3,7 @@ import { questionBank } from '../questionBank'
 
 const module5 = {
   id: 'm5',
-  title: 'Catálogo de Ameaças e Golpes',
+  title: 'Módulo 5 — Catálogo de Ameaças e Golpes',
   shortTitle: 'Ameaças e golpes',
   subtitle: 'Principais ameaças digitais, golpes recorrentes, sinais de alerta e formas seguras de prevenção.',
   icon: AlertTriangle,
@@ -260,7 +260,7 @@ const module5 = {
     'Confirmo notícias e alertas antes de compartilhar.',
   ],
   practicalActivity: {
-    title: 'Classificação de ameaças em situações reaisistas',
+    title: 'Classificação de ameaças em situações realistas',
     description:
       'Você receberá oito situações simuladas envolvendo mensagem de banco, link de entrega, aplicativo suspeito, falso comprovante, perfil falso, boato alarmista, vazamento de senha e anúncio com preço muito baixo. Classifique cada situação, indique os sinais de alerta e proponha a conduta segura.',
     steps: [
