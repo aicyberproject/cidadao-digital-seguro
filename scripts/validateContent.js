@@ -9,7 +9,25 @@ const contentModules = {
   modules: '/src/content/modules/index.js',
   questionBank: '/src/content/questionBank/index.js',
   finalAssessment: '/src/content/finalAssessment.js',
+  glossary: '/src/content/glossary.js',
+  library: '/src/content/library.js',
+  videos: '/src/content/videos.js',
+  checklists: '/src/content/checklists.js',
+  simulations: '/src/content/simulations.js',
 }
+
+const allowedResourceTaxonomy = [
+  'Golpes e fraudes digitais',
+  'Autenticação e contas',
+  'Privacidade e proteção de dados',
+  'Dispositivos e redes',
+  'Transações e consumo seguro',
+  'Desinformação e conteúdo falso',
+  'Resposta a incidentes e denúncia',
+  'Campanhas educativas',
+]
+
+const allowedVideoStatuses = ['Disponível', 'Em preparação']
 
 const isPresent = (value) =>
   value !== undefined &&
@@ -52,6 +70,81 @@ const getModuleLabel = (moduleItem, index) =>
     ? `${moduleItem.id} (${moduleItem.title || `Modulo ${index + 1}`})`
     : `Modulo ${index + 1}`
 
+const getResourceLabel = (resourceItem, index, fallback = 'Item') =>
+  resourceItem?.title ||
+  resourceItem?.term ||
+  resourceItem?.id ||
+  `${fallback} ${index + 1}`
+
+const getDuplicateValues = (values) => {
+  const seen = new Set()
+  const duplicates = new Set()
+
+  values.forEach((value) => {
+    if (seen.has(value)) {
+      duplicates.add(value)
+      return
+    }
+
+    seen.add(value)
+  })
+
+  return [...duplicates]
+}
+
+function validateDeclaredList(list, context, report) {
+  const { errors, warnings } = report
+
+  if (!Array.isArray(list)) {
+    errors.push(`${context}: lista declarada deve ser array.`)
+    return false
+  }
+
+  const duplicates = getDuplicateValues(list)
+  if (duplicates.length > 0) {
+    warnings.push(
+      `${context}: lista declarada possui valores duplicados: ${duplicates.join(', ')}.`,
+    )
+  }
+
+  list.forEach((value, index) => {
+    if (!isPresent(value)) {
+      warnings.push(`${context}: valor vazio na posicao ${index + 1}.`)
+    }
+  })
+
+  return true
+}
+
+function validateDeclaredTaxonomyList(list, context, report) {
+  if (!validateDeclaredList(list, context, report)) {
+    return
+  }
+
+  list.forEach((value) => {
+    if (isPresent(value) && !allowedResourceTaxonomy.includes(value)) {
+      report.warnings.push(`${context}: "${value}" fora da taxonomia permitida.`)
+    }
+  })
+}
+
+function validateTaxonomyField(value, context, fieldName, report) {
+  if (!isPresent(value)) {
+    report.warnings.push(`${context}: ${fieldName} ausente.`)
+    return
+  }
+
+  if (!allowedResourceTaxonomy.includes(value)) {
+    report.warnings.push(`${context}: ${fieldName} "${value}" fora da taxonomia permitida.`)
+  }
+}
+
+function validateRelatedModule(resourceItem, context, report) {
+  if (!isPresent(resourceItem?.relatedModule)) {
+    report.warnings.push(`${context}: relatedModule ausente.`)
+  }
+}
+
 async function loadContent() {
   const server = await createServer({
     root: projectRoot,
@@ -64,17 +157,56 @@ async function loadContent() {
   })
 
   try {
-    const [modulesModule, questionBankModule, finalAssessmentModule] =
-      await Promise.all([
-        server.ssrLoadModule(contentModules.modules),
-        server.ssrLoadModule(contentModules.questionBank),
-        server.ssrLoadModule(contentModules.finalAssessment),
-      ])
+    const [
+      modulesModule,
+      questionBankModule,
+      finalAssessmentModule,
+      glossaryModule,
+      libraryModule,
+      videosModule,
+      checklistsModule,
+      simulationsModule,
+    ] = await Promise.all([
+      server.ssrLoadModule(contentModules.modules),
+      server.ssrLoadModule(contentModules.questionBank),
+      server.ssrLoadModule(contentModules.finalAssessment),
+      server.ssrLoadModule(contentModules.glossary),
+      server.ssrLoadModule(contentModules.library),
+      server.ssrLoadModule(contentModules.videos),
+      server.ssrLoadModule(contentModules.checklists),
+      server.ssrLoadModule(contentModules.simulations),
+    ])
 
     return {
       modules: modulesModule.modules,
       questionBank: questionBankModule.questionBank,
       finalAssessment: finalAssessmentModule.finalAssessment,
+      glossary: {
+        categories: glossaryModule.glossaryCategories,
+        entries: glossaryModule.glossaryEntries,
+      },
+      library: {
+        categories: libraryModule.libraryCategories,
+        documents: libraryModule.libraryDocuments,
+        sources: libraryModule.librarySources,
+        types: libraryModule.libraryTypes,
+      },
+      videos: {
+        themes: videosModule.videoThemes,
+        sources: videosModule.videoSources,
+        modules: videosModule.videoModules,
+        items: videosModule.educationalVideos,
+      },
+      checklists: {
+        categories: checklistsModule.checklistCategories,
+        modules: checklistsModule.checklistModules,
+        items: checklistsModule.practicalChecklists,
+      },
+      simulations: {
+        categories: simulationsModule.simulationCategories,
+        modules: simulationsModule.simulationModules,
+        items: simulationsModule.quickSimulations,
+      },
     }
   } finally {
     await server.close()
@@ -211,13 +343,176 @@ function validateModule(moduleItem, index, questionBankIndex, report) {
   }
 }
 
-function validateContent({ modules, questionBank, finalAssessment }) {
+function validateGlossary(glossary, report) {
+  validateDeclaredTaxonomyList(glossary?.categories, 'Glossario categorias', report)
+
+  if (!Array.isArray(glossary?.entries)) {
+    report.errors.push('src/content/glossary.js deve exportar glossaryEntries como array.')
+    return
+  }
+
+  report.resourceTotals.push({
+    label: 'Glossario',
+    total: glossary.entries.length,
+  })
+
+  glossary.entries.forEach((entry, index) => {
+    const context = `Glossario ${getResourceLabel(entry, index, 'Termo')}`
+
+    validateTaxonomyField(entry?.category, context, 'category', report)
+
+    if (!isPresent(entry?.definition)) {
+      report.errors.push(`${context}: definition obrigatorio ausente.`)
+    }
+
+    if (!isPresent(entry?.guidance)) {
+      report.errors.push(`${context}: guidance obrigatorio ausente.`)
+    }
+  })
+}
+
+function validateLibrary(library, report) {
+  validateDeclaredTaxonomyList(library?.categories, 'Biblioteca categorias', report)
+  validateDeclaredList(library?.sources, 'Biblioteca fontes', report)
+  validateDeclaredList(library?.types, 'Biblioteca tipos', report)
+
+  if (!Array.isArray(library?.documents)) {
+    report.errors.push('src/content/library.js deve exportar libraryDocuments como array.')
+    return
+  }
+
+  report.resourceTotals.push({
+    label: 'Biblioteca',
+    total: library.documents.length,
+  })
+
+  library.documents.forEach((documentItem, index) => {
+    const context = `Biblioteca ${getResourceLabel(documentItem, index, 'Documento')}`
+
+    validateTaxonomyField(documentItem?.category, context, 'category', report)
+    validateRelatedModule(documentItem, context, report)
+
+    if (!isPresent(documentItem?.url)) {
+      report.errors.push(`${context}: url obrigatoria ausente.`)
+    }
+  })
+}
+
+function validateVideos(videos, report) {
+  validateDeclaredTaxonomyList(videos?.themes, 'Videos temas', report)
+  validateDeclaredList(videos?.sources, 'Videos fontes', report)
+  validateDeclaredList(videos?.modules, 'Videos modulos', report)
+
+  if (!Array.isArray(videos?.items)) {
+    report.errors.push('src/content/videos.js deve exportar educationalVideos como array.')
+    return
+  }
+
+  report.resourceTotals.push({
+    label: 'Videos educacionais',
+    total: videos.items.length,
+  })
+
+  videos.items.forEach((videoItem, index) => {
+    const context = `Video ${getResourceLabel(videoItem, index, 'Video')}`
+
+    validateTaxonomyField(videoItem?.theme, context, 'theme', report)
+    validateRelatedModule(videoItem, context, report)
+
+    if (!isPresent(videoItem?.status)) {
+      report.warnings.push(`${context}: status ausente.`)
+    } else if (!allowedVideoStatuses.includes(videoItem.status)) {
+      report.warnings.push(
+        `${context}: status "${videoItem.status}" fora dos valores permitidos (${allowedVideoStatuses.join(', ')}).`,
+      )
+    }
+
+    if (videoItem?.status === 'Disponível' && !isPresent(videoItem?.url)) {
+      report.errors.push(`${context}: video Disponível deve possuir url.`)
+    }
+  })
+}
+
+function validateChecklists(checklists, report) {
+  validateDeclaredTaxonomyList(checklists?.categories, 'Checklists categorias', report)
+  validateDeclaredList(checklists?.modules, 'Checklists modulos', report)
+
+  if (!Array.isArray(checklists?.items)) {
+    report.errors.push('src/content/checklists.js deve exportar practicalChecklists como array.')
+    return
+  }
+
+  report.resourceTotals.push({
+    label: 'Checklists praticos',
+    total: checklists.items.length,
+  })
+
+  checklists.items.forEach((checklistItem, index) => {
+    const context = `Checklist ${getResourceLabel(checklistItem, index, 'Checklist')}`
+
+    validateTaxonomyField(checklistItem?.category, context, 'category', report)
+    validateRelatedModule(checklistItem, context, report)
+
+    if (!isNonEmptyArray(checklistItem?.items)) {
+      report.errors.push(`${context}: items deve ser array com ao menos 1 item.`)
+    }
+  })
+}
+
+function validateSimulations(simulations, report) {
+  validateDeclaredTaxonomyList(simulations?.categories, 'Simulacoes categorias', report)
+  validateDeclaredList(simulations?.modules, 'Simulacoes modulos', report)
+
+  if (!Array.isArray(simulations?.items)) {
+    report.errors.push('src/content/simulations.js deve exportar quickSimulations como array.')
+    return
+  }
+
+  report.resourceTotals.push({
+    label: 'Simulacoes rapidas',
+    total: simulations.items.length,
+  })
+
+  simulations.items.forEach((simulationItem, index) => {
+    const context = `Simulacao ${getResourceLabel(simulationItem, index, 'Simulacao')}`
+
+    validateTaxonomyField(simulationItem?.category, context, 'category', report)
+    validateRelatedModule(simulationItem, context, report)
+
+    if (!isNonEmptyArray(simulationItem?.warningSigns)) {
+      report.errors.push(`${context}: warningSigns deve ser array com ao menos 1 item.`)
+    }
+
+    if (!isNonEmptyArray(simulationItem?.options)) {
+      report.errors.push(`${context}: options deve ser array com ao menos 1 opcao.`)
+      return
+    }
+
+    const correctOptions = simulationItem.options.filter((option) => option?.isCorrect === true)
+
+    if (correctOptions.length !== 1) {
+      report.errors.push(`${context}: options deve possuir exatamente 1 opcao correta.`)
+    }
+  })
+}
+
+function validateContent({
+  modules,
+  questionBank,
+  finalAssessment,
+  glossary,
+  library,
+  videos,
+  checklists,
+  simulations,
+}) {
   const report = {
     errors: [],
     warnings: [],
     totalModules: Array.isArray(modules) ? modules.length : 0,
     moduleQuestionTotals: [],
     totalFinalAssessment: Array.isArray(finalAssessment) ? finalAssessment.length : 0,
+    resourceTotals: [],
   }
 
   if (!Array.isArray(modules)) {
@@ -245,6 +540,12 @@ function validateContent({ modules, questionBank, finalAssessment }) {
       )
     })
   }
+
+  validateGlossary(glossary, report)
+  validateLibrary(library, report)
+  validateVideos(videos, report)
+  validateChecklists(checklists, report)
+  validateSimulations(simulations, report)
 
   return report
 }
@@ -274,6 +575,9 @@ function printReport(report) {
     console.log(`- ${label}: ${total} questoes`)
   })
   console.log(`- Total da avaliacao final: ${report.totalFinalAssessment}`)
+  report.resourceTotals.forEach(({ label, total }) => {
+    console.log(`- ${label}: ${total} itens`)
+  })
 }
 
 async function main() {
