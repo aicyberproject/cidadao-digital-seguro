@@ -1,12 +1,11 @@
 export const checklistCategories = [
-  'Golpes e fraudes',
-  'Segurança bancária',
-  'Dispositivos móveis',
-  'Contas e autenticação',
+  'Golpes e fraudes digitais',
+  'Transações e consumo seguro',
+  'Dispositivos e redes',
+  'Autenticação e contas',
   'Privacidade e proteção de dados',
-  'Compras online',
-  'Desinformação',
-  'Resposta a incidentes',
+  'Desinformação e conteúdo falso',
+  'Resposta a incidentes e denúncia',
 ]
 
 export const checklistModules = [
@@ -24,7 +23,7 @@ export const practicalChecklists = [
     id: 'antes-de-clicar-link',
     title: 'Antes de clicar em um link',
     situation: 'Recebi um link por e-mail, SMS, WhatsApp, rede social ou QR Code.',
-    category: 'Golpes e fraudes',
+    category: 'Golpes e fraudes digitais',
     relatedModule: 'Módulo 5',
     description: 'Use este checklist para reduzir o risco de phishing, malware e páginas falsas.',
     items: [
@@ -40,7 +39,7 @@ export const practicalChecklists = [
     id: 'antes-de-fazer-pix',
     title: 'Antes de fazer um Pix',
     situation: 'Vou realizar um pagamento ou transferência via Pix para pessoa ou empresa.',
-    category: 'Segurança bancária',
+    category: 'Transações e consumo seguro',
     relatedModule: 'Módulo 4',
     description: 'Evite golpes de engenharia social e transferências por engano.',
     items: [
@@ -56,7 +55,7 @@ export const practicalChecklists = [
     id: 'ligacao-do-banco',
     title: 'Se recebi ligação do banco',
     situation: 'Alguém ligou dizendo ser do banco sobre uma suposta fraude ou transação suspeita.',
-    category: 'Segurança bancária',
+    category: 'Transações e consumo seguro',
     relatedModule: 'Módulo 4',
     description: 'Proteja-se contra o golpe da falsa central de atendimento.',
     items: [
@@ -72,7 +71,7 @@ export const practicalChecklists = [
     id: 'celular-furtado',
     title: 'Se meu celular foi furtado',
     situation: 'Meu dispositivo móvel foi roubado, furtado ou perdido.',
-    category: 'Dispositivos móveis',
+    category: 'Dispositivos e redes',
     relatedModule: 'Módulo 6',
     description: 'Ações imediatas para proteger seus dados e contas bancárias.',
     items: [
@@ -104,7 +103,7 @@ export const practicalChecklists = [
     id: 'proteger-contas',
     title: 'Como proteger minhas contas',
     situation: 'Quero aumentar a segurança do meu e-mail, redes sociais e bancos.',
-    category: 'Contas e autenticação',
+    category: 'Autenticação e contas',
     relatedModule: 'Módulo 2',
     description: 'Medidas preventivas fundamentais de higiene digital.',
     items: [
@@ -120,7 +119,7 @@ export const practicalChecklists = [
     id: 'compras-online',
     title: 'Como comprar online com segurança',
     situation: 'Estou pesquisando produtos ou prestes a fechar uma compra na internet.',
-    category: 'Compras online',
+    category: 'Transações e consumo seguro',
     relatedModule: 'Módulo 4',
     description: 'Evite sites falsos e produtos que nunca serão entregues.',
     items: [
@@ -136,7 +135,7 @@ export const practicalChecklists = [
     id: 'boatos-deepfakes',
     title: 'Como identificar boatos e deepfakes',
     situation: 'Recebi um vídeo ou mensagem alarmista com informações surpreendentes.',
-    category: 'Desinformação',
+    category: 'Desinformação e conteúdo falso',
     relatedModule: 'Módulo 1',
     description: 'Não se deixe enganar por conteúdos falsos ou manipulados por IA.',
     items: [
@@ -152,7 +151,7 @@ export const practicalChecklists = [
     id: 'evidencias-digitais',
     title: 'Como preservar evidências digitais',
     situation: 'Fui vítima de um crime ou golpe e preciso guardar provas.',
-    category: 'Resposta a incidentes',
+    category: 'Resposta a incidentes e denúncia',
     relatedModule: 'Módulo 6',
     description: 'Garanta que as provas sejam válidas para uma investigação.',
     items: [
@@ -168,7 +167,7 @@ export const practicalChecklists = [
     id: 'apos-cair-em-golpe',
     title: 'Como agir após cair em um golpe',
     situation: 'Percebi que fui vítima de uma fraude financeira ou digital.',
-    category: 'Resposta a incidentes',
+    category: 'Resposta a incidentes e denúncia',
     relatedModule: 'Módulo 6',
     description: 'Ações imediatas para contenção de danos e denúncia.',
     items: [
