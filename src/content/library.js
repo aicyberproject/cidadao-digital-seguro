@@ -29,7 +29,7 @@ export const libraryDocuments = [
   {
     title: 'Fascículo Backup',
     source: 'CERT.br / NIC.br / CGI.br',
-    category: 'Segurança de dispositivos',
+    category: 'Dispositivos e redes',
     type: 'Fascículo',
     relatedModule: 'Módulo 2',
     description: 'Importância e métodos para realizar cópias de segurança de arquivos importantes.',
@@ -38,7 +38,7 @@ export const libraryDocuments = [
   {
     title: 'Fascículo Computadores',
     source: 'CERT.br / NIC.br / CGI.br',
-    category: 'Segurança de dispositivos',
+    category: 'Dispositivos e redes',
     type: 'Fascículo',
     relatedModule: 'Módulo 3',
     description: 'Dicas de segurança para uso e configuração de computadores pessoais.',
@@ -47,7 +47,7 @@ export const libraryDocuments = [
   {
     title: 'Fascículo Celulares e Tablets',
     source: 'CERT.br / NIC.br / CGI.br',
-    category: 'Segurança de dispositivos',
+    category: 'Dispositivos e redes',
     type: 'Fascículo',
     relatedModule: 'Módulo 3',
     description: 'Cuidados essenciais para a proteção de dispositivos móveis.',
@@ -65,7 +65,7 @@ export const libraryDocuments = [
   {
     title: 'Fascículo Redes',
     source: 'CERT.br / NIC.br / CGI.br',
-    category: 'Segurança de dispositivos',
+    category: 'Dispositivos e redes',
     type: 'Fascículo',
     relatedModule: 'Módulo 3',
     description: 'Cuidados com redes Wi-Fi, roteadores e conexões domésticas e públicas.',
@@ -83,7 +83,7 @@ export const libraryDocuments = [
   {
     title: 'Fascículo Códigos Maliciosos',
     source: 'CERT.br / NIC.br / CGI.br',
-    category: 'Fraudes e golpes digitais',
+    category: 'Golpes e fraudes digitais',
     type: 'Fascículo',
     relatedModule: 'Módulos 3 e 5',
     description: 'Entenda o que são vírus, cavalos de troia e outros programas maliciosos.',
@@ -128,7 +128,7 @@ export const libraryDocuments = [
   {
     title: 'Glossário de Tipologias de Fraudes e Golpes Digitais',
     source: 'Aliança Nacional de Combate a Fraudes Bancárias Digitais',
-    category: 'Fraudes e golpes digitais',
+    category: 'Golpes e fraudes digitais',
     type: 'Glossário',
     relatedModule: 'Módulo 5',
     description: 'Definições oficiais sobre as principais modalidades de fraudes e golpes bancários.',
@@ -192,8 +192,8 @@ export const libraryDocuments = [
 
 export const libraryCategories = [
   'Cartilhas e fascículos',
-  'Fraudes e golpes digitais',
-  'Segurança de dispositivos',
+  'Golpes e fraudes digitais',
+  'Dispositivos e redes',
   'Privacidade e proteção de dados',
   'Transações e consumo seguro',
   'Desinformação e conteúdo falso',
