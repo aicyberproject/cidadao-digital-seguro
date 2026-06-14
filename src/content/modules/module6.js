@@ -3,7 +3,7 @@ import { questionBank } from '../questionBank'
 
 const module6 = {
   id: 'm6',
-  title: 'Resposta a Incidentes e Denúncia',
+  title: 'Módulo 6 — Resposta a Incidentes e Denúncia',
   shortTitle: 'Resposta a incidentes',
   subtitle:
     'Primeiras medidas após golpe, fraude, vazamento, furto de dispositivo ou comprometimento de conta: contenção, preservação de evidências, canais oficiais e registro adequado.',
