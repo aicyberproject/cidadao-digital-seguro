@@ -281,6 +281,58 @@ function normalizeProgress(loaded) {
   }
 }
 
+function getResumeTarget(progressState) {
+  if (progressState.certificateUnlocked || progressState.finalAssessmentPassed) {
+    return { view: 'certificate' }
+  }
+
+  const allModulesCompleted = modules.every((moduleItem) => progressState.moduleState[moduleItem.id]?.completed)
+
+  if (allModulesCompleted) {
+    return { view: 'final-review' }
+  }
+
+  const pendingModule = modules.find((moduleItem) => {
+    const state = progressState.moduleState[moduleItem.id]
+
+    return state?.unlocked && !state.completed
+  })
+
+  if (!pendingModule) {
+    return { view: 'home' }
+  }
+
+  const state = progressState.moduleState[pendingModule.id]
+  const content = getModuleContent(pendingModule)
+  const pendingScreenIndex = content.findIndex((_, index) => !state.contentSeen?.[index])
+
+  if (pendingScreenIndex >= 0) {
+    return { view: 'module', moduleId: pendingModule.id, screenIndex: pendingScreenIndex }
+  }
+
+  if (!state.videoDone) {
+    const videoIndex = content.findIndex((item) => item.type === 'video')
+
+    if (videoIndex >= 0) {
+      return { view: 'module', moduleId: pendingModule.id, screenIndex: videoIndex }
+    }
+  }
+
+  if (!state.activityDone) {
+    const activityIndex = content.findIndex((item) => item.type === 'activity')
+
+    if (activityIndex >= 0) {
+      return { view: 'module', moduleId: pendingModule.id, screenIndex: activityIndex }
+    }
+  }
+
+  if (!state.quizPassed) {
+    return { view: 'module', moduleId: pendingModule.id, screenIndex: content.length }
+  }
+
+  return { view: 'module', moduleId: pendingModule.id, screenIndex: 0 }
+}
+
 function scoreQuiz(quiz, answers) {
   let correct = 0
 
@@ -705,6 +757,24 @@ export default function App() {
   }
 
   function startCourse() {
+    if (progressState.started) {
+      const target = getResumeTarget(progressState)
+
+      setCurrentView(target.view)
+
+      if (target.moduleId) {
+        setSelectedModuleId(target.moduleId)
+      }
+
+      if (typeof target.screenIndex === 'number') {
+        setScreenIndex(target.screenIndex)
+      } else {
+        setScreenIndex(0)
+      }
+
+      return
+    }
+
     setProgressState((prev) => ({ ...prev, started: true, introSeen: true }))
     setCurrentView('module')
     setSelectedModuleId(modules[0].id)
@@ -1076,7 +1146,7 @@ export default function App() {
 
                 <div className="actions-row">
                   <button className="button" onClick={startCourse}>
-                    Começar agora <ChevronRight size={16} aria-hidden="true" focusable="false" />
+                    {progressState.started ? 'Continuar curso' : 'Começar agora'} <ChevronRight size={16} aria-hidden="true" focusable="false" />
                   </button>
                   <button className="button button-outline" onClick={() => setCurrentView('structure')}>
                     Como funciona a trilha
