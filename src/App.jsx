@@ -926,6 +926,12 @@ export default function App() {
   }
 
   function resetCourse() {
+    const shouldReset = window.confirm(
+      'Tem certeza de que deseja reiniciar o curso? Essa ação apagará o progresso dos módulos, respostas, avaliação final e dados do certificado salvos neste dispositivo.',
+    )
+
+    if (!shouldReset) return
+
     const fresh = defaultProgress()
     setProgressState(fresh)
     saveProgress(fresh)
