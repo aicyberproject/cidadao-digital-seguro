@@ -36,6 +36,8 @@ const STORAGE_KEY = 'cidadao-digital-seguro-progress-v2'
 const COURSE_VERSION = packageInfo.version
 const CERTIFICATE_WORKLOAD = '12 a 18 horas'
 const FINAL_ASSESSMENT_VERSION = createFinalAssessmentVersion(finalAssessment)
+const MODULE_LOCKED_MESSAGE = 'Conclua o módulo anterior para liberar esta etapa.'
+const FINAL_ASSESSMENT_LOCKED_MESSAGE = 'Conclua todos os módulos para liberar a avaliação final.'
 
 function createFinalAssessmentVersion(assessment) {
   const source = assessment
@@ -988,6 +990,11 @@ export default function App() {
               {modules.map((m, idx) => {
                 const state = progressState.moduleState[m.id]
                 const Icon = m.icon
+                const moduleStatusLabel = state.completed
+                  ? 'Concluído'
+                  : state.unlocked
+                    ? 'Disponível'
+                    : `Bloqueado. ${MODULE_LOCKED_MESSAGE}`
 
                 return (
                   <button
@@ -1001,7 +1008,7 @@ export default function App() {
                       setScreenIndex(0)
                     }}
                     disabled={!state.unlocked}
-                    aria-label={`Módulo ${idx + 1}: ${m.shortTitle}. ${state.completed ? 'Concluído' : state.unlocked ? 'Disponível' : 'Bloqueado'}`}
+                    aria-label={`Módulo ${idx + 1}: ${m.shortTitle}. ${moduleStatusLabel}`}
                   >
                     <div className="module-chip-head">
                       <div className="module-chip-left">
@@ -1016,6 +1023,7 @@ export default function App() {
                       {state.completed ? <CheckCircle2 className="success-icon" size={18} aria-hidden="true" focusable="false" /> : null}
                     </div>
                     <ModuleProgress mod={m} state={state} />
+                    {!state.unlocked ? <div className="mini-muted">{MODULE_LOCKED_MESSAGE}</div> : null}
                   </button>
                 )
               })}
@@ -1032,9 +1040,15 @@ export default function App() {
                   value={finalResult.passed ? 100 : Math.round((finalResult.correct / finalResult.total) * 100) || 0}
                 />
 
-                <button className="button full" disabled={!allModulesCompleted} onClick={() => setCurrentView('final-review')}>
+                <button
+                  className="button full"
+                  disabled={!allModulesCompleted}
+                  onClick={() => setCurrentView('final-review')}
+                  aria-label={allModulesCompleted ? 'Ir para a etapa final' : `Avaliação final bloqueada. ${FINAL_ASSESSMENT_LOCKED_MESSAGE}`}
+                >
                   Ir para a etapa final
                 </button>
+                {!allModulesCompleted ? <div className="mini-muted">{FINAL_ASSESSMENT_LOCKED_MESSAGE}</div> : null}
               </div>
             </div>
           </Card>
