@@ -2004,7 +2004,7 @@ export default function App() {
                           markSeen(screenIndex)
                         }}
                       >
-                        Marcar videoaula como assistida
+                        Registrar videoaula como assistida
                       </button>
                     </div>
                   )}
@@ -2051,7 +2051,7 @@ export default function App() {
                           markSeen(screenIndex)
                         }}
                       >
-                        Marcar atividade como concluída
+                        Registrar atividade como concluída
                       </button>
                     </div>
                   )}
@@ -2069,7 +2069,7 @@ export default function App() {
                       className="button"
                       onClick={completeCurrentStepAndAdvance}
                     >
-                      Próxima etapa
+                      Registrar tela e avançar
                     </button>
                   </div>
                 </ScreenCard>
@@ -2118,7 +2118,7 @@ export default function App() {
                       onClick={retryModuleQuiz}
                       disabled={selectedModuleState.completed || Object.keys(selectedModuleState.quizAnswers || {}).length === 0}
                     >
-                      Nova tentativa
+                      Refazer quiz do módulo
                     </button>
 
                     <button
@@ -2127,14 +2127,14 @@ export default function App() {
                       onClick={completeModule}
                     >
                       {modules.findIndex((m) => m.id === selectedModule.id) === modules.length - 1
-                        ? 'Ir para a etapa final'
-                        : 'Concluir módulo e liberar próximo'}
+                        ? 'Ir para a revisão final'
+                        : 'Concluir módulo e liberar próximo módulo'}
                     </button>
                   </div>
 
                   {!selectedModuleState.activityDone || !selectedModuleState.videoDone ? (
                     <div className="warning-text">
-                      Para concluir o módulo, a atividade prática e a videoaula precisam estar marcadas como concluídas.
+                      Para concluir o módulo, registre a videoaula e conclua a atividade prática.
                     </div>
                   ) : null}
                 </ScreenCard>
@@ -2146,7 +2146,7 @@ export default function App() {
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
               <ScreenCard title="Revisão geral do curso" icon={BookOpen}>
                 <p className="muted-body">
-                  Você concluiu a trilha principal. Agora, revise a jornada completa antes de realizar a avaliação final integradora.
+                  Você concluiu todos os módulos. Revise o percurso antes de iniciar a avaliação final integradora.
                 </p>
 
                 <div className="grid-2">
@@ -2159,7 +2159,7 @@ export default function App() {
                 </div>
 
                 <button className="button" onClick={() => setCurrentView('final-assessment')}>
-                  Iniciar avaliação final
+                  Iniciar avaliação final integradora
                 </button>
               </ScreenCard>
             </motion.div>

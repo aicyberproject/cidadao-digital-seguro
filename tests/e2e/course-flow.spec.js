@@ -33,10 +33,10 @@ async function advanceModuleContent(page, moduleId) {
 
     await expect(page.getByRole('button', { name: 'Marcar etapa como lida' })).toHaveCount(0)
 
-    const hasVideoAction = await page.getByRole('button', { name: 'Marcar videoaula como assistida' }).isVisible()
-    const hasActivityAction = await page.getByRole('button', { name: 'Marcar atividade como concluída' }).isVisible()
+    const hasVideoAction = await page.getByRole('button', { name: 'Registrar videoaula como assistida' }).isVisible()
+    const hasActivityAction = await page.getByRole('button', { name: 'Registrar atividade como concluída' }).isVisible()
 
-    await page.getByRole('button', { name: 'Próxima etapa' }).click()
+    await page.getByRole('button', { name: 'Registrar tela e avançar' }).click()
 
     if (hasVideoAction) {
       await waitForModuleFlag(page, moduleId, 'videoDone')
@@ -107,8 +107,8 @@ test('valida o fluxo principal do curso até a certificação', async ({ page })
 
     const nextButtonName =
       moduleIndex === modules.length - 1
-        ? 'Ir para a etapa final'
-        : 'Concluir módulo e liberar próximo'
+        ? 'Ir para a revisão final'
+        : 'Concluir módulo e liberar próximo módulo'
 
     const moduleAction = page.getByRole('main').getByRole('button', { name: nextButtonName })
     await expect(moduleAction).toBeEnabled()
@@ -116,9 +116,9 @@ test('valida o fluxo principal do curso até a certificação', async ({ page })
   }
 
   await expect(page.getByRole('heading', { name: 'Revisão geral do curso' })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Iniciar avaliação final' })).toBeEnabled()
+  await expect(page.getByRole('button', { name: 'Iniciar avaliação final integradora' })).toBeEnabled()
 
-  await page.getByRole('button', { name: 'Iniciar avaliação final' }).click()
+  await page.getByRole('button', { name: 'Iniciar avaliação final integradora' }).click()
   await answerFinalAssessment(page)
 
   await expect(page.getByRole('button', { name: 'Ir para certificação' })).toBeEnabled()
