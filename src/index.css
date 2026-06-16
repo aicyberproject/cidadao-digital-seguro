@@ -376,6 +376,12 @@ p {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-size: 0.8125rem;
+  margin: 0;
+}
+
+.ludic-box .ludic-title {
+  font-size: 1.05rem;
+  text-transform: none;
 }
 
 .ludic-icon {
@@ -416,6 +422,34 @@ p {
   font-size: 0.95rem;
 }
 
+
+.ludic-body p {
+  margin: 0;
+}
+
+/* Ludic Transitions - v1.7.1 */
+.ludic-transition-block {
+  padding: 24px;
+  text-align: center;
+  background: var(--bg-app);
+  border-radius: var(--border-radius-lg);
+  margin: 24px 0;
+  border: 1px dashed var(--border-color);
+}
+
+.ludic-transition-block h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  color: var(--text-title);
+}
+
+.ludic-transition-block .muted-body {
+  margin: 0;
+}
+
+.ludic-transition-content {
+  margin-top: 16px;
+}
 /* Scams specific - É Golpe */
 .ludic-box.scam, .scam-box {
   background: var(--scam-bg);
@@ -1083,3 +1117,4 @@ p {
 .resource-card .video-notes {
   font-size: 0.9rem;
 }
+
