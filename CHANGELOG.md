@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentada a evolução incremental das videoaulas entre v1.5.2 e v1.5.7.
 - Adicionado link no README para a consolidação documental da frente de videoaulas.
 
+## [1.6.14] - 2026-06-15
+
+### Documentation
+- **Auditoria Final Pré-Main**: Criação do documento `docs/auditoria-final-v1.6-pre-main.md` atestando a prontidão da branch de integração para merge em `main`.
+- **Checklist de Prontidão**: Verificação completa de tags, histórico de commits, validações de CI, builds e testes E2E sem regressões.
+
 ## [1.6.13] - 2026-06-15
 
 ### Documentation
