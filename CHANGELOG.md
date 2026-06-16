@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentada a evolução incremental das videoaulas entre v1.5.2 e v1.5.7.
 - Adicionado link no README para a consolidação documental da frente de videoaulas.
 
+## [1.6.8] - 2026-06-15
+
+### Added
+- **Validação da Biblioteca de Vídeos**: Integração da `videoLibrary` ao script `scripts/validateContent.js`.
+- **Regras de Integridade**: Validação de schema (ids únicos, campos obrigatórios, formatos de URL e valores controlados para prioridade, status e plataforma).
+
 ## [1.6.7] - 2026-06-15
 
 ### Added
