@@ -44,6 +44,11 @@ export const module1 = {
       ],
     },
     {
+      type: 'transition',
+      title: 'Pausa para reflexão',
+      description: 'Antes de avançar, vamos testar sua intuição com um cenário prático.',
+    },
+    {
       type: 'scenario',
       title: 'Pergunta mobilizadora',
       prompt:
