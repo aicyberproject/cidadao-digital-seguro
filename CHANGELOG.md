@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentada a evolução incremental das videoaulas entre v1.5.2 e v1.5.7.
 - Adicionado link no README para a consolidação documental da frente de videoaulas.
 
+## [1.6.7] - 2026-06-15
+
+### Added
+- **Modelo de Dados da Biblioteca de Vídeos**: Criação da estrutura inicial `src/content/videoLibrary.js` para suportar a curadoria de vídeos educativos (Issue #63).
+- **Curadoria Inicial**: Cadastro dos primeiros vídeos da FEBRABAN, INTERPOL e MJSP com metadados estruturados (id, provider, modules, topics, etc).
+
 ## [1.6.5] - 2026-06-15
 
 ### Changed
