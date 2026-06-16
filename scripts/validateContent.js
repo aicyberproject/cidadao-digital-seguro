@@ -14,6 +14,7 @@ const contentModules = {
   videos: '/src/content/videos.js',
   checklists: '/src/content/checklists.js',
   simulations: '/src/content/simulations.js',
+  videoLibrary: '/src/content/videoLibrary.js',
 }
 
 const allowedResourceTaxonomy = [
@@ -28,6 +29,10 @@ const allowedResourceTaxonomy = [
 ]
 
 const allowedVideoStatuses = ['Disponível', 'Em preparação']
+const allowedVideoLibraryPriorities = ['High', 'Medium', 'Low']
+const allowedVideoLibraryStatuses = ['Curated', 'Pending Validation', 'Placeholder', 'Deprecated']
+const allowedVideoLibraryPlatforms = ['YouTube', 'Website', 'Other']
+const allowedCourseModules = ['Módulo 1', 'Módulo 2', 'Módulo 3', 'Módulo 4', 'Módulo 5', 'Módulo 6']
 
 const isPresent = (value) =>
   value !== undefined &&
@@ -166,6 +171,7 @@ async function loadContent() {
       videosModule,
       checklistsModule,
       simulationsModule,
+      videoLibraryModule,
     ] = await Promise.all([
       server.ssrLoadModule(contentModules.modules),
       server.ssrLoadModule(contentModules.questionBank),
@@ -175,6 +181,7 @@ async function loadContent() {
       server.ssrLoadModule(contentModules.videos),
       server.ssrLoadModule(contentModules.checklists),
       server.ssrLoadModule(contentModules.simulations),
+      server.ssrLoadModule(contentModules.videoLibrary),
     ])
 
     return {
@@ -207,6 +214,7 @@ async function loadContent() {
         modules: simulationsModule.simulationModules,
         items: simulationsModule.quickSimulations,
       },
+      videoLibrary: videoLibraryModule.videoLibrary,
     }
   } finally {
     await server.close()
@@ -496,6 +504,88 @@ function validateSimulations(simulations, report) {
   })
 }
 
+function validateVideoLibrary(videoLibrary, report) {
+  if (!Array.isArray(videoLibrary)) {
+    report.errors.push('src/content/videoLibrary.js deve exportar videoLibrary como array.')
+    return
+  }
+
+  report.resourceTotals.push({
+    label: 'Biblioteca de videos curados',
+    total: videoLibrary.length,
+  })
+
+  const ids = []
+
+  videoLibrary.forEach((video, index) => {
+    const label = getResourceLabel(video, index, 'Video Curado')
+    const context = `VideoLibrary ${label}`
+
+    if (!isPresent(video.id)) {
+      report.errors.push(`${context}: id obrigatorio ausente.`)
+    } else {
+      ids.push(video.id)
+    }
+
+    if (!isPresent(video.title)) {
+      report.errors.push(`${context}: title obrigatorio ausente.`)
+    }
+
+    if (!isPresent(video.provider)) {
+      report.errors.push(`${context}: provider obrigatorio ausente.`)
+    }
+
+    if (!isPresent(video.url)) {
+      report.errors.push(`${context}: url obrigatoria ausente.`)
+    } else if (!video.url.startsWith('https://')) {
+      report.errors.push(`${context}: url deve começar com https://.`)
+    }
+
+    if (!isPresent(video.platform)) {
+      report.errors.push(`${context}: platform obrigatoria ausente.`)
+    } else if (!allowedVideoLibraryPlatforms.includes(video.platform)) {
+      report.errors.push(
+        `${context}: platform "${video.platform}" inválida. Esperado: ${allowedVideoLibraryPlatforms.join(', ')}.`,
+      )
+    }
+
+    if (!isPresent(video.language)) {
+      report.errors.push(`${context}: language obrigatoria ausente.`)
+    }
+
+    if (!isNonEmptyArray(video.modules)) {
+      report.errors.push(`${context}: modules deve ser array nao vazio.`)
+    } else {
+      video.modules.forEach((mod) => {
+        if (!allowedCourseModules.includes(mod)) {
+          report.errors.push(`${context}: module "${mod}" inválido.`)
+        }
+      })
+    }
+
+    if (!isNonEmptyArray(video.topics)) {
+      report.errors.push(`${context}: topics deve ser array nao vazio.`)
+    }
+
+    if (!isPresent(video.priority)) {
+      report.errors.push(`${context}: priority obrigatoria ausente.`)
+    } else if (!allowedVideoLibraryPriorities.includes(video.priority)) {
+      report.errors.push(`${context}: priority "${video.priority}" inválida.`)
+    }
+
+    if (!isPresent(video.status)) {
+      report.errors.push(`${context}: status obrigatorio ausente.`)
+    } else if (!allowedVideoLibraryStatuses.includes(video.status)) {
+      report.errors.push(`${context}: status "${video.status}" inválido.`)
+    }
+  })
+
+  const duplicates = getDuplicateValues(ids)
+  if (duplicates.length > 0) {
+    report.errors.push(`VideoLibrary: ids duplicados encontrados: ${duplicates.join(', ')}.`)
+  }
+}
+
 function validateContent({
   modules,
   questionBank,
@@ -505,6 +595,7 @@ function validateContent({
   videos,
   checklists,
   simulations,
+  videoLibrary,
 }) {
   const report = {
     errors: [],
@@ -546,6 +637,7 @@ function validateContent({
   validateVideos(videos, report)
   validateChecklists(checklists, report)
   validateSimulations(simulations, report)
+  validateVideoLibrary(videoLibrary, report)
 
   return report
 }
