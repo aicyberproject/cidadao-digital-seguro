@@ -191,7 +191,6 @@ export const libraryDocuments = [
 ]
 
 export const libraryCategories = [
-  'Cartilhas e fascículos',
   'Golpes e fraudes digitais',
   'Dispositivos e redes',
   'Privacidade e proteção de dados',

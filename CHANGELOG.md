@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentada a evolução incremental das videoaulas entre v1.5.2 e v1.5.7.
 - Adicionado link no README para a consolidação documental da frente de videoaulas.
 
+## [1.6.12] - 2026-06-15
+
+### Fixed
+- **Taxonomia da Biblioteca**: Remoção da categoria redundante "Cartilhas e fascículos" da `libraryCategories` em `src/content/library.js` para alinhar com a taxonomia temática permitida e eliminar warning do validador.
+
 ## [1.6.11] - 2026-06-15
 
 ### Documentation
