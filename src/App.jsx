@@ -549,6 +549,29 @@ export default function App() {
         : 'neutral'
 
   const finalResult = scoreQuiz(finalAssessment, progressState.finalAssessmentAnswers || {})
+
+  const finalAnsweredCount = Object.keys(progressState.finalAssessmentAnswers || {}).length
+  const finalTotalQuestions = finalResult.total
+  const hasAnsweredFinalQuestions = finalAnsweredCount > 0
+  const hasAnsweredAllFinalQuestions = finalAnsweredCount === finalTotalQuestions
+
+  const finalAssessmentStatusLabel =
+    progressState.certificateUnlocked || progressState.finalAssessmentPassed
+      ? 'Avaliação aprovada'
+      : !hasAnsweredFinalQuestions
+        ? 'Responda às questões para acompanhar seu desempenho'
+        : !hasAnsweredAllFinalQuestions
+          ? 'Continue respondendo'
+          : finalResult.passed
+            ? 'Aproveitamento suficiente para certificação'
+            : 'Aproveitamento insuficiente'
+
+  const finalAssessmentStatusTone =
+    progressState.certificateUnlocked || progressState.finalAssessmentPassed || finalResult.passed
+      ? 'success'
+      : hasAnsweredAllFinalQuestions
+        ? 'warning'
+        : 'neutral'
   const glossaryCategoryOptions = useMemo(() => ['Todos', ...glossaryCategories], [])
   const filteredGlossaryEntries = useMemo(() => {
     const query = normalizeSearchText(glossaryQuery)
@@ -2265,9 +2288,54 @@ export default function App() {
                 ))}
               </div>
 
+              <div className="final-assessment-status-panel">
+                <div className="final-assessment-status-grid">
+                  <div className="quiz-status-item">
+                    <span className="mini-muted">Respondidas</span>
+                    <div className="quiz-status-value">
+                      {finalAnsweredCount}/{finalTotalQuestions}
+                    </div>
+                  </div>
+                  <div className="quiz-status-item">
+                    <span className="mini-muted">Acertos</span>
+                    <div className="quiz-status-value">
+                      {finalResult.correct}/{finalResult.total}
+                    </div>
+                  </div>
+                  <div className="quiz-status-item">
+                    <span className="mini-muted">Mínimo</span>
+                    <div className="quiz-status-value">70%</div>
+                  </div>
+                </div>
+                <div className={`quiz-status-label ${finalAssessmentStatusTone}`}>
+                  <div className="icon-box small" style={{ background: 'transparent', color: 'inherit' }}>
+                    {finalAssessmentStatusTone === 'success' ? (
+                      <CheckCircle2 size={16} />
+                    ) : finalAssessmentStatusTone === 'warning' ? (
+                      <AlertTriangle size={16} />
+                    ) : (
+                      <Shield size={16} />
+                    )}
+                  </div>
+                  {finalAssessmentStatusLabel}
+                </div>
+              </div>
+
               <div className="info-box muted-body">
                 Resultado atual: {finalResult.correct}/{finalResult.total} acertos. Aproveitamento mínimo: 70%.
               </div>
+
+              {progressState.finalAssessmentPassed && (
+                <div className="final-assessment-success-box">
+                  <div className="ludic-header" style={{ marginBottom: '8px' }}>
+                    <CheckCircle2 size={18} className="success-icon" aria-hidden="true" focusable="false" />
+                    <span className="ludic-title" style={{ fontSize: '0.9rem', color: '#065f46' }}>Avaliação aprovada!</span>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.9rem', color: '#065f46' }}>
+                    Avaliação concluída com sucesso. O certificado já pode ser emitido.
+                  </p>
+                </div>
+              )}
 
               <div className="actions-row">
                 <button
