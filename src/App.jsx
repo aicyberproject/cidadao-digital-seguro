@@ -519,6 +519,8 @@ export default function App() {
 
   const selectedModuleContent = getModuleContent(selectedModule)
   const currentItem = selectedModuleContent[screenIndex] || selectedModuleContent[0] || null
+  const currentContentStepNumber = Math.min(screenIndex + 1, selectedModuleContent.length)
+  const totalContentSteps = selectedModuleContent.length
 
   const allModulesCompleted = modules.every((m) => progressState.moduleState[m.id]?.completed)
   const activeModuleQuiz = progressState.quizVariants?.[selectedModule.id] || selectedModule.quiz || []
@@ -1917,6 +1919,13 @@ export default function App() {
                             : AlertTriangle
                   }
                 >
+                  <div
+                    className="module-step-indicator"
+                    aria-label={`Tela ${currentContentStepNumber} de ${totalContentSteps} do conteúdo do módulo`}
+                  >
+                    Tela {currentContentStepNumber} de {totalContentSteps}
+                  </div>
+
                   {currentItem.content && renderLessonContent(currentItem.content)}
 
                   {currentItem.type === 'text' && Array.isArray(currentItem.body) && (
