@@ -525,6 +525,29 @@ export default function App() {
   const allModulesCompleted = modules.every((m) => progressState.moduleState[m.id]?.completed)
   const activeModuleQuiz = progressState.quizVariants?.[selectedModule.id] || selectedModule.quiz || []
   const moduleQuizResult = scoreQuiz(activeModuleQuiz, selectedModuleState.quizAnswers || {})
+
+  const answeredQuestionsCount = Object.keys(selectedModuleState.quizAnswers || {}).length
+  const totalQuizQuestions = moduleQuizResult.total
+  const hasAnsweredQuestions = answeredQuestionsCount > 0
+  const hasAnsweredAllQuestions = answeredQuestionsCount === totalQuizQuestions
+
+  const quizStatusLabel = selectedModuleState.completed
+    ? 'Módulo concluído'
+    : !hasAnsweredQuestions
+      ? 'Responda às questões para acompanhar seu desempenho'
+      : !hasAnsweredAllQuestions
+        ? 'Continue respondendo'
+        : moduleQuizResult.passed
+          ? 'Aproveitamento suficiente'
+          : 'Aproveitamento insuficiente'
+
+  const quizStatusTone =
+    selectedModuleState.completed || moduleQuizResult.passed
+      ? 'success'
+      : hasAnsweredAllQuestions
+        ? 'warning'
+        : 'neutral'
+
   const finalResult = scoreQuiz(finalAssessment, progressState.finalAssessmentAnswers || {})
   const glossaryCategoryOptions = useMemo(() => ['Todos', ...glossaryCategories], [])
   const filteredGlossaryEntries = useMemo(() => {
@@ -2113,6 +2136,39 @@ export default function App() {
                         </div>
                       </div>
                     ))}
+                  </div>
+
+                  <div className="quiz-status-panel">
+                    <div className="quiz-status-grid">
+                      <div className="quiz-status-item">
+                        <span className="mini-muted">Respondidas</span>
+                        <div className="quiz-status-value">
+                          {answeredQuestionsCount}/{totalQuizQuestions}
+                        </div>
+                      </div>
+                      <div className="quiz-status-item">
+                        <span className="mini-muted">Acertos</span>
+                        <div className="quiz-status-value">
+                          {moduleQuizResult.correct}/{moduleQuizResult.total}
+                        </div>
+                      </div>
+                      <div className="quiz-status-item">
+                        <span className="mini-muted">Mínimo</span>
+                        <div className="quiz-status-value">70%</div>
+                      </div>
+                    </div>
+                    <div className={`quiz-status-label ${quizStatusTone}`}>
+                      <div className="icon-box small" style={{ background: 'transparent', color: 'inherit' }}>
+                        {quizStatusTone === 'success' ? (
+                          <CheckCircle2 size={16} />
+                        ) : quizStatusTone === 'warning' ? (
+                          <AlertTriangle size={16} />
+                        ) : (
+                          <Shield size={16} />
+                        )}
+                      </div>
+                      {quizStatusLabel}
+                    </div>
                   </div>
 
                   <div className="info-box muted-body">
