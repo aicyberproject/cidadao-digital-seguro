@@ -31,6 +31,7 @@ A plataforma oferece uma experiência de aprendizado completa e acessível:
 - [Roadmap](docs/roadmap.md)
 - [Preview automático](docs/preview.md)
 - [Evolução das videoaulas v1.5.2 a v1.5.7](docs/videoaulas-v1.5.2-v1.5.7.md)
+- [Consolidação da Biblioteca de Vídeos v1.6.11](docs/consolidacao-biblioteca-videos-v1.6.11.md)
 
 ## Comandos essenciais
 
