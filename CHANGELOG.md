@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentada a evolução incremental das videoaulas entre v1.5.2 e v1.5.7.
 - Adicionado link no README para a consolidação documental da frente de videoaulas.
 
+## [1.6.11] - 2026-06-15
+
+### Documentation
+- **Consolidação da Biblioteca de Vídeos**: Criação do documento `docs/consolidacao-biblioteca-videos-v1.6.11.md` registrando a arquitetura, modelo de dados, regras de validação e histórico da frente de trabalho (v1.6.6 a v1.6.10).
+
 ## [1.6.10] - 2026-06-15
 
 ### Changed
