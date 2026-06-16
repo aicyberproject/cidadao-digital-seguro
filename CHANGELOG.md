@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentada a evolução incremental das videoaulas entre v1.5.2 e v1.5.7.
 - Adicionado link no README para a consolidação documental da frente de videoaulas.
 
+## [1.6.9] - 2026-06-15
+
+### Added
+- **Interface da Biblioteca de Vídeos**: Renderização da `videoLibrary` curada na área transversal de vídeos.
+- **Seção de Curadoria Especial**: Adição de um novo bloco visual para exibir vídeos externos com metadados detalhados (idioma, tópicos, prioridade).
+- **Integração de Busca**: Os vídeos curados respondem aos mesmos filtros de busca, fonte e módulo da seção de vídeos original.
+
 ## [1.6.8] - 2026-06-15
 
 ### Added
