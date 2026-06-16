@@ -499,6 +499,12 @@ p {
   transform: translateX(4px);
 }
 
+.module-chip.module-chip-active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12), var(--shadow-sm);
+}
+
 .module-chip.locked {
   background: #f1f5f9;
   color: #94a3b8;
