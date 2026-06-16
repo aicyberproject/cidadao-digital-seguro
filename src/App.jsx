@@ -1308,7 +1308,7 @@ export default function App() {
                 </div>
 
                 {filteredGlossaryEntries.length > 0 ? (
-                  <div className="resource-grid">
+                  <div className="resource-grid glossary-grid">
                     {filteredGlossaryEntries.map((entry) => (
                       <article key={entry.term} className="resource-card">
                         <div className="resource-card-head">
