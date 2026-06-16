@@ -11,6 +11,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentada a evolução incremental das videoaulas entre v1.5.2 e v1.5.7.
 - Adicionado link no README para a consolidação documental da frente de videoaulas.
 
+## [1.6.5] - 2026-06-15
+
+### Changed
+- **Melhorias de Navegação e UX**: Destaque visual do módulo ativo na sidebar para melhor orientação espacial.
+- **Orientação de Etapa**: Inclusão do indicador "Tela X de Y" em todas as telas de conteúdo dos módulos.
+- **Painéis de Status em Tempo Real**: Implementação de painéis visuais discretos para acompanhamento do progresso em quizzes de módulos e na avaliação final integradora.
+- **Destaque de Avaliação Final**: Identidade visual solene e feedback de aprovação imediato para a etapa integradora e certificação.
+- **Redução de Densidade Visual**: Compactação moderada das áreas transversais (Glossário, Biblioteca, Vídeos, Checklists e Simulações) para otimizar o uso do espaço e o scroll.
+
+### Fixed
+- **Consistência Visual**: Correção de variável CSS órfã e padronização de rótulos de navegação final ("Ir para a revisão final").
+
 ## [1.5.0] - 2026-06-12
 
 ### Added
