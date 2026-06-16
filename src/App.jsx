@@ -1065,12 +1065,17 @@ export default function App() {
                   : state.unlocked
                     ? 'Disponível'
                     : `Bloqueado. ${MODULE_LOCKED_MESSAGE}`
+                const isActiveModule = currentView === 'module' && selectedModuleId === m.id
 
                 return (
                   <button
                     key={m.id}
                     type="button"
-                    className={`module-chip ${state.unlocked ? '' : 'locked'}`}
+                    className={[
+                      'module-chip',
+                      state.unlocked ? '' : 'locked',
+                      isActiveModule ? 'module-chip-active' : '',
+                    ].filter(Boolean).join(' ')}
                     onClick={() => {
                       if (!state.unlocked) return
                       setSelectedModuleId(m.id)
