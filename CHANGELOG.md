@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.1] - 2026-06-16
+
+### Changed
+- **Refinamento de Estilos Lúdicos**: Migração de estilos inline dos componentes `LudicBlocks` e `LudicTransition` para classes CSS dedicadas em `src/index.css`.
+- **Acessibilidade Pedagógica**: Revisão da semântica do `ScamAlertBlock`, substituindo `role="alert"` por `role="note"` para evitar poluição em leitores de tela em conteúdos estáticos.
+- **Otimização de Assets Decorativos**: Garantia de `aria-hidden="true"` e `focusable="false"` em todos os ícones e avatares decorativos dentro dos blocos lúdicos.
+
 ## [1.7.0] - 2026-06-15
 
 ### Added
