@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2026-06-15
+
+### Added
+- **Camada Lúdica (Piloto)**: Início da série v1.7 com a introdução de interações lúdicas para engajamento pedagógico.
+- **Componentes Lúdicos**: Criação dos componentes reutilizáveis `ScamAlertBlock` (É Golpe!), `SpecialistWordBlock` (Palavra do Especialista) e `LudicTransition`.
+- **Transições Pedagógicas**: Implementação de bloco de transição reflexivo aplicado inicialmente de forma piloto no Módulo 1.
+
+### Changed
+- **Refatoração UI**: Centralização da renderização de blocos de alerta e dica em componentes React dedicados, melhorando a manutenibilidade e acessibilidade.
+
 ## [1.5.8] - 2026-06-13
 
 ### Documentation
