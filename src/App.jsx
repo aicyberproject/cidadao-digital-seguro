@@ -31,6 +31,7 @@ import { videoLibrary } from './content/videoLibrary'
 import { practicalChecklists, checklistCategories, checklistModules } from './content/checklists'
 import { quickSimulations, simulationCategories, simulationModules } from './content/simulations'
 import { CharacterAvatar } from './components/CharacterAvatar'
+import { ScamAlertBlock, SpecialistWordBlock, LudicTransition } from './components/LudicBlocks'
 import packageInfo from '../package.json'
 
 const STORAGE_KEY = 'cidadao-digital-seguro-progress-v2'
@@ -462,20 +463,10 @@ function renderLessonContent(blocks) {
             title.includes('atencao') ||
             title.includes('golpe')
 
-          return (
-            <div key={index} className={`ludic-box ${isAlert ? 'scam' : 'expert'}`}>
-              <div className="ludic-header">
-                <div className="ludic-icon">
-                  <CharacterAvatar type={isAlert ? 'radar' : 'siga'} size={36} />
-                  <div className="ludic-status-badge">
-                    {isAlert ? <AlertTriangle size={12} aria-hidden="true" focusable="false" /> : <Shield size={12} aria-hidden="true" focusable="false" />}
-                  </div>
-                </div>
-                <span className="ludic-title">{block.title || (isAlert ? 'Atenção' : 'Dica')}</span>
-              </div>
-              <div className="ludic-body">{block.text}</div>
-            </div>
-          )
+          if (isAlert) {
+            return <ScamAlertBlock key={index} title={block.title || 'Atenção'} text={block.text} />
+          }
+          return <SpecialistWordBlock key={index} title={block.title || 'Dica'} text={block.text} />
         }
 
         return null
@@ -2090,6 +2081,10 @@ export default function App() {
                         </p>
                       ))}
                     </div>
+                  )}
+
+                  {currentItem.type === 'transition' && (
+                    <LudicTransition title={currentItem.title} description={currentItem.description} />
                   )}
 
                   {currentItem.type === 'scenario' && <div className="scenario-box">{currentItem.prompt}</div>}
