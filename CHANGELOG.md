@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentada a evolução incremental das videoaulas entre v1.5.2 e v1.5.7.
 - Adicionado link no README para a consolidação documental da frente de videoaulas.
 
+## [1.6.10] - 2026-06-15
+
+### Changed
+- **Refinamento da Biblioteca de Vídeos**: Migração de estilos inline para classes CSS específicas em `src/index.css`.
+- **Padronização Editorial**: Implementação de rótulos amigáveis para prioridade e status dos vídeos curados (ex: "Alta prioridade", "Curado").
+- **Melhoria de Legibilidade**: Ajustes na hierarquia visual dos cards de vídeos externos, incluindo exibição clara de tópicos e notas editoriais.
+
 ## [1.6.9] - 2026-06-15
 
 ### Added
