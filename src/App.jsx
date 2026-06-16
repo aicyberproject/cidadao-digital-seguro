@@ -27,6 +27,7 @@ import { finalAssessment } from './content/finalAssessment'
 import { glossaryCategories, glossaryEntries } from './content/glossary'
 import { libraryDocuments, librarySources, libraryCategories, libraryTypes } from './content/library'
 import { educationalVideos, videoModules, videoSources, videoThemes } from './content/videos'
+import { videoLibrary } from './content/videoLibrary'
 import { practicalChecklists, checklistCategories, checklistModules } from './content/checklists'
 import { quickSimulations, simulationCategories, simulationModules } from './content/simulations'
 import { CharacterAvatar } from './components/CharacterAvatar'
@@ -673,6 +674,27 @@ export default function App() {
       )
     })
   }, [videoQuery, selectedVideoSource, selectedVideoTheme, selectedVideoModule])
+
+  const filteredVideoLibrary = useMemo(() => {
+    const query = normalizeSearchText(videoQuery)
+
+    return videoLibrary.filter((video) => {
+      const matchesSource =
+        selectedVideoSource === 'Todos' || video.provider === selectedVideoSource
+      const matchesModule =
+        selectedVideoModule === 'Todos' || video.modules.includes(selectedVideoModule)
+
+      const searchableText = normalizeSearchText(
+        `${video.title} ${video.provider} ${video.language} ${video.modules.join(' ')} ${video.topics.join(' ')} ${video.url} ${video.status} ${video.notes || ''}`,
+      )
+
+      return (
+        matchesSource &&
+        matchesModule &&
+        (!query || searchableText.includes(query))
+      )
+    })
+  }, [videoQuery, selectedVideoSource, selectedVideoModule])
 
   useEffect(() => {
     const isQuizScreen = screenIndex === selectedModuleContent.length
@@ -1580,6 +1602,62 @@ export default function App() {
                 ) : (
                   <div className="info-box muted-body" role="alert">
                     Nenhum vídeo encontrado para a busca ou filtros selecionados.
+                  </div>
+                )}
+
+                <div className="stack-sm" style={{ marginTop: '32px', borderTop: '1px solid var(--border-color)', paddingTop: '24px' }}>
+                  <div className="link-card-title">Curadoria especial de vídeos externos</div>
+                  <p className="muted-body" style={{ fontSize: '0.9rem' }}>
+                    Vídeos de instituições parceiras e campanhas oficiais recomendados pela equipe do curso para aprofundamento.
+                  </p>
+                  <div className="muted-small" aria-live="polite">
+                    {filteredVideoLibrary.length} de {videoLibrary.length} vídeos da curadoria exibidos.
+                  </div>
+                </div>
+
+                {filteredVideoLibrary.length > 0 ? (
+                  <div className="resource-grid" style={{ marginTop: '16px' }}>
+                    {filteredVideoLibrary.map((video) => (
+                      <article key={video.id} className="resource-card">
+                        <div className="resource-card-head">
+                          <h3>{video.title}</h3>
+                          <span className="tag" aria-label={`Prioridade: ${video.priority}`}>
+                            {video.priority}
+                          </span>
+                        </div>
+
+                        <div className="resource-card-body">
+                           <p className="muted-body" style={{ fontSize: '0.9rem' }}>
+                             {video.notes}
+                           </p>
+                        </div>
+
+                        <div className="resource-card-meta">
+                          <span className="resource-meta-chip">Fonte: {video.provider}</span>
+                          <span className="resource-meta-chip">Idioma: {video.language}</span>
+                          <span className="resource-meta-chip">Relacionado: {video.modules.join(', ')}</span>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '4px' }}>
+                            {video.topics.map(topic => (
+                              <span key={topic} className="resource-meta-chip" style={{ fontSize: '0.65rem', background: 'var(--primary-light)', color: 'var(--primary)', borderColor: 'var(--primary-light)' }}>{topic}</span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <a
+                          href={video.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="button button-outline full"
+                          aria-label={`Assistir vídeo ${video.title} em nova aba (material externo)`}
+                        >
+                          Assistir vídeo <ExternalLink size={16} aria-hidden="true" focusable="false" />
+                        </a>
+                      </article>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="info-box muted-body" role="alert">
+                    Nenhum vídeo da curadoria encontrado para os filtros selecionados.
                   </div>
                 )}
               </ScreenCard>
