@@ -27,6 +27,7 @@ import { finalAssessment } from './content/finalAssessment'
 import { glossaryCategories, glossaryEntries } from './content/glossary'
 import { libraryDocuments, librarySources, libraryCategories, libraryTypes } from './content/library'
 import { educationalVideos, videoModules, videoSources, videoThemes } from './content/videos'
+import { videoLibrary } from './content/videoLibrary'
 import { practicalChecklists, checklistCategories, checklistModules } from './content/checklists'
 import { quickSimulations, simulationCategories, simulationModules } from './content/simulations'
 import { CharacterAvatar } from './components/CharacterAvatar'
@@ -36,6 +37,8 @@ const STORAGE_KEY = 'cidadao-digital-seguro-progress-v2'
 const COURSE_VERSION = packageInfo.version
 const CERTIFICATE_WORKLOAD = '12 a 18 horas'
 const FINAL_ASSESSMENT_VERSION = createFinalAssessmentVersion(finalAssessment)
+const MODULE_LOCKED_MESSAGE = 'Conclua o módulo anterior para liberar esta etapa.'
+const FINAL_ASSESSMENT_LOCKED_MESSAGE = 'Conclua todos os módulos para liberar a avaliação final.'
 
 function createFinalAssessmentVersion(assessment) {
   const source = assessment
@@ -105,6 +108,32 @@ function normalizeSearchText(value) {
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
+}
+
+function getVideoPriorityLabel(priority) {
+  const map = {
+    high: 'Alta prioridade',
+    medium: 'Prioridade média',
+    low: 'Baixa prioridade',
+    High: 'Alta prioridade',
+    Medium: 'Prioridade média',
+    Low: 'Baixa prioridade',
+  }
+  return map[priority] || priority
+}
+
+function getVideoStatusLabel(status) {
+  const map = {
+    curated: 'Curado',
+    'pending-validation': 'Pendente de validação',
+    placeholder: 'Placeholder',
+    deprecated: 'Descontinuado',
+    Curated: 'Curado',
+    'Pending Validation': 'Pendente de validação',
+    Placeholder: 'Placeholder',
+    Deprecated: 'Descontinuado',
+  }
+  return map[status] || status
 }
 
 function getQuizSource(moduleItem) {
@@ -277,6 +306,58 @@ function normalizeProgress(loaded) {
     finalAssessmentPassed,
     certificateUnlocked: finalAssessmentPassed,
   }
+}
+
+function getResumeTarget(progressState) {
+  if (progressState.certificateUnlocked || progressState.finalAssessmentPassed) {
+    return { view: 'certificate' }
+  }
+
+  const allModulesCompleted = modules.every((moduleItem) => progressState.moduleState[moduleItem.id]?.completed)
+
+  if (allModulesCompleted) {
+    return { view: 'final-review' }
+  }
+
+  const pendingModule = modules.find((moduleItem) => {
+    const state = progressState.moduleState[moduleItem.id]
+
+    return state?.unlocked && !state.completed
+  })
+
+  if (!pendingModule) {
+    return { view: 'home' }
+  }
+
+  const state = progressState.moduleState[pendingModule.id]
+  const content = getModuleContent(pendingModule)
+  const pendingScreenIndex = content.findIndex((_, index) => !state.contentSeen?.[index])
+
+  if (pendingScreenIndex >= 0) {
+    return { view: 'module', moduleId: pendingModule.id, screenIndex: pendingScreenIndex }
+  }
+
+  if (!state.videoDone) {
+    const videoIndex = content.findIndex((item) => item.type === 'video')
+
+    if (videoIndex >= 0) {
+      return { view: 'module', moduleId: pendingModule.id, screenIndex: videoIndex }
+    }
+  }
+
+  if (!state.activityDone) {
+    const activityIndex = content.findIndex((item) => item.type === 'activity')
+
+    if (activityIndex >= 0) {
+      return { view: 'module', moduleId: pendingModule.id, screenIndex: activityIndex }
+    }
+  }
+
+  if (!state.quizPassed) {
+    return { view: 'module', moduleId: pendingModule.id, screenIndex: content.length }
+  }
+
+  return { view: 'module', moduleId: pendingModule.id, screenIndex: 0 }
 }
 
 function scoreQuiz(quiz, answers) {
@@ -465,11 +546,59 @@ export default function App() {
 
   const selectedModuleContent = getModuleContent(selectedModule)
   const currentItem = selectedModuleContent[screenIndex] || selectedModuleContent[0] || null
+  const currentContentStepNumber = Math.min(screenIndex + 1, selectedModuleContent.length)
+  const totalContentSteps = selectedModuleContent.length
 
   const allModulesCompleted = modules.every((m) => progressState.moduleState[m.id]?.completed)
   const activeModuleQuiz = progressState.quizVariants?.[selectedModule.id] || selectedModule.quiz || []
   const moduleQuizResult = scoreQuiz(activeModuleQuiz, selectedModuleState.quizAnswers || {})
+
+  const answeredQuestionsCount = Object.keys(selectedModuleState.quizAnswers || {}).length
+  const totalQuizQuestions = moduleQuizResult.total
+  const hasAnsweredQuestions = answeredQuestionsCount > 0
+  const hasAnsweredAllQuestions = answeredQuestionsCount === totalQuizQuestions
+
+  const quizStatusLabel = selectedModuleState.completed
+    ? 'Módulo concluído'
+    : !hasAnsweredQuestions
+      ? 'Responda às questões para acompanhar seu desempenho'
+      : !hasAnsweredAllQuestions
+        ? 'Continue respondendo'
+        : moduleQuizResult.passed
+          ? 'Aproveitamento suficiente'
+          : 'Aproveitamento insuficiente'
+
+  const quizStatusTone =
+    selectedModuleState.completed || moduleQuizResult.passed
+      ? 'success'
+      : hasAnsweredAllQuestions
+        ? 'warning'
+        : 'neutral'
+
   const finalResult = scoreQuiz(finalAssessment, progressState.finalAssessmentAnswers || {})
+
+  const finalAnsweredCount = Object.keys(progressState.finalAssessmentAnswers || {}).length
+  const finalTotalQuestions = finalResult.total
+  const hasAnsweredFinalQuestions = finalAnsweredCount > 0
+  const hasAnsweredAllFinalQuestions = finalAnsweredCount === finalTotalQuestions
+
+  const finalAssessmentStatusLabel =
+    progressState.certificateUnlocked || progressState.finalAssessmentPassed
+      ? 'Avaliação aprovada'
+      : !hasAnsweredFinalQuestions
+        ? 'Responda às questões para acompanhar seu desempenho'
+        : !hasAnsweredAllFinalQuestions
+          ? 'Continue respondendo'
+          : finalResult.passed
+            ? 'Aproveitamento suficiente para certificação'
+            : 'Aproveitamento insuficiente'
+
+  const finalAssessmentStatusTone =
+    progressState.certificateUnlocked || progressState.finalAssessmentPassed || finalResult.passed
+      ? 'success'
+      : hasAnsweredAllFinalQuestions
+        ? 'warning'
+        : 'neutral'
   const glossaryCategoryOptions = useMemo(() => ['Todos', ...glossaryCategories], [])
   const filteredGlossaryEntries = useMemo(() => {
     const query = normalizeSearchText(glossaryQuery)
@@ -571,6 +700,27 @@ export default function App() {
       )
     })
   }, [videoQuery, selectedVideoSource, selectedVideoTheme, selectedVideoModule])
+
+  const filteredVideoLibrary = useMemo(() => {
+    const query = normalizeSearchText(videoQuery)
+
+    return videoLibrary.filter((video) => {
+      const matchesSource =
+        selectedVideoSource === 'Todos' || video.provider === selectedVideoSource
+      const matchesModule =
+        selectedVideoModule === 'Todos' || video.modules.includes(selectedVideoModule)
+
+      const searchableText = normalizeSearchText(
+        `${video.title} ${video.provider} ${video.language} ${video.modules.join(' ')} ${video.topics.join(' ')} ${video.url} ${video.status} ${video.notes || ''}`,
+      )
+
+      return (
+        matchesSource &&
+        matchesModule &&
+        (!query || searchableText.includes(query))
+      )
+    })
+  }, [videoQuery, selectedVideoSource, selectedVideoModule])
 
   useEffect(() => {
     const isQuizScreen = screenIndex === selectedModuleContent.length
@@ -703,6 +853,24 @@ export default function App() {
   }
 
   function startCourse() {
+    if (progressState.started) {
+      const target = getResumeTarget(progressState)
+
+      setCurrentView(target.view)
+
+      if (target.moduleId) {
+        setSelectedModuleId(target.moduleId)
+      }
+
+      if (typeof target.screenIndex === 'number') {
+        setScreenIndex(target.screenIndex)
+      } else {
+        setScreenIndex(0)
+      }
+
+      return
+    }
+
     setProgressState((prev) => ({ ...prev, started: true, introSeen: true }))
     setCurrentView('module')
     setSelectedModuleId(modules[0].id)
@@ -926,6 +1094,12 @@ export default function App() {
   }
 
   function resetCourse() {
+    const shouldReset = window.confirm(
+      'Tem certeza de que deseja reiniciar o curso? Essa ação apagará o progresso dos módulos, respostas, avaliação final e dados do certificado salvos neste dispositivo.',
+    )
+
+    if (!shouldReset) return
+
     const fresh = defaultProgress()
     setProgressState(fresh)
     saveProgress(fresh)
@@ -982,12 +1156,22 @@ export default function App() {
               {modules.map((m, idx) => {
                 const state = progressState.moduleState[m.id]
                 const Icon = m.icon
+                const moduleStatusLabel = state.completed
+                  ? 'Concluído'
+                  : state.unlocked
+                    ? 'Disponível'
+                    : `Bloqueado. ${MODULE_LOCKED_MESSAGE}`
+                const isActiveModule = currentView === 'module' && selectedModuleId === m.id
 
                 return (
                   <button
                     key={m.id}
                     type="button"
-                    className={`module-chip ${state.unlocked ? '' : 'locked'}`}
+                    className={[
+                      'module-chip',
+                      state.unlocked ? '' : 'locked',
+                      isActiveModule ? 'module-chip-active' : '',
+                    ].filter(Boolean).join(' ')}
                     onClick={() => {
                       if (!state.unlocked) return
                       setSelectedModuleId(m.id)
@@ -995,7 +1179,7 @@ export default function App() {
                       setScreenIndex(0)
                     }}
                     disabled={!state.unlocked}
-                    aria-label={`Módulo ${idx + 1}: ${m.shortTitle}. ${state.completed ? 'Concluído' : state.unlocked ? 'Disponível' : 'Bloqueado'}`}
+                    aria-label={`Módulo ${idx + 1}: ${m.shortTitle}. ${moduleStatusLabel}`}
                   >
                     <div className="module-chip-head">
                       <div className="module-chip-left">
@@ -1010,6 +1194,7 @@ export default function App() {
                       {state.completed ? <CheckCircle2 className="success-icon" size={18} aria-hidden="true" focusable="false" /> : null}
                     </div>
                     <ModuleProgress mod={m} state={state} />
+                    {!state.unlocked ? <div className="mini-muted">{MODULE_LOCKED_MESSAGE}</div> : null}
                   </button>
                 )
               })}
@@ -1026,9 +1211,15 @@ export default function App() {
                   value={finalResult.passed ? 100 : Math.round((finalResult.correct / finalResult.total) * 100) || 0}
                 />
 
-                <button className="button full" disabled={!allModulesCompleted} onClick={() => setCurrentView('final-review')}>
-                  Ir para a etapa final
+                <button
+                  className="button full"
+                  disabled={!allModulesCompleted}
+                  onClick={() => setCurrentView('final-review')}
+                  aria-label={allModulesCompleted ? 'Ir para a revisão final' : `Avaliação final bloqueada. ${FINAL_ASSESSMENT_LOCKED_MESSAGE}`}
+                >
+                  Ir para a revisão final
                 </button>
+                {!allModulesCompleted ? <div className="mini-muted">{FINAL_ASSESSMENT_LOCKED_MESSAGE}</div> : null}
               </div>
             </div>
           </Card>
@@ -1056,7 +1247,7 @@ export default function App() {
 
                 <div className="actions-row">
                   <button className="button" onClick={startCourse}>
-                    Começar agora <ChevronRight size={16} aria-hidden="true" focusable="false" />
+                    {progressState.started ? 'Continuar curso' : 'Começar agora'} <ChevronRight size={16} aria-hidden="true" focusable="false" />
                   </button>
                   <button className="button button-outline" onClick={() => setCurrentView('structure')}>
                     Como funciona a trilha
@@ -1165,7 +1356,7 @@ export default function App() {
                 </div>
 
                 {filteredGlossaryEntries.length > 0 ? (
-                  <div className="resource-grid">
+                  <div className="resource-grid glossary-grid">
                     {filteredGlossaryEntries.map((entry) => (
                       <article key={entry.term} className="resource-card">
                         <div className="resource-card-head">
@@ -1437,6 +1628,66 @@ export default function App() {
                 ) : (
                   <div className="info-box muted-body" role="alert">
                     Nenhum vídeo encontrado para a busca ou filtros selecionados.
+                  </div>
+                )}
+
+                <div className="video-library-section">
+                  <header className="video-library-header">
+                    <div className="link-card-title">Curadoria especial de vídeos externos</div>
+                    <p className="muted-body">
+                      Vídeos de instituições parceiras e campanhas oficiais recomendados pela equipe do curso para aprofundamento.
+                    </p>
+                    <div className="muted-small video-library-count" aria-live="polite">
+                      {filteredVideoLibrary.length} de {videoLibrary.length} vídeos da curadoria exibidos.
+                    </div>
+                  </header>
+                </div>
+
+                {filteredVideoLibrary.length > 0 ? (
+                  <div className="resource-grid">
+                    {filteredVideoLibrary.map((video) => (
+                      <article key={video.id} className="resource-card">
+                        <div className="resource-card-head">
+                          <h3>{video.title}</h3>
+                          <span className="tag video-library-priority-tag" aria-label={`Prioridade: ${getVideoPriorityLabel(video.priority)}`}>
+                            {getVideoPriorityLabel(video.priority)}
+                          </span>
+                        </div>
+
+                        <div className="resource-card-body">
+                           <p className="muted-body video-notes">
+                             {video.notes}
+                           </p>
+                        </div>
+
+                        <div className="resource-card-meta">
+                          <span className="resource-meta-chip">Fonte: {video.provider}</span>
+                          <span className="resource-meta-chip">Status: {getVideoStatusLabel(video.status)}</span>
+                          <span className="resource-meta-chip">Idioma: {video.language}</span>
+                          <span className="resource-meta-chip">Relacionado: {video.modules.join(', ')}</span>
+                          
+                          <div className="video-library-topic-list">
+                            {video.topics.map(topic => (
+                              <span key={topic} className="video-library-topic-chip">{topic}</span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <a
+                          href={video.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="button button-outline full"
+                          aria-label={`Assistir vídeo ${video.title} em nova aba (material externo)`}
+                        >
+                          Assistir vídeo <ExternalLink size={16} aria-hidden="true" focusable="false" />
+                        </a>
+                      </article>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="info-box muted-body" role="alert">
+                    Nenhum vídeo da curadoria encontrado para os filtros selecionados.
                   </div>
                 )}
               </ScreenCard>
@@ -1822,6 +2073,13 @@ export default function App() {
                             : AlertTriangle
                   }
                 >
+                  <div
+                    className="module-step-indicator"
+                    aria-label={`Tela ${currentContentStepNumber} de ${totalContentSteps} do conteúdo do módulo`}
+                  >
+                    Tela {currentContentStepNumber} de {totalContentSteps}
+                  </div>
+
                   {currentItem.content && renderLessonContent(currentItem.content)}
 
                   {currentItem.type === 'text' && Array.isArray(currentItem.body) && (
@@ -1914,7 +2172,7 @@ export default function App() {
                           markSeen(screenIndex)
                         }}
                       >
-                        Marcar videoaula como assistida
+                        Registrar videoaula como assistida
                       </button>
                     </div>
                   )}
@@ -1961,7 +2219,7 @@ export default function App() {
                           markSeen(screenIndex)
                         }}
                       >
-                        Marcar atividade como concluída
+                        Registrar atividade como concluída
                       </button>
                     </div>
                   )}
@@ -1979,7 +2237,7 @@ export default function App() {
                       className="button"
                       onClick={completeCurrentStepAndAdvance}
                     >
-                      Próxima etapa
+                      Registrar tela e avançar
                     </button>
                   </div>
                 </ScreenCard>
@@ -2011,6 +2269,39 @@ export default function App() {
                     ))}
                   </div>
 
+                  <div className="quiz-status-panel">
+                    <div className="quiz-status-grid">
+                      <div className="quiz-status-item">
+                        <span className="mini-muted">Respondidas</span>
+                        <div className="quiz-status-value">
+                          {answeredQuestionsCount}/{totalQuizQuestions}
+                        </div>
+                      </div>
+                      <div className="quiz-status-item">
+                        <span className="mini-muted">Acertos</span>
+                        <div className="quiz-status-value">
+                          {moduleQuizResult.correct}/{moduleQuizResult.total}
+                        </div>
+                      </div>
+                      <div className="quiz-status-item">
+                        <span className="mini-muted">Mínimo</span>
+                        <div className="quiz-status-value">70%</div>
+                      </div>
+                    </div>
+                    <div className={`quiz-status-label ${quizStatusTone}`}>
+                      <div className="icon-box small" style={{ background: 'transparent', color: 'inherit' }}>
+                        {quizStatusTone === 'success' ? (
+                          <CheckCircle2 size={16} />
+                        ) : quizStatusTone === 'warning' ? (
+                          <AlertTriangle size={16} />
+                        ) : (
+                          <Shield size={16} />
+                        )}
+                      </div>
+                      {quizStatusLabel}
+                    </div>
+                  </div>
+
                   <div className="info-box muted-body">
                     Resultado atual: {moduleQuizResult.correct}/{moduleQuizResult.total} acertos. Aproveitamento mínimo: 70%.
                   </div>
@@ -2028,7 +2319,7 @@ export default function App() {
                       onClick={retryModuleQuiz}
                       disabled={selectedModuleState.completed || Object.keys(selectedModuleState.quizAnswers || {}).length === 0}
                     >
-                      Nova tentativa
+                      Refazer quiz do módulo
                     </button>
 
                     <button
@@ -2037,14 +2328,14 @@ export default function App() {
                       onClick={completeModule}
                     >
                       {modules.findIndex((m) => m.id === selectedModule.id) === modules.length - 1
-                        ? 'Ir para a etapa final'
-                        : 'Concluir módulo e liberar próximo'}
+                        ? 'Ir para a revisão final'
+                        : 'Concluir módulo e liberar próximo módulo'}
                     </button>
                   </div>
 
                   {!selectedModuleState.activityDone || !selectedModuleState.videoDone ? (
                     <div className="warning-text">
-                      Para concluir o módulo, a atividade prática e a videoaula precisam estar marcadas como concluídas.
+                      Para concluir o módulo, registre a videoaula e conclua a atividade prática.
                     </div>
                   ) : null}
                 </ScreenCard>
@@ -2056,7 +2347,7 @@ export default function App() {
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
               <ScreenCard title="Revisão geral do curso" icon={BookOpen}>
                 <p className="muted-body">
-                  Você concluiu a trilha principal. Agora, revise a jornada completa antes de realizar a avaliação final integradora.
+                  Você concluiu todos os módulos. Revise o percurso antes de iniciar a avaliação final integradora.
                 </p>
 
                 <div className="grid-2">
@@ -2069,7 +2360,7 @@ export default function App() {
                 </div>
 
                 <button className="button" onClick={() => setCurrentView('final-assessment')}>
-                  Iniciar avaliação final
+                  Iniciar avaliação final integradora
                 </button>
               </ScreenCard>
             </motion.div>
@@ -2105,9 +2396,54 @@ export default function App() {
                 ))}
               </div>
 
+              <div className="final-assessment-status-panel">
+                <div className="final-assessment-status-grid">
+                  <div className="quiz-status-item">
+                    <span className="mini-muted">Respondidas</span>
+                    <div className="quiz-status-value">
+                      {finalAnsweredCount}/{finalTotalQuestions}
+                    </div>
+                  </div>
+                  <div className="quiz-status-item">
+                    <span className="mini-muted">Acertos</span>
+                    <div className="quiz-status-value">
+                      {finalResult.correct}/{finalResult.total}
+                    </div>
+                  </div>
+                  <div className="quiz-status-item">
+                    <span className="mini-muted">Mínimo</span>
+                    <div className="quiz-status-value">70%</div>
+                  </div>
+                </div>
+                <div className={`quiz-status-label ${finalAssessmentStatusTone}`}>
+                  <div className="icon-box small" style={{ background: 'transparent', color: 'inherit' }}>
+                    {finalAssessmentStatusTone === 'success' ? (
+                      <CheckCircle2 size={16} />
+                    ) : finalAssessmentStatusTone === 'warning' ? (
+                      <AlertTriangle size={16} />
+                    ) : (
+                      <Shield size={16} />
+                    )}
+                  </div>
+                  {finalAssessmentStatusLabel}
+                </div>
+              </div>
+
               <div className="info-box muted-body">
                 Resultado atual: {finalResult.correct}/{finalResult.total} acertos. Aproveitamento mínimo: 70%.
               </div>
+
+              {progressState.finalAssessmentPassed && (
+                <div className="final-assessment-success-box">
+                  <div className="ludic-header" style={{ marginBottom: '8px' }}>
+                    <CheckCircle2 size={18} className="success-icon" aria-hidden="true" focusable="false" />
+                    <span className="ludic-title" style={{ fontSize: '0.9rem', color: '#065f46' }}>Avaliação aprovada!</span>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.9rem', color: '#065f46' }}>
+                    Avaliação concluída com sucesso. O certificado já pode ser emitido.
+                  </p>
+                </div>
+              )}
 
               <div className="actions-row">
                 <button

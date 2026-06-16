@@ -1,11 +1,8 @@
 export const videoThemes = [
-  'Fraudes e golpes digitais',
-  'Segurança bancária',
-  'Engenharia social',
-  'Phishing e links maliciosos',
-  'Furto de celular',
+  'Golpes e fraudes digitais',
+  'Transações e consumo seguro',
   'Privacidade e proteção de dados',
-  'Segurança de dispositivos',
+  'Dispositivos e redes',
   'Desinformação e conteúdo falso',
   'Resposta a incidentes e denúncia',
   'Campanhas educativas',
@@ -47,7 +44,7 @@ export const educationalVideos = [
   {
     title: 'Think Twice - INTERPOL',
     source: 'INTERPOL',
-    theme: 'Engenharia social',
+    theme: 'Golpes e fraudes digitais',
     type: 'Campanha internacional',
     relatedModule: 'Módulo 5',
     duration: '00:45',
@@ -58,7 +55,7 @@ export const educationalVideos = [
   {
     title: 'Furto de Celular: O que fazer?',
     source: 'MJSP',
-    theme: 'Furto de celular',
+    theme: 'Resposta a incidentes e denúncia',
     type: 'Guia em vídeo',
     relatedModule: 'Módulo 6',
     duration: '02:30',
@@ -69,7 +66,7 @@ export const educationalVideos = [
   {
     title: 'Entendendo o Phishing',
     source: 'CERT.br',
-    theme: 'Phishing e links maliciosos',
+    theme: 'Golpes e fraudes digitais',
     type: 'Vídeo educativo',
     relatedModule: 'Módulo 5',
     duration: '03:15',
@@ -80,7 +77,7 @@ export const educationalVideos = [
   {
     title: 'Segurança Bancária Digital',
     source: 'Banco Central',
-    theme: 'Segurança bancária',
+    theme: 'Transações e consumo seguro',
     type: 'Vídeo institucional',
     relatedModule: 'Módulo 4',
     duration: '02:00',
@@ -91,7 +88,7 @@ export const educationalVideos = [
   {
     title: 'Engenharia Social: O Fator Humano',
     source: 'Polícia Federal',
-    theme: 'Engenharia social',
+    theme: 'Golpes e fraudes digitais',
     type: 'Vídeo educativo',
     relatedModule: 'Módulo 1',
     duration: '04:00',
@@ -124,7 +121,7 @@ export const educationalVideos = [
   {
     title: 'Segurança de Dispositivos Móveis',
     source: 'CERT.br',
-    theme: 'Segurança de dispositivos',
+    theme: 'Dispositivos e redes',
     type: 'Vídeo educativo',
     relatedModule: 'Módulo 3',
     duration: '03:45',

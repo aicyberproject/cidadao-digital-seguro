@@ -1,12 +1,11 @@
 export const simulationCategories = [
-  'Golpes e fraudes',
-  'Segurança bancária',
-  'Dispositivos móveis',
-  'Contas e autenticação',
+  'Golpes e fraudes digitais',
+  'Transações e consumo seguro',
+  'Dispositivos e redes',
+  'Autenticação e contas',
   'Privacidade e proteção de dados',
-  'Compras online',
-  'Desinformação',
-  'Resposta a incidentes',
+  'Desinformação e conteúdo falso',
+  'Resposta a incidentes e denúncia',
 ]
 
 export const simulationModules = [
@@ -24,7 +23,7 @@ export const quickSimulations = [
     id: 'sms-encomenda-retida',
     title: 'SMS sobre encomenda retida',
     situation: 'Você recebeu um SMS informando que sua encomenda foi retida e precisa pagar uma taxa.',
-    category: 'Golpes e fraudes',
+    category: 'Golpes e fraudes digitais',
     relatedModule: 'Módulo 5',
     scenario:
       'Sua encomenda foi retida. Pague a taxa de liberação em até 30 minutos para evitar devolução. Acesse: entrega-segura.exemplo/pagamento',
@@ -57,7 +56,7 @@ export const quickSimulations = [
     id: 'falsa-central-banco',
     title: 'Ligação da falsa central do banco',
     situation: 'Alguém liga dizendo ser da central de segurança do seu banco sobre uma fraude.',
-    category: 'Segurança bancária',
+    category: 'Transações e consumo seguro',
     relatedModule: 'Módulo 4',
     scenario:
       '"Olá, detectamos uma tentativa de compra suspeita em seu cartão. Para sua segurança, precisamos transferir seus fundos para uma conta segura temporária enquanto bloqueamos seu cartão."',
@@ -90,7 +89,7 @@ export const quickSimulations = [
     id: 'familiar-numero-novo',
     title: 'Familiar em número novo pedindo Pix',
     situation: 'Um contato que parece ser um familiar escreve de um número novo pedindo ajuda financeira.',
-    category: 'Golpes e fraudes',
+    category: 'Golpes e fraudes digitais',
     relatedModule: 'Módulo 5',
     scenario:
       '"Oi, troquei de número, anota aí. Tive um problema com meu banco e preciso pagar uma conta urgente hoje. Pode me fazer um Pix de R$ 800? Te devolvo amanhã cedo!"',
@@ -123,7 +122,7 @@ export const quickSimulations = [
     id: 'qr-code-taxa-inesperada',
     title: 'QR Code para pagar taxa inesperada',
     situation: 'Você recebe uma mensagem com um QR Code para pagar uma taxa obrigatória de um serviço público.',
-    category: 'Segurança bancária',
+    category: 'Transações e consumo seguro',
     relatedModule: 'Módulo 4',
     scenario:
       'Alerta: Regularize sua situação cadastral hoje para evitar multas. Escaneie o QR Code abaixo para pagar a taxa de manutenção anual obrigatória.',
@@ -156,7 +155,7 @@ export const quickSimulations = [
     id: 'loja-rede-social-barata',
     title: 'Perfil falso de loja com preço muito baixo',
     situation: 'Você vê um anúncio em rede social de um smartphone premium com 70% de desconto.',
-    category: 'Compras online',
+    category: 'Transações e consumo seguro',
     relatedModule: 'Módulo 4',
     scenario:
       'QUEIMA DE ESTOQUE! Somente hoje: Smartphone de última geração de R$ 5.999 por R$ 1.200. Poucas unidades. Compre agora pelo link: super-desconto-promo.exemplo',
@@ -189,7 +188,7 @@ export const quickSimulations = [
     id: 'suporte-remoto-falso',
     title: 'Pedido de acesso remoto por suposto atendente',
     situation: 'Um suposto atendente de TI liga dizendo que seu computador está infectado.',
-    category: 'Dispositivos móveis',
+    category: 'Dispositivos e redes',
     relatedModule: 'Módulo 3',
     scenario:
       '"Identificamos vírus ativos em sua rede. Para remover agora e evitar que seus dados sejam roubados, instale o aplicativo de suporte "AnyHelp" e me passe o código que aparecer."',
@@ -222,7 +221,7 @@ export const quickSimulations = [
     id: 'noticia-alarmista-boato',
     title: 'Notícia alarmista pedindo compartilhamento',
     situation: 'Você recebe um vídeo informando sobre uma mudança drástica e perigosa em uma lei.',
-    category: 'Desinformação',
+    category: 'Desinformação e conteúdo falso',
     relatedModule: 'Módulo 1',
     scenario:
       'URGENTE! A partir de amanhã todos os seus dados bancários serão públicos. O governo acabou de aprovar a lei sigilo-zero. Repasse para todos os seus contatos agora!',
@@ -255,7 +254,7 @@ export const quickSimulations = [
     id: 'deepfake-autoridade',
     title: 'Vídeo de autoridade pedindo dinheiro/dados',
     situation: 'Você vê um vídeo de uma autoridade famosa anunciando um programa de indenização.',
-    category: 'Desinformação',
+    category: 'Desinformação e conteúdo falso',
     relatedModule: 'Módulo 5',
     scenario:
       'No vídeo, a voz e o rosto da autoridade dizem: "Liberamos o saque de R$ 2.500 para todos os cidadãos. Clique abaixo e informe seu CPF para receber via Pix agora."',
@@ -321,7 +320,7 @@ export const quickSimulations = [
     id: 'celular-furtado-mensagens',
     title: 'Celular furtado e mensagens de recuperação',
     situation: 'Após ter o celular furtado, você começa a receber mensagens no seu e-mail de recuperação.',
-    category: 'Resposta a incidentes',
+    category: 'Resposta a incidentes e denúncia',
     relatedModule: 'Módulo 6',
     scenario:
       'Uma mensagem diz: "Seu dispositivo furtado foi localizado. Para ver a localização exata e bloquear o acesso, clique aqui e confirme sua senha do ID Apple/Google."',
