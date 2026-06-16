@@ -1040,3 +1040,46 @@ p {
   padding: 16px;
   margin-bottom: 20px;
 }
+
+/* Video Library Section - v1.6.10 */
+.video-library-section {
+  margin-top: 32px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 24px;
+}
+
+.video-library-header {
+  margin-bottom: 16px;
+}
+
+.video-library-header p {
+  font-size: 0.9rem;
+}
+
+.video-library-topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.video-library-topic-chip {
+  font-size: 0.65rem;
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid var(--primary-light);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.video-library-priority-tag {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.resource-card .video-notes {
+  font-size: 0.9rem;
+}

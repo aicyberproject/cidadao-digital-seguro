@@ -110,6 +110,32 @@ function normalizeSearchText(value) {
     .toLowerCase()
 }
 
+function getVideoPriorityLabel(priority) {
+  const map = {
+    high: 'Alta prioridade',
+    medium: 'Prioridade média',
+    low: 'Baixa prioridade',
+    High: 'Alta prioridade',
+    Medium: 'Prioridade média',
+    Low: 'Baixa prioridade',
+  }
+  return map[priority] || priority
+}
+
+function getVideoStatusLabel(status) {
+  const map = {
+    curated: 'Curado',
+    'pending-validation': 'Pendente de validação',
+    placeholder: 'Placeholder',
+    deprecated: 'Descontinuado',
+    Curated: 'Curado',
+    'Pending Validation': 'Pendente de validação',
+    Placeholder: 'Placeholder',
+    Deprecated: 'Descontinuado',
+  }
+  return map[status] || status
+}
+
 function getQuizSource(moduleItem) {
   if (Array.isArray(moduleItem.questionBank) && moduleItem.questionBank.length > 0) {
     return moduleItem.questionBank
@@ -1605,40 +1631,44 @@ export default function App() {
                   </div>
                 )}
 
-                <div className="stack-sm" style={{ marginTop: '32px', borderTop: '1px solid var(--border-color)', paddingTop: '24px' }}>
-                  <div className="link-card-title">Curadoria especial de vídeos externos</div>
-                  <p className="muted-body" style={{ fontSize: '0.9rem' }}>
-                    Vídeos de instituições parceiras e campanhas oficiais recomendados pela equipe do curso para aprofundamento.
-                  </p>
-                  <div className="muted-small" aria-live="polite">
-                    {filteredVideoLibrary.length} de {videoLibrary.length} vídeos da curadoria exibidos.
-                  </div>
+                <div className="video-library-section">
+                  <header className="video-library-header">
+                    <div className="link-card-title">Curadoria especial de vídeos externos</div>
+                    <p className="muted-body">
+                      Vídeos de instituições parceiras e campanhas oficiais recomendados pela equipe do curso para aprofundamento.
+                    </p>
+                    <div className="muted-small video-library-count" aria-live="polite">
+                      {filteredVideoLibrary.length} de {videoLibrary.length} vídeos da curadoria exibidos.
+                    </div>
+                  </header>
                 </div>
 
                 {filteredVideoLibrary.length > 0 ? (
-                  <div className="resource-grid" style={{ marginTop: '16px' }}>
+                  <div className="resource-grid">
                     {filteredVideoLibrary.map((video) => (
                       <article key={video.id} className="resource-card">
                         <div className="resource-card-head">
                           <h3>{video.title}</h3>
-                          <span className="tag" aria-label={`Prioridade: ${video.priority}`}>
-                            {video.priority}
+                          <span className="tag video-library-priority-tag" aria-label={`Prioridade: ${getVideoPriorityLabel(video.priority)}`}>
+                            {getVideoPriorityLabel(video.priority)}
                           </span>
                         </div>
 
                         <div className="resource-card-body">
-                           <p className="muted-body" style={{ fontSize: '0.9rem' }}>
+                           <p className="muted-body video-notes">
                              {video.notes}
                            </p>
                         </div>
 
                         <div className="resource-card-meta">
                           <span className="resource-meta-chip">Fonte: {video.provider}</span>
+                          <span className="resource-meta-chip">Status: {getVideoStatusLabel(video.status)}</span>
                           <span className="resource-meta-chip">Idioma: {video.language}</span>
                           <span className="resource-meta-chip">Relacionado: {video.modules.join(', ')}</span>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '4px' }}>
+                          
+                          <div className="video-library-topic-list">
                             {video.topics.map(topic => (
-                              <span key={topic} className="resource-meta-chip" style={{ fontSize: '0.65rem', background: 'var(--primary-light)', color: 'var(--primary)', borderColor: 'var(--primary-light)' }}>{topic}</span>
+                              <span key={topic} className="video-library-topic-chip">{topic}</span>
                             ))}
                           </div>
                         </div>
