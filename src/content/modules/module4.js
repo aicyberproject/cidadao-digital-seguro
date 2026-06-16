@@ -3,7 +3,7 @@ import { questionBank } from '../questionBank'
 
 const module4 = {
   id: 'm4',
-  title: 'Transações e Consumo Seguro',
+  title: 'Módulo 4 — Transações e Consumo Seguro',
   shortTitle: 'Transações seguras',  
   subtitle: 'Banco via internet, Pix, compras online, marketplaces e prevenção de fraudes financeiras digitais.',
   icon: CreditCard,  
