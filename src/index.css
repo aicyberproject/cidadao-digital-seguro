@@ -1018,7 +1018,7 @@ p {
 /* Final Assessment Visual Improvements - v1.6.5 */
 .final-assessment-status-panel {
   background: #ffffff;
-  border: 2px solid var(--primary-color);
+  border: 2px solid var(--primary);
   border-radius: var(--border-radius-md);
   padding: 20px;
   margin-bottom: 24px;

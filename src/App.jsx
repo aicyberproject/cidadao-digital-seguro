@@ -1167,9 +1167,9 @@ export default function App() {
                   className="button full"
                   disabled={!allModulesCompleted}
                   onClick={() => setCurrentView('final-review')}
-                  aria-label={allModulesCompleted ? 'Ir para a etapa final' : `Avaliação final bloqueada. ${FINAL_ASSESSMENT_LOCKED_MESSAGE}`}
+                  aria-label={allModulesCompleted ? 'Ir para a revisão final' : `Avaliação final bloqueada. ${FINAL_ASSESSMENT_LOCKED_MESSAGE}`}
                 >
-                  Ir para a etapa final
+                  Ir para a revisão final
                 </button>
                 {!allModulesCompleted ? <div className="mini-muted">{FINAL_ASSESSMENT_LOCKED_MESSAGE}</div> : null}
               </div>
