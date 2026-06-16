@@ -706,8 +706,8 @@ p {
 
 .glossary-controls {
   display: grid;
-  gap: 16px;
-  margin-top: 24px;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .search-field {
@@ -720,6 +720,7 @@ p {
   padding: 0 16px;
   color: var(--text-muted);
   transition: var(--transition);
+  min-height: 42px;
 }
 
 .search-field:focus-within {
@@ -731,6 +732,7 @@ p {
   border: 0;
   box-shadow: none;
   padding-left: 0;
+  font-size: 0.95rem;
 }
 
 .glossary-search:focus {
@@ -739,7 +741,7 @@ p {
 
 .filter-row {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
@@ -748,10 +750,11 @@ p {
   background: #ffffff;
   color: var(--text-main);
   border-radius: 999px;
-  padding: 8px 16px;
+  padding: 6px 14px;
   cursor: pointer;
   font-weight: 500;
   transition: var(--transition);
+  font-size: 0.875rem;
 }
 
 .filter-chip:hover {
@@ -809,18 +812,24 @@ p {
 .resource-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
-  margin-top: 32px;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+@media (min-width: 1200px) {
+  .resource-grid.glossary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 .resource-card {
   border: 1px solid var(--border-color);
   background: #ffffff;
   border-radius: var(--border-radius-lg);
-  padding: 24px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   box-shadow: var(--shadow-sm);
   transition: var(--transition);
 }
@@ -839,7 +848,7 @@ p {
 }
 
 .resource-card h3 {
-  font-size: 1.125rem;
+  font-size: 1.05rem;
   color: var(--text-title);
   font-weight: 700;
   margin: 0;
@@ -849,15 +858,15 @@ p {
 .resource-card-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   margin-top: auto;
 }
 
 .resource-meta-chip {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   border: 1px solid var(--border-color);
   border-radius: 999px;
-  padding: 4px 12px;
+  padding: 2px 10px;
   background: var(--bg-app);
   color: var(--text-muted);
   font-weight: 600;
@@ -868,16 +877,27 @@ p {
   flex-grow: 1;
 }
 
+.resource-card .glossary-tip {
+  padding: 12px 14px !important;
+  gap: 8px !important;
+}
+
+.resource-card .glossary-tip .ludic-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+
 /* Specific Resource Styles */
 .simulation-scenario {
-  margin: 16px 0;
+  margin: 12px 0;
   border-style: dashed;
   background: var(--bg-app);
 }
 
 .simulation-scenario .ludic-body {
   font-style: italic;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--text-main);
   line-height: 1.5;
 }
@@ -885,16 +905,17 @@ p {
 .interactive-option-btn {
   text-align: left;
   height: auto;
-  padding: 12px 16px;
+  padding: 10px 14px;
   line-height: 1.4;
   justify-content: flex-start;
+  font-size: 0.9rem;
 }
 
 .checklist-item-row {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px;
+  padding: 8px 12px;
   border-radius: var(--border-radius-md);
   background: var(--bg-app);
   cursor: pointer;
