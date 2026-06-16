@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentada a evolução incremental das videoaulas entre v1.5.2 e v1.5.7.
 - Adicionado link no README para a consolidação documental da frente de videoaulas.
 
+## [1.6.13] - 2026-06-15
+
+### Documentation
+- **Consolidação Final da Série v1.6**: Criação do documento `docs/consolidacao-serie-v1.6.md` registrando todas as evoluções de UX, conteúdo e integridade técnica realizadas na branch de integração.
+
 ## [1.6.12] - 2026-06-15
 
 ### Fixed
