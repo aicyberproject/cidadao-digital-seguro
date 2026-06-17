@@ -86,6 +86,12 @@ const module6 = {
           text:
             'A contenção deve ser feita pelos canais oficiais. Não siga instruções recebidas na própria ligação, mensagem ou conversa suspeita.',
         },
+        {
+          type: 'transition',
+          title: 'Do Controle de Danos à Preservação',
+          description:
+            'Agora que você sabe como interromper o avanço de um incidente, vamos aprender a lidar com as "pistas" digitais que serão fundamentais para a sua defesa e para a denúncia.',
+        },
       ],
     },
     {
@@ -123,6 +129,12 @@ const module6 = {
           ],
         },
         {
+          type: 'tip',
+          title: 'Palavra do Especialista — Não Apague as Provas',
+          text:
+            'A primeira vontade após um golpe é apagar a conversa e bloquear o criminoso para esquecer o trauma. Porém, essa conversa é a sua prova. Tire prints, anote o número de telefone e o link do perfil antes de qualquer limpeza ou bloqueio.',
+        },
+        {
           type: 'callout',
           title: 'Preserve antes de bloquear',
           text:
@@ -157,6 +169,12 @@ const module6 = {
           title: 'Canal oficial é independente',
           text:
             'Não use o telefone, link ou perfil informado pelo suposto atendente. Consulte o canal oficial por aplicativo já instalado, site digitado manualmente, cartão físico, contrato ou fonte institucional confiável.',
+        },
+        {
+          type: 'scam',
+          title: 'Momento É Golpe! — O Falso Suporte',
+          text:
+            'Ao postar uma reclamação pública em redes sociais, criminosos podem se passar pelo suporte oficial da empresa para "ajudar". Eles pedirão códigos, senhas ou transferências para "resolver" seu problema. Use apenas os canais de atendimento encontrados no site ou aplicativo oficial.',
         },
       ],
     },

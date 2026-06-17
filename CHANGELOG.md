@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.8] - 2026-06-16
+
+### Added
+- **Expansão Lúdica Módulo 6**: Inserção estratégica de componentes lúdicos no Módulo 6 (Resposta a Incidentes e Denúncia).
+- **Alerta de Falso Suporte**: Adicionado bloco "Momento É Golpe!" sobre criminosos que se passam por suporte técnico em redes sociais.
+- **Dica de Preservação**: Adicionado bloco "Palavra do Especialista" reforçando a importância de não apagar conversas antes de coletar evidências.
+- **Transição de Contexto**: Implementada transição lúdica entre as fases de contenção de danos e preservação de evidências.
+
 ## [1.7.7] - 2026-06-16
 
 ### Added
