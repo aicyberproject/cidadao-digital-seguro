@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.2] - 2026-06-16
+
+### Planning
+- **Planejamento de Microinterações**: Elaboração de diretrizes técnicas e pedagógicas para futuras animações da camada lúdica em `docs/planejamento-microinteracoes-v1.8.2.md`.
+- **Estratégia Técnica**: Recomendação de uso prioritário de CSS puro para animações de entrada, reservando `framer-motion` para orquestrações complexas.
+- **Diretrizes de Acessibilidade**: Definição de suporte obrigatório a `prefers-reduced-motion` e foco no desempenho de dispositivos de baixo custo.
+
 ## [1.8.1] - 2026-06-16
 
 ### Documentation
