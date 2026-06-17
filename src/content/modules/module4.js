@@ -51,6 +51,12 @@ const module4 = {
           text:
             'Não faça pagamentos ou transferências sob pressão. Pare, confira os dados, confirme pelo canal oficial e só então decida.',
         },
+        {
+          type: 'transition',
+          title: 'Da Teoria à Prática Financeira',
+          description:
+            'Agora que entendemos a importância de não agir sob pressão, vamos ver como proteger o ambiente onde suas transações acontecem: o seu aplicativo de banco.',
+        },
       ],
     },
     {
@@ -151,6 +157,12 @@ const module4 = {
           text:
             'Comprovante enviado por print não é garantia de pagamento. Confira se o valor realmente entrou na conta ou foi confirmado pela plataforma antes de entregar produto, liberar serviço ou encerrar negociação.',
         },
+        {
+          type: 'scam',
+          title: 'Momento É Golpe! — O QR Code Estático',
+          text:
+            'Cuidado com QR Codes impressos ou enviados por mensagem que prometem prêmios ou descontos absurdos. Eles podem redirecionar para sites de phishing ou conter valores de pagamento já embutidos que não correspondem ao prometido. Sempre confira o valor e o destinatário na tela do banco ANTES de confirmar.',
+        },
       ],
     },
     {
@@ -206,6 +218,12 @@ const module4 = {
             'Bloqueie ou substitua cartão em caso de suspeita de exposição.',
             'Evite cadastrar cartão em sites pouco conhecidos ou sem reputação.',
           ],
+        },
+        {
+          type: 'tip',
+          title: 'Palavra do Especialista — Cartão Virtual',
+          text:
+            'O cartão virtual é uma das melhores defesas para compras online. Muitos bancos permitem criar cartões de "uso único" ou com limites específicos. Se os dados desse cartão forem vazados em um site, o criminoso não terá acesso ao seu cartão físico principal.',
         },
       ],
     },
