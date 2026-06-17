@@ -34,4 +34,5 @@ A expansão lúdica no Módulo 4 foi bem-sucedida, agregando valor didático sem
 - Transição entre "Golpes de Engenharia Social" e "Ameaças Técnicas" (`transition`).
 
 ---
-*Auditoria realizada por Gemini CLI em 16/06/2026.*
+*Auditoria registrada em 16/06/2026.*
+
