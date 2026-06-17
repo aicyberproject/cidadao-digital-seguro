@@ -55,4 +55,4 @@ A implementação lúdica nos módulos 1, 2 e 3 está consolidada e madura. O ri
 - Transição entre compras online e segurança física no uso do Pix (`transition`).
 
 ---
-*Auditoria realizada por Gemini CLI em 16/06/2026.*
+Auditoria registrada em 16/06/2026.
