@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.6] - 2026-06-16
+
+### Added
+- **Expansão Lúdica Módulo 5**: Inserção estratégica de componentes lúdicos no Módulo 5 (Catálogo de Ameaças e Golpes).
+- **Alerta de Smishing**: Adicionado bloco "Momento É Golpe!" focado em phishing por SMS (smishing) de taxas de entrega.
+- **Dica de Denúncia**: Adicionado bloco "Palavra do Especialista" sobre a importância de denunciar perfis falsos nas plataformas.
+- **Transição de Contexto**: Implementada transição lúdica conectando ameaças técnicas (malware) a ameaças de engenharia social.
+
 ## [1.7.5] - 2026-06-16
 
 ### Added

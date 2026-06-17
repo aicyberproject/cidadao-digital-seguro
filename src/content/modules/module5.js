@@ -85,6 +85,12 @@ const module5 = {
             'Confirme a solicitação por canal independente.',
           ],
         },
+        {
+          type: 'scam',
+          title: 'Momento É Golpe! — O SMS de Taxa',
+          text:
+            'Você recebe um SMS dizendo que uma encomenda está retida e que você precisa pagar uma taxa urgente clicando em um link. Esse é o Smishing. O link leva a um site falso que rouba seus dados de cartão. Nunca clique em links de cobrança recebidos por SMS.',
+        },
       ],
     },
     {
@@ -137,6 +143,12 @@ const module5 = {
             'Guarde cópias em local separado do dispositivo principal.',
           ],
         },
+        {
+          type: 'transition',
+          title: 'Das Falhas Técnicas às Falhas Humanas',
+          description:
+            'Agora que vimos ameaças que atacam o seu dispositivo (malware e ransomware), vamos olhar para os golpes que tentam atacar algo muito mais sutil: a sua confiança e as suas emoções nas redes sociais.',
+        },
       ],
     },
     {
@@ -165,6 +177,12 @@ const module5 = {
           type: 'paragraph',
           text:
             'A conduta segura é verificar a identidade por outro canal, limitar exposição do perfil, ativar verificação em duas etapas, revisar aplicativos de terceiros conectados à conta e denunciar perfis falsos.',
+        },
+        {
+          type: 'tip',
+          title: 'Palavra do Especialista — Denunciar é Prevenir',
+          text:
+            'Ao encontrar um perfil falso ou uma tentativa de golpe nas redes sociais, não apenas bloqueie: use a ferramenta de denúncia da própria plataforma. Isso ajuda os algoritmos de segurança a removerem o golpista e protege outros cidadãos de caírem na mesma armadilha.',
         },
       ],
     },
