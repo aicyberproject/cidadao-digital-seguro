@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.2] - 2026-06-16
+
+### Added
+- **Expansão Lúdica Controlada**: Inserção estratégica de componentes lúdicos nos módulos 2 e 3 para reforçar mensagens-chave sobre autenticação e dispositivos.
+- **Novos Alertas de Golpe**: Adicionado bloco "Momento É Golpe!" no Módulo 2 focado em phishing de códigos SMS.
+- **Dicas de Especialista**: Adicionado bloco "Palavra do Especialista" no Módulo 3 sobre a importância do registro do IMEI.
+- **Transições de Fluxo**: Implementada transição lúdica no Módulo 3 para marcar a mudança de contexto entre proteção de dispositivos e redes domésticas.
+
 ## [1.7.1] - 2026-06-16
 
 ### Changed
