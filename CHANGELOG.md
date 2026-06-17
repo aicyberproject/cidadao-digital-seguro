@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-06-16
+
+### Added
+- **Auditoria Final e Consolidação Lúdica**: Encerramento formal da série v1.7.x com auditoria transversal de todos os módulos.
+- **Documentação Consolidada**: Criação de `docs/auditoria-final-ludica-v1.8.0.md` mapeando todas as inserções lúdicas e atestando a coerência pedagógica.
+- **Relatório de Recomendações**: Definição de roadmap para futuras séries de melhoria (v1.8.x a v2.0.x).
+
 ## [1.7.9] - 2026-06-16
 
 ### Added
