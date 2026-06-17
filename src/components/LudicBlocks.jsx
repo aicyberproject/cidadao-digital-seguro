@@ -4,7 +4,7 @@ import { CharacterAvatar } from './CharacterAvatar'
 
 export function ScamAlertBlock({ title = 'Momento É Golpe!', text, className = '' }) {
   return (
-    <div className={`ludic-box scam ${className}`.trim()} role="note">
+    <div className={`ludic-box scam micro-entry-transition ${className}`.trim()} role="note">
       <div className="ludic-header">
         <div className="ludic-icon" aria-hidden="true">
           <CharacterAvatar type="radar" size={36} />
@@ -23,7 +23,7 @@ export function ScamAlertBlock({ title = 'Momento É Golpe!', text, className = 
 
 export function SpecialistWordBlock({ title = 'Palavra do Especialista', text, className = '' }) {
   return (
-    <div className={`ludic-box expert ${className}`.trim()}>
+    <div className={`ludic-box expert micro-entry-transition ${className}`.trim()}>
       <div className="ludic-header">
         <div className="ludic-icon" aria-hidden="true">
           <CharacterAvatar type="siga" size={36} />
