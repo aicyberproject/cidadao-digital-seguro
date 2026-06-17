@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.4] - 2026-06-16
+
+### Added
+- **Expansão Lúdica Módulo 4**: Inserção estratégica de componentes lúdicos no Módulo 4 (Transações e Consumo Seguro).
+- **Alerta de QR Code**: Adicionado bloco "Momento É Golpe!" sobre riscos de QR Codes estáticos e phishing financeiro.
+- **Uso de Cartão Virtual**: Adicionado bloco "Palavra do Especialista" reforçando a importância do uso de cartões virtuais em e-commerce.
+- **Transição de Contexto**: Implementada transição lúdica para conectar a teoria de segurança com a prática de aplicativos bancários.
+
 ## [1.7.3] - 2026-06-16
 
 ### Added
