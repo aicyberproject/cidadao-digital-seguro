@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.3] - 2026-06-16
+
+### Added
+- **Microinterações CSS Experimentais**: Implementação de animação de entrada (fade-in + slide-up) para o componente `LudicTransition`.
+- **Animações Otimizadas**: Uso exclusivo de `transform` e `opacity` para garantir performance e evitar reflows de layout.
+- **Respeito à Acessibilidade**: Implementação de fallback obrigatório para `prefers-reduced-motion` nas novas classes de animação.
+
 ## [1.8.2] - 2026-06-16
 
 ### Planning
