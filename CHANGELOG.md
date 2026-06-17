@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.3] - 2026-06-16
+
+### Added
+- **Auditoria Lúdica**: Realizada auditoria completa da aplicação de componentes lúdicos nos módulos 1, 2 e 3.
+- **Documentação de Auditoria**: Criação de `docs/auditoria-ludica-v1.7.3.md` com análise técnica e pedagógica dos blocos inseridos.
+- **Validação de Integridade**: Verificação de renderização, progresso do curso e fluxo de certificação via testes E2E.
+
 ## [1.7.2] - 2026-06-16
 
 ### Added
