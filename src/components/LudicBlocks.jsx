@@ -42,7 +42,7 @@ export function SpecialistWordBlock({ title = 'Palavra do Especialista', text, c
 
 export function LudicTransition({ title, description, children }) {
   return (
-    <div className="ludic-transition-block">
+    <div className="ludic-transition-block micro-entry-transition">
       {title && <h3>{title}</h3>}
       {description && <p className="muted-body">{description}</p>}
       {children && <div className="ludic-transition-content">{children}</div>}
