@@ -77,6 +77,12 @@ export const module2 = {
       ],
     },
     {
+      type: 'scam',
+      title: 'Momento É Golpe! — O Código por SMS',
+      text:
+        'Criminosos podem ligar se passando por suporte técnico, agendamento de saúde ou anúncios, e pedir que você "confirme" um código enviado por SMS. Esse código é, na verdade, a sua verificação em duas etapas para invadir seu WhatsApp ou e-mail. Nunca compartilhe códigos recebidos por SMS.',
+    },
+    {
       type: 'text',
       title: 'Pilar 3 — Proteção da conta de e-mail',
       body: [
