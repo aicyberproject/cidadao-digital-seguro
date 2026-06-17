@@ -72,6 +72,12 @@ export const module3 = {
       ],
     },
     {
+      type: 'tip',
+      title: 'Palavra do Especialista — O Cofre do IMEI',
+      text:
+        'O IMEI é o "chassi" do seu celular. Tenha esse número anotado em papel ou em um local seguro fora do aparelho. Em caso de furto, ele é essencial para bloquear o dispositivo na operadora e impedir que ele seja usado em outras redes.',
+    },
+    {
       type: 'text',
       title: 'Bloqueio de tela, biometria e aplicativos sensíveis',
       body: [
