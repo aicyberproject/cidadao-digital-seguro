@@ -594,14 +594,19 @@ export default function App() {
   const filteredGlossaryEntries = useMemo(() => {
     const query = normalizeSearchText(glossaryQuery)
 
-    return glossaryEntries.filter((entry) => {
+    const filtered = glossaryEntries.filter((entry) => {
       const matchesCategory =
         selectedGlossaryCategory === 'Todos' || entry.category === selectedGlossaryCategory
       const searchableText = normalizeSearchText(
-        `${entry.term} ${entry.category} ${entry.module} ${entry.definition} ${entry.guidance}`,
+        `${entry.term} ${entry.category} ${entry.module} ${entry.definition} ${entry.guidance} ${entry.example || ''}`,
       )
 
       return matchesCategory && (!query || searchableText.includes(query))
+    })
+
+    return filtered.sort((a, b) => {
+      if (a.priority === b.priority) return 0
+      return a.priority ? -1 : 1
     })
   }, [glossaryQuery, selectedGlossaryCategory])
   const librarySourceOptions = useMemo(() => ['Todos', ...librarySources], [])
@@ -1349,19 +1354,27 @@ export default function App() {
                 {filteredGlossaryEntries.length > 0 ? (
                   <div className="resource-grid glossary-grid">
                     {filteredGlossaryEntries.map((entry) => (
-                      <article key={entry.term} className="resource-card">
+                      <article key={entry.term} className={`resource-card ${entry.priority ? 'glossary-priority-card' : ''}`}>
                         <div className="resource-card-head">
-                          <h3>{entry.term}</h3>
-                          <span className="tag">{entry.module}</span>
+                          <div className="glossary-title-row">
+                            <h3>{entry.term}</h3>
+                            {entry.priority && <Shield size={16} className="success-icon" aria-label="Termo essencial" />}
+                          </div>
+                          <span className="tag" aria-label={`Relacionado ao ${entry.module}`}>{entry.module}</span>
                         </div>
                         <div className="mini-muted">{entry.category}</div>
                         <div className="resource-card-body">
                           <p className="muted-body">{entry.definition}</p>
+                          {entry.example && (
+                            <div className="muted-body glossary-example">
+                              <strong>Exemplo prático:</strong> {entry.example}
+                            </div>
+                          )}
                         </div>
                         {entry.guidance ? (
-                          <div className="ludic-box expert glossary-tip" style={{ padding: '16px', margin: '0' }}>
+                          <div className="ludic-box expert glossary-tip">
                             <div className="ludic-header">
-                              <div className="ludic-icon" style={{ width: '32px', height: '32px' }}>
+                              <div className="ludic-icon">
                                 <CharacterAvatar type="siga" size={24} />
                                 <div className="ludic-status-badge">
                                   <Shield size={10} aria-hidden="true" focusable="false" />
