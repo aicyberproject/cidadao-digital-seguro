@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.2] - 2026-06-17
+
+### Planning
+- **Planejamento da Biblioteca e Documentos Públicos**: Diagnóstico da estrutura de dados das coleções `library.js`, `videoLibrary.js` e `officialLinks.js` na branch v1.9.2.
+- **Diretrizes de Evolução**: Documentação em `docs/planejamento-biblioteca-documentos-v1.9.2.md` com propostas para padronização de campos de módulo (arrays) e inserção de `tags` nos fascículos.
+- **Critérios de Curadoria**: Oficialização das regras de inclusão de novos materiais, limitando fontes a domínios de alta credibilidade (ex: `.gov.br`, `cert.br`, confederações).
+
 ## [1.9.1] - 2026-06-17
 
 ### Planning
