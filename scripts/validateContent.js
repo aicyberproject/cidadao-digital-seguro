@@ -376,6 +376,14 @@ function validateGlossary(glossary, report) {
     if (!isPresent(entry?.guidance)) {
       report.errors.push(`${context}: guidance obrigatorio ausente.`)
     }
+
+    if ('example' in entry && typeof entry.example !== 'string') {
+      report.errors.push(`${context}: example, se presente, deve ser string.`)
+    }
+
+    if ('priority' in entry && typeof entry.priority !== 'boolean') {
+      report.errors.push(`${context}: priority, se presente, deve ser boolean.`)
+    }
   })
 }
 
