@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.5] - 2026-06-17
+
+### Documentation
+- **Consolidação do Planejamento Transversal**: Síntese e agrupamento dos diagnósticos realizados na série v1.9.x (Glossário, Biblioteca, Simulações e Auditoria Visual).
+- **Roadmap v2.0.x**: Criação do documento `docs/consolidacao-planejamento-v1.9.5.md` estabelecendo a estratégia, as frentes e a ordem segura de implementação (v2.0.0 a v2.0.4).
+- **Encerramento de Série**: Fechamento oficial da fase puramente documental e de diagnóstico de ferramentas transversais.
+
 ## [1.9.4] - 2026-06-17
 
 ### Planning
