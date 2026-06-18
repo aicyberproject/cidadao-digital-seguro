@@ -378,15 +378,15 @@ export const module5Questions = [
   },
   {
     id: 'm5-q30',
-    question: 'Qual é o comando mental central diante de ameaças e golpes digitais?',
+    question: 'Por que o módulo faz a transição "Das Falhas Técnicas às Falhas Humanas" ao explicar o catálogo de golpes?',
     options: [
-      'Clique, pague e resolva depois.',
-      'Pare, desconfie, confirme e só então aja.',
-      'Confie no primeiro contato recebido.',
-      'Compartilhe para descobrir se é verdadeiro.',
+      'Porque a tecnologia é a única culpada pelas fraudes.',
+      'Para mostrar que, além de atacar os dispositivos (com malware e ransomware), os criminosos também atacam a confiança e as emoções do usuário (com engenharia social).',
+      'Porque falhas humanas não causam prejuízo financeiro real.',
+      'Para indicar que o uso de antivírus impede qualquer falha humana.',
     ],
     answer: 1,
     explanation:
-      'A pausa e a confirmação por fonte confiável reduzem o risco de ações precipitadas exploradas por golpistas.',
+      'O catálogo de ameaças engloba tanto vetores puramente técnicos quanto vetores comportamentais, exigindo proteção dupla (sistemas atualizados e atenção constante).',
   },
 ]
