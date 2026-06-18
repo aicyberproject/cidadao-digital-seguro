@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.4] - 2026-06-17
+
+### Planning
+- **Planejamento de Auditoria Visual Global**: Diagnóstico visual da interface do curso (`src/App.jsx` e `src/index.css`) com foco nas áreas transversais.
+- **Diretrizes de Consistência**: Documentação em `docs/planejamento-auditoria-visual-global-v1.9.4.md` cobrindo tipografia, espaçamento (vertical rhythm), botões, cards e grids.
+- **Foco em Acessibilidade**: Registro de critérios para contraste de cores, navegação por teclado (focus-visible), ARIA e `prefers-reduced-motion`.
+
 ## [1.9.3] - 2026-06-17
 
 ### Planning
