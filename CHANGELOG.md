@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.3] - 2026-06-17
+
+### Planning
+- **Planejamento das Simulações Rápidas**: Revisão e diagnóstico da estrutura atual das simulações em `src/content/simulations.js`.
+- **Evolução de Cenários**: Documentação em `docs/planejamento-simulacoes-rapidas-v1.9.3.md` mapeando cenários prioritários para refatoração pedagógica (Falsa Central, QR Code, Falso Suporte, Preservação de Evidências).
+- **Critérios de Feedback**: Oficialização das diretrizes para feedbacks corretivos construtivos, não-culpabilizantes e sincronizados com a linguagem lúdica do curso.
+
 ## [1.9.2] - 2026-06-17
 
 ### Planning
