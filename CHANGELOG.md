@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.1] - 2026-06-17
+
+### Planning
+- **Planejamento do Glossário**: Criação do documento `docs/planejamento-glossario-v1.9.1.md` contendo o diagnóstico estrutural e visual da ferramenta.
+- **Mapeamento de Lacunas**: Identificada a oportunidade de adicionar um campo de "exemplo prático" (`example`) e um indicador de "termo prioritário" (`priority`) no modelo de dados atual.
+- **Diretrizes de Interface**: Proposição de destaque visual para o vínculo com módulos e melhorias no mecanismo de busca textual para abranger definições e futuros exemplos.
+
 ## [1.9.0] - 2026-06-17
 
 ### Planning
