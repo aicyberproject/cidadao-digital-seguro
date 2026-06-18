@@ -14,6 +14,8 @@ export const glossaryEntries = [
     module: 'Módulo 5',
     definition: 'Tentativa de obter dados, senhas, códigos ou pagamentos por mensagens, e-mails, sites, ligações ou links falsos.',
     guidance: 'Não clique em links inesperados; acesse o serviço digitando o endereço oficial ou usando o aplicativo legítimo.',
+    example: 'Um SMS dizendo que sua conta bancária foi bloqueada e pedindo para clicar em um link urgente.',
+    priority: true,
   },
   {
     term: 'Engenharia social',
@@ -21,6 +23,8 @@ export const glossaryEntries = [
     module: 'Módulo 1',
     definition: 'Uso de manipulação, pressão emocional ou falsa confiança para induzir a vítima a tomar uma decisão insegura.',
     guidance: 'Pause antes de agir e confirme a situação por outro canal quando houver pressão ou urgência.',
+    example: 'Alguém ligando e fingindo ser do suporte técnico para pedir sua senha.',
+    priority: true,
   },
   {
     term: 'Falsa central de atendimento',
@@ -28,6 +32,8 @@ export const glossaryEntries = [
     module: 'Módulo 4',
     definition: 'Golpe em que o criminoso se passa por central de atendimento de banco ou empresa para pedir dados, códigos ou transferências.',
     guidance: 'Encerre o contato e procure a instituição por canal oficial independente. Bancos não pedem senhas ou transferências por telefone.',
+    example: 'Receber ligação de um suposto funcionário do banco solicitando um Pix de teste para cancelar uma transação suspeita.',
+    priority: true,
   },
   {
     term: 'Perfil falso',
@@ -35,6 +41,8 @@ export const glossaryEntries = [
     module: 'Módulo 5',
     definition: 'Conta em rede social criada para se passar por outra pessoa ou empresa, geralmente para aplicar golpes em contatos próximos.',
     guidance: 'Se receber pedido de dinheiro de conhecido por número novo, ligue para a pessoa pelo número antigo para confirmar.',
+    example: 'Um criminoso cria um perfil no WhatsApp usando a foto de um familiar e envia mensagens pedindo dinheiro emprestado.',
+    priority: true,
   },
   {
     term: 'Link malicioso',
@@ -42,6 +50,8 @@ export const glossaryEntries = [
     module: 'Módulo 5',
     definition: 'Endereço eletrônico que, ao ser clicado, direciona para sites falsos ou inicia o download de vírus.',
     guidance: 'Passe o mouse (ou pressione longamente) sobre o link para ver o endereço real antes de clicar.',
+    example: 'Receber um link encurtado via e-mail que promete um cupom de desconto, mas redireciona para um site de coleta de dados bancários.',
+    priority: true,
   },
   {
     term: 'QR Code falso',
@@ -49,6 +59,8 @@ export const glossaryEntries = [
     module: 'Módulo 4',
     definition: 'Código visual adulterado que direciona o pagamento ou o acesso para criminosos em vez do destino legítimo.',
     guidance: 'Antes de confirmar o pagamento via QR Code, confira o nome do recebedor na tela do seu aplicativo.',
+    example: 'Um cartaz de cobrança de estacionamento com um QR Code colado por cima do original, direcionando a transferência para a conta do golpista.',
+    priority: true,
   },
   {
     term: 'Malware',
@@ -56,6 +68,8 @@ export const glossaryEntries = [
     module: 'Módulo 5',
     definition: 'Programa ou arquivo malicioso criado para comprometer dispositivos, capturar informações ou espionar atividades.',
     guidance: 'Instale aplicativos apenas por lojas oficiais e mantenha o sistema atualizado.',
+    example: 'Baixar um arquivo que promete liberar gratuitamente um jogo pago, mas que secretamente instala um programa espião no celular.',
+    priority: true,
   },
   {
     term: 'Ransomware',
@@ -63,6 +77,8 @@ export const glossaryEntries = [
     module: 'Módulo 5',
     definition: 'Tipo de malware que bloqueia arquivos do usuário e exige pagamento (resgate) para liberá-los.',
     guidance: 'A melhor defesa é ter backups (cópias de segurança) atualizados e fora do dispositivo principal.',
+    example: 'Um vírus recebido por e-mail que criptografa todas as fotos e documentos da vítima, exibindo uma cobrança em dinheiro para resgatar os arquivos.',
+    priority: true,
   },
   {
     term: 'Golpe do falso prêmio',
@@ -91,6 +107,8 @@ export const glossaryEntries = [
     module: 'Módulo 2',
     definition: 'Camada adicional de proteção que exige uma segunda confirmação (código, aplicativo ou biometria) além da senha.',
     guidance: 'Ative em todas as contas importantes, especialmente e-mail, redes sociais e aplicativos de mensagens.',
+    example: 'Configurar seu aplicativo de mensagens para exigir um código numérico temporário (PIN) enviado por SMS ou gerado no celular ao fazer login.',
+    priority: true,
   },
   {
     term: 'Senha forte',
@@ -98,6 +116,8 @@ export const glossaryEntries = [
     module: 'Módulo 2',
     definition: 'Sequência longa e complexa, que mistura letras, números e símbolos, sendo difícil de ser adivinhada por humanos ou máquinas.',
     guidance: 'Não reutilize a mesma senha em sites diferentes. Se uma vazar, as outras estarão seguras.',
+    example: 'Usar uma frase secreta longa e personalizada como "BoloDeCenoura#Seguro2026!" em vez de datas de aniversário simples.',
+    priority: true,
   },
   {
     term: 'Gerenciador de senhas',
@@ -133,6 +153,8 @@ export const glossaryEntries = [
     module: 'Módulo 5',
     definition: 'Incidente onde informações confidenciais são acessadas ou expostas indevidamente para pessoas não autorizadas.',
     guidance: 'Se seus dados vazarem, troque as senhas envolvidas e fique alerta a tentativas de Phishing direcionadas.',
+    example: 'Uma invasão ao sistema de uma loja virtual que expõe CPFs, e-mails e telefones de clientes em fóruns públicos na internet.',
+    priority: true,
   },
   {
     term: 'Backup',
@@ -161,6 +183,8 @@ export const glossaryEntries = [
     module: 'Módulo 3',
     definition: 'Tecnologia de conexão sem fio. Redes públicas (shoppings, aeroportos) são menos seguras que redes domésticas protegidas.',
     guidance: 'Evite acessar contas bancárias ou fazer compras usando redes Wi-Fi públicas e abertas.',
+    example: 'Conectar-se à rede sem fio gratuita de uma cafeteria pública para realizar compras online com cartão de crédito.',
+    priority: true,
   },
   {
     term: 'Roteador',
@@ -175,6 +199,8 @@ export const glossaryEntries = [
     module: 'Módulo 6',
     definition: 'Ato de guardar provas de um crime digital (prints, e-mails, extratos) sem alterá-las, para uso em investigações.',
     guidance: 'Não apague as conversas com o golpista antes de registrar a ocorrência ou fazer uma ata notarial.',
+    example: 'Tirar prints completos de conversas com golpistas contendo número de telefone, foto do perfil, chaves Pix e e-mails recebidos.',
+    priority: true,
   },
   {
     term: 'Denúncia',
@@ -182,6 +208,8 @@ export const glossaryEntries = [
     module: 'Módulo 6',
     definition: 'Informar formalmente um crime ou fraude às autoridades (Boletim de Ocorrência) ou às plataformas envolvidas.',
     guidance: 'Denuncie perfis golpistas nas próprias redes sociais para que a conta seja suspensa.',
+    example: 'Registrar um Boletim de Ocorrência online na delegacia eletrônica após constatar que foi vítima de golpe financeiro na internet.',
+    priority: true,
   },
   {
     term: 'Boato / Fake News',
@@ -196,5 +224,7 @@ export const glossaryEntries = [
     module: 'Módulo 5',
     definition: 'Vídeo ou áudio criado com inteligência artificial para imitar a voz e o rosto de uma pessoa real dizendo coisas que ela nunca disse.',
     guidance: 'Desconfie de vídeos de autoridades ou famosos pedindo transferências ou promovendo investimentos "milagrosos".',
+    example: 'Um vídeo circulando nas redes sociais onde o rosto de uma celebridade é simulado por inteligência artificial para promover um produto fraudulento.',
+    priority: true,
   },
 ]

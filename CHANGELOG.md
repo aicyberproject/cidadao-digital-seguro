@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-06-17
+
+### Added
+- **Glossário Aprimorado**: Expansão do schema de dados (`src/content/glossary.js`) para suportar os novos campos `example` e `priority`.
+- **Evolução da Interface do Glossário**: Atualização da visualização em `src/App.jsx` para destacar termos prioritários e exibir exemplos práticos.
+- **Validação de Conteúdo**: Ajuste no script `validateContent.js` para aceitar formalmente os novos campos opcionais do Glossário.
+
 ## [1.9.5] - 2026-06-17
 
 ### Documentation

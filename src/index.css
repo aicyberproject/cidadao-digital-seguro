@@ -912,13 +912,14 @@ p {
 }
 
 .resource-card .glossary-tip {
-  padding: 12px 14px !important;
+  padding: 16px !important;
+  margin: 0 !important;
   gap: 8px !important;
 }
 
 .resource-card .glossary-tip .ludic-icon {
-  width: 32px;
-  height: 32px;
+  width: 32px !important;
+  height: 32px !important;
   border-radius: 8px;
 }
 
@@ -1140,5 +1141,25 @@ p {
     opacity: 1;
     transform: none;
   }
+}
+
+/* Glossary Enhancements - v2.0.0 */
+.glossary-priority-card {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(35, 55, 82, 0.08);
+}
+
+.glossary-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.glossary-example {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  font-style: italic;
+  border-left: 3px solid var(--border-color);
+  padding-left: 10px;
 }
 
