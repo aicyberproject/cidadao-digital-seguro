@@ -53,16 +53,16 @@ export const module4Questions = [
   },
   {
     id: 'm4-q05',
-    question: 'Um QR Code de taxa de entrega chega por SMS, mas você não reconhece a cobrança. Qual é a conduta adequada?',
+    question: 'Um QR Code impresso ou enviado por mensagem promete um desconto absurdo ("Momento É Golpe!"). Qual é a conduta adequada?',
     options: [
-      'Pagar para evitar bloqueio da entrega.',
+      'Pagar imediatamente para garantir o desconto.',
       'Ler o QR Code e conferir depois.',
-      'Confirmar a cobrança diretamente no site ou aplicativo oficial da empresa.',
+      'Sempre conferir o valor e o destinatário na tela do banco ANTES de confirmar, pois o QR Code pode ter valores embutidos diferentes do prometido.',
       'Encaminhar o QR Code para outra pessoa pagar.',
     ],
     answer: 2,
     explanation:
-      'QR Codes também podem ser usados em golpes. Cobranças inesperadas devem ser verificadas em canais oficiais.',
+      'QR Codes estáticos podem ser fraudados para embutir valores maiores ou destinatários falsos. A conferência na tela do banco é essencial.',
   },
   {
     id: 'm4-q06',
@@ -152,16 +152,16 @@ export const module4Questions = [
   },
   {
     id: 'm4-q13',
-    question: 'Qual alternativa indica cuidado correto com dados de cartão?',
+    question: 'Conforme a "Palavra do Especialista", por que o cartão virtual é uma das melhores defesas para compras online?',
     options: [
-      'Enviar foto do cartão apenas para vendedores conhecidos.',
-      'Guardar o CVV em conversa de aplicativo.',
-      'Usar cartão virtual quando disponível e evitar salvar cartão em sites pouco confiáveis.',
-      'Publicar foto do cartão cobrindo apenas parte dos números.',
+      'Porque ele tem limite infinito.',
+      'Porque ele não exige senha para aprovação.',
+      'Porque muitos podem ser criados para "uso único". Se os dados vazarem, o criminoso não terá acesso ao seu cartão físico principal.',
+      'Porque ele permite compras apenas em lojas físicas.',
     ],
     answer: 2,
     explanation:
-      'Cartão virtual e cautela no cadastro em sites reduzem exposição de dados financeiros.',
+      'O cartão virtual isola o risco. Se seus dados forem comprometidos em um e-commerce, o cartão físico principal permanece seguro.',
   },
   {
     id: 'm4-q14',

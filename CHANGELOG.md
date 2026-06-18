@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.8] - 2026-06-17
+
+### Changed
+- **Revisão de Quizzes (M4-M6)**: Ajuste pedagógico das questões para reforçar alertas e dicas lúdicas introduzidos na série 1.7.x nos módulos finais.
+- **Sincronia Conteúdo-Avaliação**: Refinamento dos temas de QR Code Estático (M4), Cartão Virtual (M4), Perfil Falso/Denúncia (M5) e Preservação de Evidências (M6).
+- **Manutenção Documental**: Criação de `docs/revisao-quizzes-m4-m6-v1.8.8.md` detalhando os ajustes realizados e concluindo a integração dos questionários com a camada lúdica.
+
 ## [1.8.7] - 2026-06-17
 
 ### Changed

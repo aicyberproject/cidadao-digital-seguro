@@ -80,11 +80,11 @@ export const module6Questions = [
     answer: 1,
   },
   {
-    question: 'Qual conduta pode prejudicar a resposta a um incidente digital?',
+    question: 'Conforme a dica "Não Apague as Provas", qual conduta emocional deve ser evitada imediatamente após um golpe?',
     options: [
       'Salvar prints e protocolos de atendimento.',
       'Acionar o banco por aplicativo oficial já instalado.',
-      'Apagar conversas antes de preservar os registros relevantes.',
+      'Apagar toda a conversa com o golpista para tentar "esquecer o trauma" antes de tirar prints.',
       'Trocar senhas a partir de dispositivo confiável.',
     ],
     answer: 2,
