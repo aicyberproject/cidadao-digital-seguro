@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.7] - 2026-06-17
+
+### Changed
+- **Revisão de Quizzes (M1-M3)**: Ajuste pedagógico das questões para reforçar alertas e dicas lúdicas introduzidos na série 1.7.x.
+- **Sincronia Conteúdo-Avaliação**: Refinamento dos temas de Falsa Central (M1), Phishing de SMS (M2) e IMEI/Suporte Falso (M3) nos bancos de questões.
+- **Manutenção Documental**: Criação de `docs/revisao-quizzes-m1-m3-v1.8.7.md` detalhando os ajustes realizados.
+
 ## [1.8.6] - 2026-06-17
 
 ### Added
