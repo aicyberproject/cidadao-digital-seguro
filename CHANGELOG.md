@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-06-18
+
+### Added
+- **Biblioteca Aprimorada (Estruturação de Schema)**: Adicionados campos opcionais `modules`, `tags` e `official` a todos os documentos da Biblioteca em `src/content/library.js`.
+- **Compatibilidade Retroativa de Módulos**: Mantido o campo legado `relatedModule` para garantir estabilidade e evitar quebras.
+- **Filtros por Módulo na Biblioteca**: Novo controle dropdown de filtragem dinâmica por módulo inserido na interface de apoio da Biblioteca.
+- **Mapeamento de Tags e Fontes Oficiais**: Adicionado suporte para visualização de tags visuais em chips e indicação de selo verde "Fonte Oficial" para instituições verificadas (como CERT.br, MJSP, Polícia Federal, etc.).
+- **Auditoria de Conteúdo**: O validador local `validateContent.js` agora analisa a estrutura dos arrays `modules` e `tags`, além do tipo boolean de `official`.
+
 ## [2.0.0] - 2026-06-17
 
 ### Added
