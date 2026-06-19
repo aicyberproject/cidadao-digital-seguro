@@ -7,6 +7,6 @@ export const courseIntro = {
     'Reconhecer golpes e ameaças digitais recorrentes',
     'Aplicar higiene digital e proteção de dispositivos',
     'Realizar transações online com mais segurança',
-    'Preservar provas e usar o canal correto em caso de incidente',
+    'Preservar evidências digitais e usar o canal correto em caso de incidente',
   ],
 }

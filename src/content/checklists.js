@@ -127,7 +127,7 @@ export const practicalChecklists = [
       'Pesquise a reputação da loja em sites como o Reclame Aqui.',
       'Desconfie de preços excessivamente abaixo da média do mercado.',
       'Use cartão virtual para compras online, se disponível no seu app bancário.',
-      'Dê preferência a plataformas que garantam a entrega ou devolvam o dinheiro.',
+      'Dê preferência a plataformas com sistemas de pagamento garantido e políticas claras de reembolso.',
     ],
     finalGuidance: 'Na dúvida sobre a loja, não informe os dados do seu cartão.',
   },
@@ -150,10 +150,10 @@ export const practicalChecklists = [
   {
     id: 'evidencias-digitais',
     title: 'Como preservar evidências digitais',
-    situation: 'Fui vítima de um crime ou golpe e preciso guardar provas.',
+    situation: 'Fui vítima de um crime ou golpe e preciso guardar evidências digitais.',
     category: 'Resposta a incidentes e denúncia',
     relatedModule: 'Módulo 6',
-    description: 'Garanta que as provas sejam válidas para uma investigação.',
+    description: 'Garanta que as evidências sejam preservadas adequadamente para uso oficial.',
     items: [
       'Tire prints (capturas de tela) de todas as conversas e perfis envolvidos.',
       'Não apague as mensagens ou o histórico de chamadas com o golpista.',
@@ -161,7 +161,7 @@ export const practicalChecklists = [
       'Salve o cabeçalho completo de e-mails suspeitos recebidos.',
       'Anote as URLs (endereços dos sites) e IDs das contas criminosas.',
     ],
-    finalGuidance: 'Provas digitais são voláteis. Guarde tudo imediatamente após o incidente.',
+    finalGuidance: 'Evidências digitais são voláteis. Guarde tudo imediatamente após o incidente.',
   },
   {
     id: 'apos-cair-em-golpe',
@@ -172,11 +172,11 @@ export const practicalChecklists = [
     description: 'Ações imediatas para contenção de danos e denúncia.',
     items: [
       'Contate seu banco imediatamente para tentar bloquear o valor (Mecanismo Especial de Devolução).',
-      'Registre um Boletim de Ocorrência (BO) detalhando o ocorrido e as provas.',
+      'Registre um Boletim de Ocorrência (BO) detalhando o ocorrido e anexando as evidências salvas.',
       'Denuncie o perfil ou número golpista na plataforma onde ocorreu o contato.',
       'Comunique parentes e amigos caso o golpista esteja usando sua identidade.',
       'Procure orientação jurídica ou órgãos de defesa do consumidor, se necessário.',
     ],
-    finalGuidance: 'Agir rápido aumenta as chances de recuperação de valores e proteção de terceiros.',
+    finalGuidance: 'Agir rápido ao acionar as instituições oficiais pelos canais de atendimento autorizados ajuda na contenção de danos e na proteção de terceiros.',
   },
 ]
