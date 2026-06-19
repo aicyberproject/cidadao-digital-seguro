@@ -1152,22 +1152,46 @@ export default function App() {
         </div>
 
         <div className="top-actions">
-          <button className="button button-outline" onClick={goHome}>
+          <button
+            className={`button button-outline ${currentView === 'home' ? 'active' : ''}`}
+            onClick={goHome}
+            aria-current={currentView === 'home' ? 'page' : undefined}
+          >
             <Home size={16} aria-hidden="true" focusable="false" /> Início
           </button>
-          <button className="button button-outline" onClick={() => setCurrentView('glossary')}>
+          <button
+            className={`button button-outline ${currentView === 'glossary' ? 'active' : ''}`}
+            onClick={() => setCurrentView('glossary')}
+            aria-current={currentView === 'glossary' ? 'page' : undefined}
+          >
             <BookOpen size={16} aria-hidden="true" focusable="false" /> Glossário
           </button>
-          <button className="button button-outline" onClick={() => setCurrentView('library')}>
+          <button
+            className={`button button-outline ${currentView === 'library' ? 'active' : ''}`}
+            onClick={() => setCurrentView('library')}
+            aria-current={currentView === 'library' ? 'page' : undefined}
+          >
             <FileText size={16} aria-hidden="true" focusable="false" /> Biblioteca
           </button>
-          <button className="button button-outline" onClick={() => setCurrentView('videos')}>
+          <button
+            className={`button button-outline ${currentView === 'videos' ? 'active' : ''}`}
+            onClick={() => setCurrentView('videos')}
+            aria-current={currentView === 'videos' ? 'page' : undefined}
+          >
             <PlayCircle size={16} aria-hidden="true" focusable="false" /> Vídeos
           </button>
-          <button className="button button-outline" onClick={() => setCurrentView('checklists')}>
+          <button
+            className={`button button-outline ${currentView === 'checklists' ? 'active' : ''}`}
+            onClick={() => setCurrentView('checklists')}
+            aria-current={currentView === 'checklists' ? 'page' : undefined}
+          >
             <ListChecks size={16} aria-hidden="true" focusable="false" /> Checklists
           </button>
-          <button className="button button-outline" onClick={() => setCurrentView('simulations')}>
+          <button
+            className={`button button-outline ${currentView === 'simulations' ? 'active' : ''}`}
+            onClick={() => setCurrentView('simulations')}
+            aria-current={currentView === 'simulations' ? 'page' : undefined}
+          >
             <MessageSquare size={16} aria-hidden="true" focusable="false" /> Simulações
           </button>
           <button className="button button-outline" onClick={resetCourse}>
@@ -2029,7 +2053,6 @@ export default function App() {
                                     key={idx}
                                     className="button button-outline interactive-option-btn full"
                                     onClick={() => setSimulationAnswers(prev => ({ ...prev, [sim.id]: idx }))}
-                                    aria-labelledby={`label-options-${sim.id}`}
                                   >
                                     {opt.label}
                                   </button>
@@ -2309,7 +2332,7 @@ export default function App() {
                         <a key={link.url} href={link.url} target="_blank" rel="noreferrer" className="link-card">
                           <div className="link-card-title">{link.label}</div>
                           <div className="link-card-url">{link.url}</div>
-                          <ExternalLink size={16} />
+                          <ExternalLink size={16} aria-hidden="true" focusable="false" />
                         </a>
                       ))}
                     </div>
