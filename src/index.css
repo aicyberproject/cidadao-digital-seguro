@@ -247,6 +247,12 @@ p {
   border-color: var(--border-color);
 }
 
+.button-outline.active {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
 .button-outline:hover:enabled {
   background: var(--bg-app);
   border-color: var(--primary);
@@ -823,7 +829,11 @@ p {
 .button:focus-visible,
 .text-input:focus-visible,
 .filter-chip:focus-visible,
-.checklist-item-row:focus-within {
+.checklist-item-row:focus-within,
+.check-row:focus-within,
+.radio-row:focus-within,
+.module-chip:focus-visible,
+.link-card:focus-visible {
   outline: 3px solid var(--primary);
   outline-offset: 2px;
 }
@@ -972,6 +982,12 @@ p {
   padding: 12px;
   border-radius: var(--border-radius-md);
   border: 1px solid var(--border-color);
+}
+
+.library-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
 }
 
 @media (max-width: 1024px) {

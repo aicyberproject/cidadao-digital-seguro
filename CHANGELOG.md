@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.0] - 2026-06-19
+
+### Added
+- **Documentação de Auditoria de Acessibilidade e Usabilidade**: Criação do documento `docs/auditoria-a11y-responsividade-usabilidade-v2.8.0.md` contendo o diagnóstico estrutural e o mapeamento de melhorias aplicadas à interface e navegação.
+
+### Changed
+- **Melhoria de Acessibilidade em Simulações**: Remoção do atributo `aria-labelledby` redundante nas opções de decisão em `src/App.jsx`, que substituía incorretamente o texto das alternativas por "O que você faria?" em leitores de tela.
+- **Sinalização de Estado Ativo na Barra de Navegação**: Adicionada marcação visual `.button-outline.active` em `src/index.css` e o atributo acessível `aria-current="page"` em `src/App.jsx` para destacar a aba atualmente ativa (Início, Glossário, Biblioteca, Vídeos, Checklists, Simulações).
+- **Consistência de Foco Visível**: Ampliação dos estilos `:focus-visible` e `:focus-within` em `src/index.css` para abranger checkboxes, botões de rádio, cartões de links e chips de etapas do curso, assegurando navegação clara por teclado.
+- **Correção de Alinhamento de Filtros**: Adicionado o estilo base de grid de filtros `.library-filter-grid` no desktop, ausente na versão anterior, que contava apenas com formatação mobile.
+- **Eliminação de Ruído em Leitores de Tela**: Inclusão de `aria-hidden="true" focusable="false"` nos ícones de link externo transversais em `src/App.jsx`.
+
 ## [2.7.0] - 2026-06-19
 
 ### Added
