@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2026-06-19
+
+### Added
+- **Consolidação Documental da Série v2.x**: Criação do documento `docs/consolidacao-ferramentas-transversais-v2.4.0.md` detalhando o histórico de entregas transversais, métricas de acervo e garantias de isolamento de infraestrutura pedagógica e funcional.
+- **Evolução do README**: Atualização do [README.md](README.md) para registrar a consolidação do ecossistema transversal aprimorado em v2.x.
+
 ## [2.3.0] - 2026-06-19
 
 ### Added
