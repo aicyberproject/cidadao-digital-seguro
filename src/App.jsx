@@ -647,11 +647,22 @@ export default function App() {
     return quickSimulations.filter((item) => {
       const matchesCategory =
         selectedSimulationCategory === 'Todos' || item.category === selectedSimulationCategory
-      const matchesModule =
-        selectedSimulationModule === 'Todos' || item.relatedModule === selectedSimulationModule
 
+      let matchesModule = true
+      if (selectedSimulationModule !== 'Todos') {
+        if (Array.isArray(item.modules)) {
+          matchesModule = item.modules.includes(selectedSimulationModule)
+        } else if (item.relatedModule) {
+          matchesModule = item.relatedModule === selectedSimulationModule
+        } else {
+          matchesModule = false
+        }
+      }
+
+      const tagsText = Array.isArray(item.tags) ? item.tags.join(' ') : ''
+      const modulesText = Array.isArray(item.modules) ? item.modules.join(' ') : ''
       const searchableText = normalizeSearchText(
-        `${item.title} ${item.situation} ${item.category} ${item.relatedModule} ${item.scenario} ${item.warningSigns.join(' ')} ${item.finalGuidance}`,
+        `${item.title} ${item.situation} ${item.category} ${item.relatedModule || ''} ${modulesText} ${tagsText} ${item.scenario} ${item.warningSigns.join(' ')} ${item.recommendedAction || ''} ${item.finalGuidance}`,
       )
 
       return matchesCategory && matchesModule && (!query || searchableText.includes(query))
@@ -1968,6 +1979,15 @@ export default function App() {
                           <div className="info-box" style={{ padding: '12px' }}>
                             <div className="mini-muted">Situação:</div>
                             <div className="muted-body" style={{ fontStyle: 'italic', fontSize: '0.875rem' }}>{sim.situation}</div>
+                            {Array.isArray(sim.tags) && sim.tags.length > 0 && (
+                              <div className="simulation-tag-list">
+                                {sim.tags.map((tag) => (
+                                  <span key={tag} className="simulation-tag-chip">
+                                    #{tag}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
                           </div>
 
                           <div className="ludic-box scam simulation-scenario">
@@ -2009,6 +2029,18 @@ export default function App() {
                                   </div>
                                 </div>
 
+                                {sim.recommendedAction && (
+                                  <div className="info-box success simulation-recommended-box">
+                                    <div className="ludic-header" style={{ marginBottom: '8px' }}>
+                                      <Shield size={16} className="success-icon" aria-hidden="true" focusable="false" />
+                                      <span className="ludic-title" style={{ fontSize: '0.875rem' }}>Orientação Prática Recomendada</span>
+                                    </div>
+                                    <div className="muted-body" style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>
+                                      {sim.recommendedAction}
+                                    </div>
+                                  </div>
+                                )}
+
                                 <div className="info-box" style={{ padding: '12px' }}>
                                   <div className="ludic-header" style={{ marginBottom: '8px' }}>
                                     <AlertOctagon size={16} className="error-icon" aria-hidden="true" focusable="false" />
@@ -2033,7 +2065,9 @@ export default function App() {
                           </div>
 
                           <div className="actions-between" style={{ marginTop: 'auto', paddingTop: '12px', borderTop: '1px solid var(--border-color)' }}>
-                            <div className="mini-muted" style={{ fontSize: '0.7rem' }}>Relacionado ao {sim.relatedModule}</div>
+                            <div className="mini-muted" style={{ fontSize: '0.7rem' }}>
+                              Relacionado ao {Array.isArray(sim.modules) ? sim.modules.join(', ') : sim.relatedModule}
+                            </div>
                             {hasAnswered && (
                               <button
                                 className="button button-outline"

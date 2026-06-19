@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2026-06-19
+
+### Added
+- **Simulações Rápidas Aprimoradas (Evolução de Schema)**: Adicionados campos opcionais `modules` (array), `tags` (array) e `recommendedAction` (string) a todos os 10 cenários de microlearning em `src/content/simulations.js`.
+- **Compatibilidade Retroativa de Módulos**: Preservado o campo legado `relatedModule` para garantir estabilidade e evitar regressões de navegação.
+- **Visualização de Orientação Prática Pós-Resposta**: Introduzido um painel de feedback aprimorado (`.simulation-recommended-box`) que renderiza a ação recomendada preventiva (`recommendedAction`) em destaque após a resolução da simulação.
+- **Filtros e Busca Inteligente**: Busca textual livre estendida para varrer as novas `tags`, `modules` e `recommendedAction`. O dropdown de filtragem por Módulo agora cruza o novo array `modules` com fallback seguro para `relatedModule`.
+- **Auditoria de Conteúdo**: O script `validateContent.js` foi estendido para analisar a consistência dos novos campos adicionados sem torná-los obrigatórios.
+
 ## [2.1.0] - 2026-06-18
 
 ### Added
