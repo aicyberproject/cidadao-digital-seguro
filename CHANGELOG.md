@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.0] - 2026-06-19
+
+### Added
+- **Documentação de Homologação Institucional**: Criação do documento `docs/homologacao-institucional-v2.9.0.md` contendo as diretrizes aplicadas e o mapeamento de revisões linguísticas e jurídicas de conteúdo.
+
+### Changed
+- **Alinhamento Terminológico (Linguagem Cidadã)**: Substituição sistemática do termo "provas" por "evidências" ou "evidências digitais" quando dirigidos às ações preventivas e de contenção do cidadão em `src/content/checklists.js`, `src/content/courseIntro.js`, `src/content/videos.js` e no termo correspondente do glossário em `src/content/glossary.js`.
+- **Prevenção de Falsas Promessas de Reembolso**: Ajuste na redação de orientações de compra segura em `src/content/checklists.js` para indicar plataformas com "sistemas de pagamento garantido e políticas claras de reembolso" em vez de sugerir garantia irrestrita de devolução de dinheiro.
+- **Prevenção de Falsas Promessas de Recuperação de Valores**: Suavização do feedback pós-golpe em `src/content/checklists.js` para indicar que "agir rápido ao acionar as instituições oficiais pelos canais de atendimento autorizados ajuda na contenção de danos e na proteção de terceiros", eliminando promessas diretas de reaver quantias roubadas.
+
 ## [2.8.0] - 2026-06-19
 
 ### Added
