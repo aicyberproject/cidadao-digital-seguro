@@ -1227,4 +1227,106 @@ p {
   border-left: 4px solid var(--success) !important;
 }
 
+/* Visual Audit & Consistency - v2.3.0 */
 
+/* 1. Padronização de Linhas de Título de Recursos Transversais */
+.resource-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 2. Padronização de Chips/Tags de Recursos */
+.resource-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.resource-tag-chip {
+  background: var(--bg-hover);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+/* 3. Caixas de Orientação e Feedback Compactas */
+.info-box-compact {
+  padding: 12px !important;
+  margin: 0;
+}
+
+.ludic-box-compact {
+  padding: 12px !important;
+  margin: 0;
+}
+
+.ludic-header-compact {
+  margin-bottom: 6px;
+}
+
+.text-title-small {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.text-title-medium {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.text-body-small {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.text-body-medium {
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* 4. Rodapés e Ações Compactos nos Cards */
+.actions-footer-compact {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+}
+
+.actions-footer-text {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.actions-footer-btn-compact {
+  padding: 4px 8px !important;
+  font-size: 0.7rem !important;
+  height: auto !important;
+}
+
+/* 5. Classes específicas adicionais para Simulações */
+.simulation-situation {
+  font-style: italic;
+  font-size: 0.875rem;
+}
+
+.tag.warning-tag-chip {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+}
+
+.info-box.simulation-feedback-box.success {
+  border-left: 4px solid var(--success);
+}
+
+.info-box.simulation-feedback-box.error {
+  border-left: 4px solid var(--error);
+}

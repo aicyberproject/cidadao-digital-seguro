@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2026-06-19
+
+### Added
+- **Refinamento de Consistência e Unificação Visual**: Introdução de novas classes de design padronizadas (`resource-title-row`, `resource-tag-list`, `resource-tag-chip`, `info-box-compact`, `ludic-box-compact`, `ludic-header-compact`, `actions-footer-compact`, `actions-footer-text` e `actions-footer-btn-compact`) em `src/index.css` para unificar a apresentação de títulos, tags e botões em ferramentas transversais.
+- **Eliminação de Estilos Inline**: Remoção completa de estilos inline remanescentes nas frentes de Glossário, Biblioteca e Simulações Rápidas em `src/App.jsx`.
+- **Acessibilidade e Tipografia Semântica**: Padronização de tamanhos de fonte, contrastes e espaçamentos por meio de novas classes utilitárias (`text-title-small`, `text-title-medium`, `text-body-small`, `text-body-medium` e `.tag.warning-tag-chip`).
+- **Resolução de Coerência de Feedback**: Criação das classes de feedback `.info-box.simulation-feedback-box.success` e `.info-box.simulation-feedback-box.error` com especificidade CSS natural para renderizar as bordas coloridas sem estilos inline ou a necessidade de usar `!important`.
+
 ## [2.2.0] - 2026-06-19
 
 ### Added
