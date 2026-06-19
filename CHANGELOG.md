@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0] - 2026-06-19
+
+### Added
+- **Documentação de Revisão Pedagógica**: Criação do documento `docs/revisao-pedagogica-global-v2.6.0.md` contendo a análise estrutural dos 6 módulos, progressão pedagógica M1-M6, coerência da linguagem cidadã e mapeamento de recursos transversais.
+
+### Changed
+- **Revisão Editorial de Módulos**: Substituição de menções inadequadas do termo "prova/provas" dirigidas ao cidadão pelo termo técnico "evidência/evidências digitais" em `src/content/modules/module6.js`.
+- **Padronização Textual**: Ajuste de nomenclatura do campo `shortTitle` no Módulo 4 (`src/content/modules/module4.js`) para "Transações Seguras" para consistência visual na interface de navegação.
+
 ## [2.5.0] - 2026-06-19
 
 ### Added
