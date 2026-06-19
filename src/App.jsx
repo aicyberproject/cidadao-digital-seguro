@@ -708,11 +708,20 @@ export default function App() {
         selectedVideoSource === 'Todos' || videoItem.source === selectedVideoSource
       const matchesTheme =
         selectedVideoTheme === 'Todos' || videoItem.theme === selectedVideoTheme
-      const matchesModule =
-        selectedVideoModule === 'Todos' || videoItem.relatedModule === selectedVideoModule
+      
+      let matchesModule = false
+      if (selectedVideoModule === 'Todos') {
+        matchesModule = true
+      } else if (Array.isArray(videoItem.modules)) {
+        matchesModule = videoItem.modules.includes(selectedVideoModule)
+      } else {
+        matchesModule = videoItem.relatedModule === selectedVideoModule
+      }
 
+      const modulesStr = Array.isArray(videoItem.modules) ? videoItem.modules.join(' ') : videoItem.relatedModule
+      const tagsStr = Array.isArray(videoItem.tags) ? videoItem.tags.join(' ') : ''
       const searchableText = normalizeSearchText(
-        `${videoItem.title} ${videoItem.description} ${videoItem.source} ${videoItem.theme} ${videoItem.relatedModule} ${videoItem.url} ${videoItem.status}`,
+        `${videoItem.title} ${videoItem.description} ${videoItem.source} ${videoItem.theme} ${modulesStr} ${tagsStr} ${videoItem.url} ${videoItem.status}`,
       )
 
       return (
@@ -1661,6 +1670,15 @@ export default function App() {
 
                         <div className="resource-card-body">
                           <p className="muted-body">{videoItem.description}</p>
+                          {Array.isArray(videoItem.tags) && videoItem.tags.length > 0 && (
+                            <div className="library-tag-list resource-tag-list">
+                              {videoItem.tags.map((tag) => (
+                                <span key={tag} className="library-tag-chip resource-tag-chip">
+                                  #{tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
 
                         <div className="resource-card-meta">
@@ -1668,7 +1686,9 @@ export default function App() {
                           <span className="resource-meta-chip">Tema: {videoItem.theme}</span>
                           {videoItem.type && <span className="resource-meta-chip">{videoItem.type}</span>}
                           {videoItem.duration && <span className="resource-meta-chip">Duração: {videoItem.duration}</span>}
-                          <span className="resource-meta-chip">{videoItem.relatedModule}</span>
+                          <span className="resource-meta-chip">
+                            {Array.isArray(videoItem.modules) ? videoItem.modules.join(', ') : videoItem.relatedModule}
+                          </span>
                         </div>
 
                         {videoItem.status === 'Disponível' && videoItem.url ? (
@@ -1731,9 +1751,9 @@ export default function App() {
                           <span className="resource-meta-chip">Idioma: {video.language}</span>
                           <span className="resource-meta-chip">Relacionado: {video.modules.join(', ')}</span>
                           
-                          <div className="video-library-topic-list">
+                          <div className="video-library-topic-list resource-tag-list">
                             {video.topics.map(topic => (
-                              <span key={topic} className="video-library-topic-chip">{topic}</span>
+                              <span key={topic} className="video-library-topic-chip resource-tag-chip">{topic}</span>
                             ))}
                           </div>
                         </div>
