@@ -2,7 +2,7 @@
 
 Aplicação web em React/Vite para o curso **Cidadão Digital Seguro: Prevenção e Combate a Crimes Cibernéticos**.
 
-O curso funciona como uma trilha autoinstrucional com módulos liberados progressivamente, culminando em uma avaliação final e emissão de certificado digital. O progresso do participante é salvo no navegador por `localStorage`. A versão v1.6.5 consolidou melhorias de experiência visual, navegação assistida e redução de densidade nas áreas transversais. Na v1.6.7 e v1.6.8, foi introduzido e validado o modelo de dados para a biblioteca de vídeos educativos curados, que passou a ser exibida na interface na v1.6.9 e recebeu refinamento visual e editorial na v1.6.10.
+O curso funciona como uma trilha autoinstrucional com módulos liberados progressivamente, culminando em uma avaliação final e emissão de certificado digital. O progresso do participante é salvo no navegador por `localStorage`. A versão v1.6.5 consolidou melhorias de experiência visual, navegação assistida e redução de densidade nas áreas transversais. Na v1.6.7 e v1.6.8, foi introduzido e validado o modelo de dados para a biblioteca de vídeos educativos curados, que passou a ser exibida na interface na v1.6.9 e recebeu refinamento visual e editorial na v1.6.10. Na série v2.x, as ferramentas transversais de apoio (Glossário, Biblioteca de Documentos e Simulações Rápidas) foram completamente reestruturadas com esquemas de dados enriquecidos, indexação por tags/módulos, novas orientações lúdicas de feedback de conduta preventiva e unificação visual com a eliminação de estilos inline remanescentes.
 
 ## Recursos do Curso
 
@@ -34,6 +34,7 @@ A plataforma oferece uma experiência de aprendizado completa e acessível:
 - [Consolidação da Biblioteca de Vídeos v1.6.11](docs/consolidacao-biblioteca-videos-v1.6.11.md)
 - [Consolidação da Série v1.6](docs/consolidacao-serie-v1.6.md)
 - [Auditoria Final v1.6 (Pré-Main)](docs/auditoria-final-v1.6-pre-main.md)
+- [Consolidação das Ferramentas Transversais v2.4.0](docs/consolidacao-ferramentas-transversais-v2.4.0.md)
 
 ## Comandos essenciais
 
