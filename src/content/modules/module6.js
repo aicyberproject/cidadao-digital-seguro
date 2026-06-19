@@ -130,9 +130,9 @@ const module6 = {
         },
         {
           type: 'tip',
-          title: 'Palavra do Especialista — Não Apague as Provas',
+          title: 'Palavra do Especialista — Não Apague as Evidências',
           text:
-            'A primeira vontade após um golpe é apagar a conversa e bloquear o criminoso para esquecer o trauma. Porém, essa conversa é a sua prova. Tire prints, anote o número de telefone e o link do perfil antes de qualquer limpeza ou bloqueio.',
+            'A primeira vontade após um golpe é apagar a conversa e bloquear o criminoso para esquecer o trauma. Porém, essa conversa é a sua evidência digital. Tire prints, anote o número de telefone e o link do perfil antes de qualquer limpeza ou bloqueio.',
         },
         {
           type: 'callout',
