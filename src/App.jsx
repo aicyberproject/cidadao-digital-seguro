@@ -1383,7 +1383,7 @@ export default function App() {
                     {filteredGlossaryEntries.map((entry) => (
                       <article key={entry.term} className={`resource-card ${entry.priority ? 'glossary-priority-card' : ''}`}>
                         <div className="resource-card-head">
-                          <div className="glossary-title-row">
+                          <div className="glossary-title-row resource-title-row">
                             <h3>{entry.term}</h3>
                             {entry.priority && <Shield size={16} className="success-icon" aria-label="Termo essencial" />}
                           </div>
@@ -1407,9 +1407,9 @@ export default function App() {
                                   <Shield size={10} aria-hidden="true" focusable="false" />
                                 </div>
                               </div>
-                              <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Orientação prática</span>
+                              <span className="ludic-title text-title-small">Orientação prática</span>
                             </div>
-                            <div className="ludic-body" style={{ fontSize: '0.875rem' }}>{entry.guidance}</div>
+                            <div className="ludic-body text-body-medium">{entry.guidance}</div>
                           </div>
                         ) : null}
                       </article>
@@ -1520,7 +1520,7 @@ export default function App() {
                     {filteredLibraryDocuments.map((documentItem) => (
                       <article key={documentItem.url} className={`resource-card ${documentItem.official ? 'library-official-card' : ''}`}>
                         <div className="resource-card-head">
-                          <div className="library-title-row">
+                          <div className="library-title-row resource-title-row">
                             <h3>{documentItem.title}</h3>
                             {documentItem.official && (
                               <span className="official-badge" title="Material de fonte institucional verificada">
@@ -1534,9 +1534,9 @@ export default function App() {
                         <div className="resource-card-body">
                           <p className="muted-body">{documentItem.description}</p>
                           {Array.isArray(documentItem.tags) && documentItem.tags.length > 0 && (
-                            <div className="library-tag-list">
+                            <div className="library-tag-list resource-tag-list">
                               {documentItem.tags.map((tag) => (
-                                <span key={tag} className="library-tag-chip">
+                                <span key={tag} className="library-tag-chip resource-tag-chip">
                                   #{tag}
                                 </span>
                               ))}
@@ -1976,13 +1976,13 @@ export default function App() {
                             <span className="tag" aria-label={`Categoria: ${sim.category}`}>{sim.category}</span>
                           </div>
 
-                          <div className="info-box" style={{ padding: '12px' }}>
+                          <div className="info-box info-box-compact">
                             <div className="mini-muted">Situação:</div>
-                            <div className="muted-body" style={{ fontStyle: 'italic', fontSize: '0.875rem' }}>{sim.situation}</div>
+                            <div className="muted-body simulation-situation">{sim.situation}</div>
                             {Array.isArray(sim.tags) && sim.tags.length > 0 && (
-                              <div className="simulation-tag-list">
+                              <div className="simulation-tag-list resource-tag-list">
                                 {sim.tags.map((tag) => (
-                                  <span key={tag} className="simulation-tag-chip">
+                                  <span key={tag} className="simulation-tag-chip resource-tag-chip">
                                     #{tag}
                                   </span>
                                 ))}
@@ -1993,7 +1993,7 @@ export default function App() {
                           <div className="ludic-box scam simulation-scenario">
                             <div className="ludic-header">
                               <AlertTriangle size={14} className="error-icon" aria-hidden="true" focusable="false" />
-                              <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Cenário simulado</span>
+                              <span className="ludic-title text-title-small">Cenário simulado</span>
                             </div>
                             <div className="ludic-body" aria-label={`Cenário: ${sim.scenario}`}>
                               "{sim.scenario}"
@@ -2017,61 +2017,60 @@ export default function App() {
                               </nav>
                             ) : (
                               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="stack-md" role="region" aria-live="polite">
-                                <div className={`info-box ${isCorrect ? 'success' : 'error'}`} style={{ borderLeftWidth: '4px' }}>
-                                  <div className="ludic-header" style={{ marginBottom: '8px' }}>
+                                <div className={`info-box simulation-feedback-box ${isCorrect ? 'success' : 'error'}`}>
+                                  <div className="ludic-header ludic-header-compact">
                                     {isCorrect ? <CheckCircle2 size={18} className="success-icon" aria-hidden="true" focusable="false" /> : <XCircle size={18} className="error-icon" aria-hidden="true" focusable="false" />}
-                                    <span className="ludic-title" style={{ fontSize: '0.875rem' }}>
+                                    <span className="ludic-title text-title-medium">
                                       {isCorrect ? 'Conduta Segura!' : 'Risco Identificado'}
                                     </span>
                                   </div>
-                                  <div className="muted-body" style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>
+                                  <div className="muted-body text-body-medium">
                                     {sim.options[selectedOptionIndex].feedback}
                                   </div>
                                 </div>
 
                                 {sim.recommendedAction && (
-                                  <div className="info-box success simulation-recommended-box">
-                                    <div className="ludic-header" style={{ marginBottom: '8px' }}>
+                                  <div className="info-box success simulation-recommended-box info-box-compact">
+                                    <div className="ludic-header ludic-header-compact">
                                       <Shield size={16} className="success-icon" aria-hidden="true" focusable="false" />
-                                      <span className="ludic-title" style={{ fontSize: '0.875rem' }}>Orientação Prática Recomendada</span>
+                                      <span className="ludic-title text-title-medium">Orientação Prática Recomendada</span>
                                     </div>
-                                    <div className="muted-body" style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>
+                                    <div className="muted-body text-body-medium">
                                       {sim.recommendedAction}
                                     </div>
                                   </div>
                                 )}
 
-                                <div className="info-box" style={{ padding: '12px' }}>
-                                  <div className="ludic-header" style={{ marginBottom: '8px' }}>
+                                <div className="info-box info-box-compact">
+                                  <div className="ludic-header ludic-header-compact">
                                     <AlertOctagon size={16} className="error-icon" aria-hidden="true" focusable="false" />
-                                    <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Sinais de alerta</span>
+                                    <span className="ludic-title text-title-small">Sinais de alerta</span>
                                   </div>
                                   <ul className="warning-signs-list">
                                     {sim.warningSigns.map(tag => (
-                                      <li key={tag} className="tag muted" style={{ fontSize: '0.65rem', padding: '2px 8px' }}>{tag}</li>
+                                      <li key={tag} className="tag muted warning-tag-chip">{tag}</li>
                                     ))}
                                   </ul>
                                 </div>
 
-                                <div className="ludic-box expert" style={{ padding: '12px', margin: '0' }}>
+                                <div className="ludic-box expert ludic-box-compact">
                                   <div className="ludic-header">
                                     <Shield size={14} className="success-icon" aria-hidden="true" focusable="false" />
-                                    <span className="ludic-title" style={{ fontSize: '0.75rem' }}>Dica do Especialista</span>
+                                    <span className="ludic-title text-title-small">Dica do Especialista</span>
                                   </div>
-                                  <div className="ludic-body" style={{ fontSize: '0.8125rem' }}>{sim.finalGuidance}</div>
+                                  <div className="ludic-body text-body-small">{sim.finalGuidance}</div>
                                 </div>
                               </motion.div>
                             )}
                           </div>
 
-                          <div className="actions-between" style={{ marginTop: 'auto', paddingTop: '12px', borderTop: '1px solid var(--border-color)' }}>
-                            <div className="mini-muted" style={{ fontSize: '0.7rem' }}>
+                          <div className="actions-between actions-footer-compact">
+                            <div className="mini-muted actions-footer-text">
                               Relacionado ao {Array.isArray(sim.modules) ? sim.modules.join(', ') : sim.relatedModule}
                             </div>
                             {hasAnswered && (
                               <button
-                                className="button button-outline"
-                                style={{ padding: '4px 8px', fontSize: '0.7rem', height: 'auto' }}
+                                className="button button-outline actions-footer-btn-compact"
                                 onClick={() => setSimulationAnswers(prev => {
                                   const next = { ...prev }
                                   delete next[sim.id]
