@@ -411,6 +411,34 @@ function validateLibrary(library, report) {
     if (!isPresent(documentItem?.url)) {
       report.errors.push(`${context}: url obrigatoria ausente.`)
     }
+
+    if ('modules' in documentItem) {
+      if (!Array.isArray(documentItem.modules)) {
+        report.errors.push(`${context}: modules deve ser um array.`)
+      } else {
+        documentItem.modules.forEach((mod) => {
+          if (!allowedCourseModules.includes(mod)) {
+            report.errors.push(`${context}: module "${mod}" em modules e invalido.`)
+          }
+        })
+      }
+    }
+
+    if ('tags' in documentItem) {
+      if (!Array.isArray(documentItem.tags)) {
+        report.errors.push(`${context}: tags deve ser um array.`)
+      } else {
+        documentItem.tags.forEach((tag, idx) => {
+          if (typeof tag !== 'string' || tag.trim().length === 0) {
+            report.errors.push(`${context}: tag na posicao ${idx + 1} em tags deve ser string nao vazia.`)
+          }
+        })
+      }
+    }
+
+    if ('official' in documentItem && typeof documentItem.official !== 'boolean') {
+      report.errors.push(`${context}: official deve ser boolean.`)
+    }
   })
 }
 

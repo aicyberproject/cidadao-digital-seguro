@@ -505,6 +505,7 @@ export default function App() {
   const [selectedLibrarySource, setSelectedLibrarySource] = useState('Todos')
   const [selectedLibraryType, setSelectedLibraryType] = useState('Todos')
   const [selectedLibraryCategory, setSelectedLibraryCategory] = useState('Todos')
+  const [selectedLibraryModule, setSelectedLibraryModule] = useState('Todos')
   const [videoQuery, setVideoQuery] = useState('')
   const [selectedVideoSource, setSelectedVideoSource] = useState('Todos')
   const [selectedVideoTheme, setSelectedVideoTheme] = useState('Todos')
@@ -612,6 +613,7 @@ export default function App() {
   const librarySourceOptions = useMemo(() => ['Todos', ...librarySources], [])
   const libraryTypeOptions = useMemo(() => ['Todos', ...libraryTypes], [])
   const libraryCategoryOptions = useMemo(() => ['Todos', ...libraryCategories], [])
+  const libraryModuleOptions = useMemo(() => ['Todos', 'Módulo 1', 'Módulo 2', 'Módulo 3', 'Módulo 4', 'Módulo 5', 'Módulo 6'], [])
   const videoSourceOptions = useMemo(() => ['Todos', ...videoSources], [])
   const videoThemeOptions = useMemo(() => ['Todos', ...videoThemes], [])
   const videoModuleOptions = useMemo(() => ['Todos', ...videoModules], [])
@@ -665,13 +667,27 @@ export default function App() {
       const matchesType = selectedLibraryType === 'Todos' || documentItem.type === selectedLibraryType
       const matchesCategory =
         selectedLibraryCategory === 'Todos' || documentItem.category === selectedLibraryCategory
+
+      let matchesModule = true
+      if (selectedLibraryModule !== 'Todos') {
+        if (Array.isArray(documentItem.modules)) {
+          matchesModule = documentItem.modules.includes(selectedLibraryModule)
+        } else if (documentItem.relatedModule) {
+          matchesModule = documentItem.relatedModule.includes(selectedLibraryModule)
+        } else {
+          matchesModule = false
+        }
+      }
+
+      const tagsText = Array.isArray(documentItem.tags) ? documentItem.tags.join(' ') : ''
+      const modulesText = Array.isArray(documentItem.modules) ? documentItem.modules.join(' ') : ''
       const searchableText = normalizeSearchText(
-        `${documentItem.title} ${documentItem.description} ${documentItem.source} ${documentItem.type} ${documentItem.category} ${documentItem.relatedModule} ${documentItem.url}`,
+        `${documentItem.title} ${documentItem.description} ${documentItem.source} ${documentItem.type} ${documentItem.category} ${documentItem.relatedModule || ''} ${modulesText} ${tagsText} ${documentItem.url}`,
       )
 
-      return matchesSource && matchesType && matchesCategory && (!query || searchableText.includes(query))
+      return matchesSource && matchesType && matchesCategory && matchesModule && (!query || searchableText.includes(query))
     })
-  }, [libraryQuery, selectedLibrarySource, selectedLibraryCategory, selectedLibraryType])
+  }, [libraryQuery, selectedLibrarySource, selectedLibraryCategory, selectedLibraryType, selectedLibraryModule])
 
   const filteredVideos = useMemo(() => {
     const query = normalizeSearchText(videoQuery)
@@ -1465,6 +1481,22 @@ export default function App() {
                         ))}
                       </select>
                     </label>
+
+                    <label className="stack-sm">
+                      <span className="mini-muted">Módulo</span>
+                      <select
+                        className="text-input"
+                        value={selectedLibraryModule}
+                        onChange={(event) => setSelectedLibraryModule(event.target.value)}
+                        aria-label="Filtrar por módulo relacionado"
+                      >
+                        {libraryModuleOptions.map((mod) => (
+                          <option key={mod} value={mod}>
+                            {mod}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
                   </div>
 
                   <div className="muted-small" aria-live="polite">
@@ -1475,20 +1507,38 @@ export default function App() {
                 {filteredLibraryDocuments.length > 0 ? (
                   <div className="resource-grid">
                     {filteredLibraryDocuments.map((documentItem) => (
-                      <article key={documentItem.url} className="resource-card">
+                      <article key={documentItem.url} className={`resource-card ${documentItem.official ? 'library-official-card' : ''}`}>
                         <div className="resource-card-head">
-                          <h3>{documentItem.title}</h3>
+                          <div className="library-title-row">
+                            <h3>{documentItem.title}</h3>
+                            {documentItem.official && (
+                              <span className="official-badge" title="Material de fonte institucional verificada">
+                                <Shield size={12} aria-hidden="true" focusable="false" className="success-icon" /> Fonte Oficial
+                              </span>
+                            )}
+                          </div>
                           <span className="tag" aria-label={`Tipo: ${documentItem.type}`}>{documentItem.type}</span>
                         </div>
 
                         <div className="resource-card-body">
                           <p className="muted-body">{documentItem.description}</p>
+                          {Array.isArray(documentItem.tags) && documentItem.tags.length > 0 && (
+                            <div className="library-tag-list">
+                              {documentItem.tags.map((tag) => (
+                                <span key={tag} className="library-tag-chip">
+                                  #{tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
 
                         <div className="resource-card-meta">
                           <span className="resource-meta-chip">Fonte: {documentItem.source}</span>
                           <span className="resource-meta-chip">Categoria: {documentItem.category}</span>
-                          <span className="resource-meta-chip">{documentItem.relatedModule}</span>
+                          <span className="resource-meta-chip">
+                            {Array.isArray(documentItem.modules) ? documentItem.modules.join(', ') : documentItem.relatedModule}
+                          </span>
                         </div>
 
                         <a
