@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2026-06-19
+
+### Added
+- **Evolução de Metadados e Tags para Vídeos**: Adicionados os campos opcionais `modules` (array) e `tags` (array) aos 10 vídeos educativos em `src/content/videos.js`, mantendo `relatedModule` para retrocompatibilidade.
+- **Validação de Conteúdo**: Atualização do validador `scripts/validateContent.js` para certificar a estrutura e os dados dos novos campos de vídeo.
+- **Aprimoramento de Busca e Filtragem**: Busca de vídeos estendida para considerar as novas tags e módulos. O dropdown de filtragem de módulos agora cruza os novos arrays de forma consistente, preservando o fallback seguro.
+- **Unificação Estética**: Renderização de tags em formato de chip para a aba de vídeos educativos, empregando a classe visual comum `.resource-tag-chip` e adaptando as tags da curadoria curada de vídeos.
+
 ## [2.4.0] - 2026-06-19
 
 ### Added
