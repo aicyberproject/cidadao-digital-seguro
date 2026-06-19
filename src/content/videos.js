@@ -154,7 +154,7 @@ export const educationalVideos = [
     type: 'Vídeo institucional',
     relatedModule: 'Módulo 6',
     modules: ['Módulo 6'],
-    tags: ['resposta a incidentes', 'denúncia', 'preservação de provas', 'boletim de ocorrência'],
+    tags: ['resposta a incidentes', 'denúncia', 'preservação de evidências', 'boletim de ocorrência'],
     duration: '02:15',
     description: 'Como denunciar crimes cibernéticos e preservar evidências digitais.',
     status: 'Em preparação',
