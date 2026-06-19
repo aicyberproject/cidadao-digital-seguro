@@ -527,6 +527,34 @@ function validateSimulations(simulations, report) {
       report.errors.push(`${context}: warningSigns deve ser array com ao menos 1 item.`)
     }
 
+    if ('modules' in simulationItem) {
+      if (!Array.isArray(simulationItem.modules)) {
+        report.errors.push(`${context}: modules deve ser um array.`)
+      } else {
+        simulationItem.modules.forEach((mod) => {
+          if (!allowedCourseModules.includes(mod)) {
+            report.errors.push(`${context}: module "${mod}" em modules e invalido.`)
+          }
+        })
+      }
+    }
+
+    if ('tags' in simulationItem) {
+      if (!Array.isArray(simulationItem.tags)) {
+        report.errors.push(`${context}: tags deve ser um array.`)
+      } else {
+        simulationItem.tags.forEach((tag, idx) => {
+          if (typeof tag !== 'string' || tag.trim().length === 0) {
+            report.errors.push(`${context}: tag na posicao ${idx + 1} em tags deve ser string nao vazia.`)
+          }
+        })
+      }
+    }
+
+    if ('recommendedAction' in simulationItem && typeof simulationItem.recommendedAction !== 'string') {
+      report.errors.push(`${context}: recommendedAction deve ser string.`)
+    }
+
     if (!isNonEmptyArray(simulationItem?.options)) {
       report.errors.push(`${context}: options deve ser array com ao menos 1 opcao.`)
       return

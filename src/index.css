@@ -1205,4 +1205,26 @@ p {
   font-weight: 500;
 }
 
+/* Simulations Enhancements - v2.2.0 */
+.simulation-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.simulation-tag-chip {
+  background: var(--bg-hover);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.simulation-recommended-box {
+  border-left: 4px solid var(--success) !important;
+}
+
 

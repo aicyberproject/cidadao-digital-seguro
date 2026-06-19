@@ -25,6 +25,9 @@ export const quickSimulations = [
     situation: 'Você recebeu um SMS informando que sua encomenda foi retida e precisa pagar uma taxa.',
     category: 'Golpes e fraudes digitais',
     relatedModule: 'Módulo 5',
+    modules: ['Módulo 5'],
+    tags: ['smishing', 'mensagem', 'encomenda', 'correios', 'taxa'],
+    recommendedAction: 'Nunca clique em links de cobrança recebidos por SMS. Para verificar encomendas, use o site ou aplicativo oficial dos Correios ou da transportadora informando o código de rastreamento.',
     scenario:
       'Sua encomenda foi retida. Pague a taxa de liberação em até 30 minutos para evitar devolução. Acesse: entrega-segura.exemplo/pagamento',
     warningSigns: [
@@ -58,6 +61,9 @@ export const quickSimulations = [
     situation: 'Alguém liga dizendo ser da central de segurança do seu banco sobre uma fraude.',
     category: 'Transações e consumo seguro',
     relatedModule: 'Módulo 4',
+    modules: ['Módulo 4'],
+    tags: ['falsa central', 'banco', 'telefone', 'cartão', 'engenharia social'],
+    recommendedAction: 'Desligue imediatamente a ligação suspeita. Bancos nunca pedem transferências, senhas ou Pix para contas de segurança. Entre em contato com o banco pelo número oficial impresso atrás do seu cartão.',
     scenario:
       '"Olá, detectamos uma tentativa de compra suspeita em seu cartão. Para sua segurança, precisamos transferir seus fundos para uma conta segura temporária enquanto bloqueamos seu cartão."',
     warningSigns: [
@@ -91,6 +97,9 @@ export const quickSimulations = [
     situation: 'Um contato que parece ser um familiar escreve de um número novo pedindo ajuda financeira.',
     category: 'Golpes e fraudes digitais',
     relatedModule: 'Módulo 5',
+    modules: ['Módulo 5'],
+    tags: ['perfil falso', 'whatsapp', 'Pix', 'familiar', 'urgência'],
+    recommendedAction: 'Nunca envie dinheiro ou faça Pix a pedido de um conhecido que mudou de número. Ligue diretamente por voz ou vídeo para o número antigo para confirmar a identidade antes de qualquer transação.',
     scenario:
       '"Oi, troquei de número, anota aí. Tive um problema com meu banco e preciso pagar uma conta urgente hoje. Pode me fazer um Pix de R$ 800? Te devolvo amanhã cedo!"',
     warningSigns: [
@@ -124,6 +133,9 @@ export const quickSimulations = [
     situation: 'Você recebe uma mensagem com um QR Code para pagar uma taxa obrigatória de um serviço público.',
     category: 'Transações e consumo seguro',
     relatedModule: 'Módulo 4',
+    modules: ['Módulo 4'],
+    tags: ['QR Code', 'cobrança', 'pagamento', 'multa', 'falso'],
+    recommendedAction: 'Ao ler qualquer QR Code de pagamento, confira atentamente o nome do recebedor e o valor na tela de confirmação do seu aplicativo bancário antes de autorizar a transação.',
     scenario:
       'Alerta: Regularize sua situação cadastral hoje para evitar multas. Escaneie o QR Code abaixo para pagar a taxa de manutenção anual obrigatória.',
     warningSigns: [
@@ -157,6 +169,9 @@ export const quickSimulations = [
     situation: 'Você vê um anúncio em rede social de um smartphone premium com 70% de desconto.',
     category: 'Transações e consumo seguro',
     relatedModule: 'Módulo 4',
+    modules: ['Módulo 4'],
+    tags: ['compras', 'anúncio', 'loja virtual', 'desconto', 'fraude'],
+    recommendedAction: 'Desconfie de descontos exagerados. Antes de comprar, verifique o selo de autenticidade da loja nas redes sociais, pesquise o site oficial no navegador e consulte a reputação no Reclame Aqui.',
     scenario:
       'QUEIMA DE ESTOQUE! Somente hoje: Smartphone de última geração de R$ 5.999 por R$ 1.200. Poucas unidades. Compre agora pelo link: super-desconto-promo.exemplo',
     warningSigns: [
@@ -190,6 +205,9 @@ export const quickSimulations = [
     situation: 'Um suposto atendente de TI liga dizendo que seu computador está infectado.',
     category: 'Dispositivos e redes',
     relatedModule: 'Módulo 3',
+    modules: ['Módulo 3'],
+    tags: ['falso suporte', 'acesso remoto', 'computador', 'invasão', 'software'],
+    recommendedAction: 'Nunca instale programas de acesso remoto (como AnyDesk ou TeamViewer) a pedido de terceiros por ligação. Empresas legítimas de suporte de TI não fazem esse tipo de solicitação ativa.',
     scenario:
       '"Identificamos vírus ativos em sua rede. Para remover agora e evitar que seus dados sejam roubados, instale o aplicativo de suporte "AnyHelp" e me passe o código que aparecer."',
     warningSigns: [
@@ -223,6 +241,9 @@ export const quickSimulations = [
     situation: 'Você recebe um vídeo informando sobre uma mudança drástica e perigosa em uma lei.',
     category: 'Desinformação e conteúdo falso',
     relatedModule: 'Módulo 1',
+    modules: ['Módulo 1'],
+    tags: ['boato', 'desinformação', 'notícia falsa', 'compartilhamento'],
+    recommendedAction: 'Antes de repassar mensagens alarmistas ou sensacionalistas, pause e faça uma busca rápida em sites confiáveis de checagem de fatos ou portais de notícias oficiais.',
     scenario:
       'URGENTE! A partir de amanhã todos os seus dados bancários serão públicos. O governo acabou de aprovar a lei sigilo-zero. Repasse para todos os seus contatos agora!',
     warningSigns: [
@@ -256,6 +277,9 @@ export const quickSimulations = [
     situation: 'Você vê um vídeo de uma autoridade famosa anunciando um programa de indenização.',
     category: 'Desinformação e conteúdo falso',
     relatedModule: 'Módulo 5',
+    modules: ['Módulo 5'],
+    tags: ['deepfake', 'inteligência artificial', 'vídeo falso', 'indenização'],
+    recommendedAction: 'Desconfie de pronunciamentos em vídeo onde figuras públicas oferecem vantagens financeiras fáceis. Verifique a existência de programas de indenização apenas nos canais oficiais terminados em .gov.br.',
     scenario:
       'No vídeo, a voz e o rosto da autoridade dizem: "Liberamos o saque de R$ 2.500 para todos os cidadãos. Clique abaixo e informe seu CPF para receber via Pix agora."',
     warningSigns: [
@@ -289,6 +313,9 @@ export const quickSimulations = [
     situation: 'Um e-mail informa que seus dados vazaram e oferece um site para você conferir se está seguro.',
     category: 'Privacidade e proteção de dados',
     relatedModule: 'Módulo 5',
+    modules: ['Módulo 5'],
+    tags: ['vazamento', 'dados pessoais', 'cpf', 'e-mail', 'phishing'],
+    recommendedAction: 'Evite inserir seu CPF ou dados sensíveis em links recebidos por e-mail ou mensagens sobre supostos vazamentos. Utilize ferramentas oficiais seguras, como o Registrato do Banco Central.',
     scenario:
       'URGENTE: Seus dados foram expostos em um vazamento massivo. Clique aqui: verifique-seu-cpf.exemplo e informe seus dados para ver o que vazou.',
     warningSigns: [
@@ -322,6 +349,9 @@ export const quickSimulations = [
     situation: 'Após ter o celular furtado, você começa a receber mensagens no seu e-mail de recuperação.',
     category: 'Resposta a incidentes e denúncia',
     relatedModule: 'Módulo 6',
+    modules: ['Módulo 6'],
+    tags: ['furto', 'resposta a incidentes', 'rastreamento', 'senha', 'bloqueio'],
+    recommendedAction: 'Se o seu celular for roubado ou furtado, use apenas as ferramentas oficiais de rastreamento (como Encontre meu Dispositivo da Apple ou Google). Desconsidere qualquer mensagem recebida no e-mail de recuperação que peça suas senhas.',
     scenario:
       'Uma mensagem diz: "Seu dispositivo furtado foi localizado. Para ver a localização exata e bloquear o acesso, clique aqui e confirme sua senha do ID Apple/Google."',
     warningSigns: [
