@@ -463,6 +463,30 @@ function validateVideos(videos, report) {
     validateTaxonomyField(videoItem?.theme, context, 'theme', report)
     validateRelatedModule(videoItem, context, report)
 
+    if ('modules' in videoItem) {
+      if (!Array.isArray(videoItem.modules)) {
+        report.errors.push(`${context}: modules deve ser um array.`)
+      } else {
+        videoItem.modules.forEach((mod) => {
+          if (!allowedCourseModules.includes(mod)) {
+            report.errors.push(`${context}: module "${mod}" em modules e invalido.`)
+          }
+        })
+      }
+    }
+
+    if ('tags' in videoItem) {
+      if (!Array.isArray(videoItem.tags)) {
+        report.errors.push(`${context}: tags deve ser um array.`)
+      } else {
+        videoItem.tags.forEach((tag, idx) => {
+          if (typeof tag !== 'string' || tag.trim().length === 0) {
+            report.errors.push(`${context}: tag na posicao ${idx + 1} em tags deve ser string nao vazia.`)
+          }
+        })
+      }
+    }
+
     if (!isPresent(videoItem?.status)) {
       report.warnings.push(`${context}: status ausente.`)
     } else if (!allowedVideoStatuses.includes(videoItem.status)) {
