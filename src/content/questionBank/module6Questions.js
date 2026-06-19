@@ -80,7 +80,7 @@ export const module6Questions = [
     answer: 1,
   },
   {
-    question: 'Conforme a dica "Não Apague as Provas", qual conduta emocional deve ser evitada imediatamente após um golpe?',
+    question: 'Conforme a dica "Não Apague as Evidências", qual conduta emocional deve ser evitada imediatamente após um golpe?',
     options: [
       'Salvar prints e protocolos de atendimento.',
       'Acionar o banco por aplicativo oficial já instalado.',
@@ -175,7 +175,7 @@ export const module6Questions = [
       'Impedir que o dano continue aumentando.',
       'Substituir totalmente a preservação de evidências.',
       'Evitar que a vítima procure canais oficiais.',
-      'Permitir que o suspeito conclua a transação para gerar mais provas.',
+      'Permitir que o suspeito conclua a transação para gerar mais evidências.',
     ],
     answer: 0,
   },
