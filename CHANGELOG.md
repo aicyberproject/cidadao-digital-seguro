@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0-rc.1] - 2026-06-19
+
+### Added
+- **Release Candidate da Versão Final**: Preparação da versão 3.0.0-rc.1 para homologação final e empacotamento da release candidate de produção.
+
+### Changed
+- **Harmonização de Metadados de Versão**: Atualização e sincronização da versão do projeto para `3.0.0-rc.1` em `package.json` e `package-lock.json`, garantindo que a versão seja dinamicamente refletida no certificado digital em PDF.
+- **Preservação de Conteúdo**: Manutenção integral do conteúdo pedagógico validado, dos quizzes, da avaliação final e de todos os componentes visuais sem alterações de escopo.
+
 ## [2.9.0] - 2026-06-19
 
 ### Added
