@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0-rc.2] - 2026-06-22
+
+### Added
+- **Homologação e Saneamento de Links**: Criação do documento `docs/homologacao-v3.0.0-rc.1-e-saneamento-links-v3.0.0-rc.2.md` detalhando os achados de homologação manual da v3.0.0-rc.1 (certificado de teste emitido com código verificador `CDS-3001-1LYHRSV`).
+
+### Changed
+- **Saneamento de Links Externos**:
+  - Atualização do link inativo da FEBRABAN para `https://portal.febraban.org.br/AntiFraude/` em `library.js` e `videos.js`.
+  - Atualização do link inativo do Celular Seguro do Governo Federal para `https://celularseguro.mj.gov.br/` em `videos.js`.
+  - Atualização do link 404 do CERT.br Vídeos para `https://cidadaonarede.nic.br/` em `videos.js`.
+- **Sincronização de Metadados de Versão**: Atualização da versão do projeto para `3.0.0-rc.2` em `package.json` e `package-lock.json`.
+- **Documentação de Links Instáveis**: Classificação do link da campanha da INTERPOL como instável para robôs (CDN/WAF) mas funcional para humanos, documentado no relatório de homologação correspondente.
+
 ## [3.0.0-rc.1] - 2026-06-19
 
 ### Added
