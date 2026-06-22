@@ -201,7 +201,7 @@ export const libraryDocuments = [
     tags: ['campanha', 'antifraude', 'febraban', 'golpes'],
     official: true,
     description: 'Materiais e vídeos educativos da campanha nacional de prevenção a fraudes.',
-    url: 'https://antifraude.febraban.org.br/',
+    url: 'https://portal.febraban.org.br/AntiFraude/',
   },
   {
     title: 'Campanha Think Twice',
