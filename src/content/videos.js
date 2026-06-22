@@ -41,7 +41,7 @@ export const educationalVideos = [
     duration: '01:00',
     description: 'Vídeo da campanha nacional de prevenção a fraudes e golpes bancários.',
     status: 'Disponível',
-    url: 'https://antifraude.febraban.org.br/',
+    url: 'https://portal.febraban.org.br/AntiFraude/',
   },
   {
     title: 'Think Twice - INTERPOL',
@@ -67,7 +67,7 @@ export const educationalVideos = [
     duration: '02:30',
     description: 'Orientações oficiais do Ministério da Justiça sobre procedimentos após furto de dispositivo.',
     status: 'Disponível',
-    url: 'https://www.gov.br/mj/pt-br/assuntos/celular-seguro',
+    url: 'https://celularseguro.mj.gov.br/',
   },
   {
     title: 'Entendendo o Phishing',
@@ -80,7 +80,7 @@ export const educationalVideos = [
     duration: '03:15',
     description: 'Explicação detalhada sobre como funcionam os ataques de phishing e como se proteger.',
     status: 'Disponível',
-    url: 'https://cartilha.cert.br/videos/',
+    url: 'https://cidadaonarede.nic.br/',
   },
   {
     title: 'Segurança Bancária Digital',
@@ -145,7 +145,7 @@ export const educationalVideos = [
     duration: '03:45',
     description: 'Configurações essenciais para manter seu smartphone seguro contra invasões.',
     status: 'Disponível',
-    url: 'https://cartilha.cert.br/videos/',
+    url: 'https://cidadaonarede.nic.br/',
   },
   {
     title: 'Resposta a Incidentes Digitais',
