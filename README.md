@@ -36,6 +36,8 @@ A plataforma oferece uma experiência de aprendizado completa e acessível:
 - [Auditoria Final v1.6 (Pré-Main)](docs/auditoria-final-v1.6-pre-main.md)
 - [Consolidação das Ferramentas Transversais v2.4.0](docs/consolidacao-ferramentas-transversais-v2.4.0.md)
 - [Homologação v3.0.0-rc.1 e Saneamento de Links v3.0.0-rc.2](docs/homologacao-v3.0.0-rc.1-e-saneamento-links-v3.0.0-rc.2.md)
+- [Notas da Release Final v3.0.0](docs/release-v3.0.0-final.md)
+
 
 ## Comandos essenciais
 
