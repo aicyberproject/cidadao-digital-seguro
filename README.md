@@ -37,6 +37,9 @@ A plataforma oferece uma experiência de aprendizado completa e acessível:
 - [Consolidação das Ferramentas Transversais v2.4.0](docs/consolidacao-ferramentas-transversais-v2.4.0.md)
 - [Homologação v3.0.0-rc.1 e Saneamento de Links v3.0.0-rc.2](docs/homologacao-v3.0.0-rc.1-e-saneamento-links-v3.0.0-rc.2.md)
 - [Notas da Release Final v3.0.0](docs/release-v3.0.0-final.md)
+- [Projeto Pedagógico](docs/projeto-pedagogico-cidadao-digital-seguro.md)
+- [Plano do Curso](docs/plano-do-curso-cidadao-digital-seguro.md)
+
 
 
 ## Comandos essenciais
