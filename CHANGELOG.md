@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.1-docs-pedagogicos] - 2026-06-23
+
+### Added
+- **Documentação Pedagógica Oficial**: Criação dos documentos `docs/projeto-pedagogico-cidadao-digital-seguro.md` (detalhando objetivos, competências, metodologia e governança) e `docs/plano-do-curso-cidadao-digital-seguro.md` (detalhando ementa, matriz de 6 módulos e conteúdo programático) pós-v3.0.0.
+
+### Changed
+- **Registro de Documentação**: Atualização do `README.md` com a inclusão dos novos documentos na seção principal de documentação.
+
 ## [3.0.0] - 2026-06-23
 
 ### Added
