@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2026-07-04
+
+### Added
+- **Auditoria de Pendências do Roadmap**: Criação do documento `docs/auditoria-pendencias-roadmap-v3.1.0.md` registrando a resolução das pendências de materiais complementares, certificado, acessibilidade e responsividade mobile, além da avaliação formal do verificador público de certificado (requisitos e recomendação).
+- **Skip Link e Landmarks**: Link "Pular para o conteúdo principal" como primeiro elemento focável, barra superior convertida para `<header>` com `<nav>` rotulada e trilha lateral com `aria-label`, atendendo WCAG 2.4.1 (Bypass Blocks).
+- **Suíte E2E Mobile**: Novo projeto `mobile-chromium` (Pixel 7) em `playwright.config.js` executando toda a jornada do curso em tela pequena, e novo teste que valida o skip link e a ausência de rolagem horizontal em todas as áreas transversais.
+- **Validação Automatizada de URLs**: `scripts/validateContent.js` passou a validar todas as URLs do conteúdo (biblioteca, vídeos, videoteca e blocos de links dos módulos): https obrigatório, erro para URL malformada e aviso para parâmetros de rastreamento (`si`, `utm_*`, `fbclid`, `gclid`).
+
+### Changed
+- **Certificado (PDF e tela de emissão)**: O texto de conclusão do PDF passou a registrar o nome completo do curso (título e subtítulo); a tela de emissão passou a exibir curso, carga horária e versão a partir das mesmas constantes usadas no PDF; o corpo do nome do participante reduz automaticamente para nomes com mais de 44 caracteres; o campo de nome ganhou `maxLength` e `autoComplete`.
+- **Privacidade de Links**: Remoção dos parâmetros de rastreamento `?si=` dos três links de videoaulas do YouTube em `src/content/videoLibrary.js`.
+- **Roadmap**: Reorganização de `docs/roadmap.md` com as pendências resolvidas na v3.1.0 e as que permanecem (videoaulas, validação institucional, reverificação periódica de links, verificador público condicionado à decisão institucional).
+
+### Fixed
+- **Estouro horizontal na Biblioteca (mobile)**: Chip de metadados com lista de módulos não quebrava linha (`white-space: nowrap`) e forçava rolagem horizontal em documentos transversais.
+- **Estouro horizontal nas Simulações (mobile)**: Cabeçalho dos cards não permitia quebra entre título e selo de categoria (`flex-wrap: wrap` e quebra segura do título adicionados).
+- **Fluxo do curso bloqueado em telas de links (mobile)**: URLs longas exibidas sem quebra em `.link-card-url` estouravam o layout e impediam o toque no botão "Registrar tela e avançar"; corrigido com `overflow-wrap: anywhere`.
+
 ## [3.0.1-docs-pedagogicos] - 2026-06-23
 
 ### Added
