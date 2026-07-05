@@ -39,6 +39,7 @@ A plataforma oferece uma experiência de aprendizado completa e acessível:
 - [Notas da Release Final v3.0.0](docs/release-v3.0.0-final.md)
 - [Projeto Pedagógico](docs/projeto-pedagogico-cidadao-digital-seguro.md)
 - [Plano do Curso](docs/plano-do-curso-cidadao-digital-seguro.md)
+- [Auditoria e Resolução de Pendências do Roadmap v3.1.0](docs/auditoria-pendencias-roadmap-v3.1.0.md)
 
 
 

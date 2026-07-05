@@ -789,7 +789,7 @@ export default function App() {
     const issuedAt = new Date()
     const completionDate = formatCertificateDate(issuedAt)
     const verificationCode = createCertificateCode(cleanName, issuedAt, issuedAt.getTime())
-    const courseName = courseIntro.title
+    const courseName = `${courseIntro.title} — ${courseIntro.subtitle}`
 
     doc.setFillColor(248, 247, 244)
     doc.rect(0, 0, 297, 210, 'F')
@@ -830,7 +830,7 @@ export default function App() {
     doc.roundedRect(42, 69, 213, 22, 1.5, 1.5, 'S')
 
     doc.setFont('helvetica', 'bold')
-    doc.setFontSize(22)
+    doc.setFontSize(cleanName.length > 44 ? 16 : 22)
     doc.setTextColor(35, 55, 82)
     doc.text(cleanName.toUpperCase(), 148.5, 83, { align: 'center', maxWidth: 200 })
 
@@ -855,7 +855,7 @@ export default function App() {
 
     doc.setFont('helvetica', 'normal')
     doc.setTextColor(72, 77, 86)
-    doc.text(`Curso: ${courseName}`, 46, 138, { maxWidth: 120 })
+    doc.text(`Curso: ${courseIntro.title}`, 46, 138, { maxWidth: 120 })
     doc.text(`Carga horária sugerida: ${CERTIFICATE_WORKLOAD}`, 46, 146)
     doc.text(`Data de conclusão: ${completionDate}`, 164, 138)
     doc.text('Status: aprovado', 164, 146)
@@ -1142,7 +1142,10 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <div className="topbar">
+      <a className="skip-link" href="#conteudo-principal">
+        Pular para o conteúdo principal
+      </a>
+      <header className="topbar">
         <div>
           <div className="eyebrow">
             <Shield size={14} aria-hidden="true" focusable="false" /> Curso online com progressão por conclusão de atividades
@@ -1151,7 +1154,7 @@ export default function App() {
           <p className="subtitle">{courseIntro.subtitle}</p>
         </div>
 
-        <div className="top-actions">
+        <nav className="top-actions" aria-label="Navegação principal do curso">
           <button
             className={`button button-outline ${currentView === 'home' ? 'active' : ''}`}
             onClick={goHome}
@@ -1197,11 +1200,11 @@ export default function App() {
           <button className="button button-outline" onClick={resetCourse}>
             <RotateCcw size={16} aria-hidden="true" focusable="false" /> Reiniciar
           </button>
-        </div>
-      </div>
+        </nav>
+      </header>
 
       <div className="layout-grid">
-        <aside className="sidebar">
+        <aside className="sidebar" aria-label="Trilha do curso">
           <Card>
             <div className="card-header">
               <h2>Trilha do curso</h2>
@@ -1281,7 +1284,7 @@ export default function App() {
           </Card>
         </aside>
 
-        <main className="content-column">
+        <main id="conteudo-principal" className="content-column" tabIndex={-1}>
           {currentView === 'home' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
               <ScreenCard title="Bem-vindo ao curso" icon={Shield}>
@@ -2615,9 +2618,10 @@ export default function App() {
                   <div className="info-box">
                     <div className="link-card-title">Emitir certificado</div>
                     <div className="line-list">
-                      <div>Curso: Cidadão Digital Seguro — Prevenção e Combate a Crimes Cibernéticos</div>
-                      <div>Carga horária sugerida: 12 a 18 horas</div>
+                      <div>Curso: {courseIntro.title} — {courseIntro.subtitle}</div>
+                      <div>Carga horária sugerida: {CERTIFICATE_WORKLOAD}</div>
                       <div>Status: concluído com aproveitamento</div>
+                      <div>Versão do curso: {COURSE_VERSION}</div>
                     </div>
 
                     <p className="muted-body">
@@ -2634,6 +2638,8 @@ export default function App() {
                         className="text-input"
                         type="text"
                         placeholder="Digite o nome completo"
+                        autoComplete="name"
+                        maxLength={90}
                         value={participantName}
                         onChange={(e) => setParticipantName(e.target.value)}
                       />
