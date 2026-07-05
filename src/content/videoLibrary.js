@@ -63,7 +63,7 @@ export const videoLibrary = [
     title: 'Think Twice: BEC (Business Email Compromise)',
     provider: 'INTERPOL',
     sourceType: 'International Campaign',
-    url: 'https://youtu.be/F0dAeLoXago?si=ZvH-yaJ0ZpSSoLcv',
+    url: 'https://youtu.be/F0dAeLoXago',
     videoId: 'F0dAeLoXago',
     platform: 'YouTube',
     language: 'en', // Tradução/Legenda necessária
@@ -79,7 +79,7 @@ export const videoLibrary = [
     title: 'Think Twice: Romance Scams',
     provider: 'INTERPOL',
     sourceType: 'International Campaign',
-    url: 'https://youtu.be/JUMMtpkzP08?si=3cq8IUW1sDTAlK5y',
+    url: 'https://youtu.be/JUMMtpkzP08',
     videoId: 'JUMMtpkzP08',
     platform: 'YouTube',
     language: 'en', // Tradução/Legenda necessária
@@ -95,7 +95,7 @@ export const videoLibrary = [
     title: 'Programa Celular Seguro',
     provider: 'MJSP',
     sourceType: 'Governmental Service',
-    url: 'https://youtu.be/DDyur4i9YDY?si=gP4koiJPie5nqJPo',
+    url: 'https://youtu.be/DDyur4i9YDY',
     videoId: 'DDyur4i9YDY',
     platform: 'YouTube',
     language: 'pt-BR',

@@ -302,6 +302,7 @@ p {
 .muted-small,
 .link-card-url {
   color: var(--text-muted);
+  overflow-wrap: anywhere;
 }
 
 .muted-small {
@@ -809,6 +810,27 @@ p {
 }
 
 /* Accessibility - v1.4.9 */
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: -9999px;
+  z-index: 100;
+  background: var(--primary);
+  color: var(--primary-contrast);
+  padding: 10px 18px;
+  border-radius: 0 0 var(--border-radius-md) 0;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+.content-column:focus-visible {
+  outline: none;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -888,7 +910,13 @@ p {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 12px;
+}
+
+.resource-card-head h3 {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .resource-card h3 {
@@ -914,7 +942,7 @@ p {
   background: var(--bg-app);
   color: var(--text-muted);
   font-weight: 600;
-  white-space: nowrap;
+  max-width: 100%;
 }
 
 .resource-card-body {
