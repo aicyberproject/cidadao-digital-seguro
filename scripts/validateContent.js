@@ -150,6 +150,37 @@ function validateRelatedModule(resourceItem, context, report) {
   }
 }
 
+const trackingQueryParams = ['si', 'fbclid', 'gclid']
+
+function validateUrlFormat(url, context, report) {
+  if (!isPresent(url)) {
+    return
+  }
+
+  let parsed
+
+  try {
+    parsed = new URL(url)
+  } catch {
+    report.errors.push(`${context}: url "${url}" malformada.`)
+    return
+  }
+
+  if (parsed.protocol !== 'https:') {
+    report.errors.push(`${context}: url deve usar https (${url}).`)
+  }
+
+  const foundTracking = [...parsed.searchParams.keys()].filter(
+    (key) => trackingQueryParams.includes(key) || key.startsWith('utm_'),
+  )
+
+  if (foundTracking.length > 0) {
+    report.warnings.push(
+      `${context}: url contem parametros de rastreamento (${foundTracking.join(', ')}). Recomendado remover para preservar privacidade.`,
+    )
+  }
+}
+
 async function loadContent() {
   const server = await createServer({
     root: projectRoot,
@@ -349,6 +380,33 @@ function validateModule(moduleItem, index, questionBankIndex, report) {
       )
     })
   }
+
+  const linkCollections = [
+    moduleItem?.resources,
+    moduleItem?.links,
+    moduleItem?.complementaryLinks,
+    ...(Array.isArray(moduleItem?.content)
+      ? moduleItem.content
+          .filter((item) => item?.type === 'links')
+          .map((item) => item?.items)
+      : []),
+  ]
+
+  linkCollections.forEach((collection) => {
+    if (!Array.isArray(collection)) {
+      return
+    }
+
+    collection.forEach((linkItem, linkIndex) => {
+      const linkContext = `${label} link "${linkItem?.label || linkIndex + 1}"`
+
+      if (!isPresent(linkItem?.url)) {
+        errors.push(`${linkContext}: url obrigatoria ausente.`)
+      } else {
+        validateUrlFormat(linkItem.url, linkContext, report)
+      }
+    })
+  })
 }
 
 function validateGlossary(glossary, report) {
@@ -410,6 +468,8 @@ function validateLibrary(library, report) {
 
     if (!isPresent(documentItem?.url)) {
       report.errors.push(`${context}: url obrigatoria ausente.`)
+    } else {
+      validateUrlFormat(documentItem.url, context, report)
     }
 
     if ('modules' in documentItem) {
@@ -498,6 +558,8 @@ function validateVideos(videos, report) {
     if (videoItem?.status === 'Disponível' && !isPresent(videoItem?.url)) {
       report.errors.push(`${context}: video Disponível deve possuir url.`)
     }
+
+    validateUrlFormat(videoItem?.url, context, report)
   })
 }
 
@@ -625,8 +687,8 @@ function validateVideoLibrary(videoLibrary, report) {
 
     if (!isPresent(video.url)) {
       report.errors.push(`${context}: url obrigatoria ausente.`)
-    } else if (!video.url.startsWith('https://')) {
-      report.errors.push(`${context}: url deve começar com https://.`)
+    } else {
+      validateUrlFormat(video.url, context, report)
     }
 
     if (!isPresent(video.platform)) {
