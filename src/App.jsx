@@ -19,6 +19,7 @@ import {
   MessageSquare,
   XCircle,
   AlertOctagon,
+  GraduationCap,
 } from 'lucide-react'
 
 import { courseIntro } from './content/courseIntro'
@@ -30,6 +31,7 @@ import { educationalVideos, videoModules, videoSources, videoThemes } from './co
 import { videoLibrary } from './content/videoLibrary'
 import { practicalChecklists, checklistCategories, checklistModules } from './content/checklists'
 import { quickSimulations, simulationCategories, simulationModules } from './content/simulations'
+import { moduloMultiplicador } from './content/moduloMultiplicador'
 import { CharacterAvatar } from './components/CharacterAvatar'
 import { ScamAlertBlock, SpecialistWordBlock, LudicTransition } from './components/LudicBlocks'
 import packageInfo from '../package.json'
@@ -1197,6 +1199,13 @@ export default function App() {
           >
             <MessageSquare size={16} aria-hidden="true" focusable="false" /> Simulações
           </button>
+          <button
+            className={`button button-outline ${currentView === 'multiplicadores' ? 'active' : ''}`}
+            onClick={() => setCurrentView('multiplicadores')}
+            aria-current={currentView === 'multiplicadores' ? 'page' : undefined}
+          >
+            <GraduationCap size={16} aria-hidden="true" focusable="false" /> Multiplicadores
+          </button>
           <button className="button button-outline" onClick={resetCourse}>
             <RotateCcw size={16} aria-hidden="true" focusable="false" /> Reiniciar
           </button>
@@ -2137,6 +2146,98 @@ export default function App() {
                     Nenhuma simulação encontrada para a busca ou filtros selecionados.
                   </div>
                 )}
+              </ScreenCard>
+            </motion.div>
+          )}
+
+          {currentView === 'multiplicadores' && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
+              <ScreenCard title={moduloMultiplicador.title} icon={GraduationCap}>
+                <p className="muted-body">{moduloMultiplicador.subtitle}</p>
+
+                <div className="info-box">
+                  <div className="link-card-title">Pré-requisito</div>
+                  <p className="muted-body">{moduloMultiplicador.prerequisite}</p>
+                </div>
+
+                <p className="muted-body">{moduloMultiplicador.summary}</p>
+
+                <div className="tags-row">
+                  <span className="tag">{moduloMultiplicador.level}</span>
+                  <span className="tag">{moduloMultiplicador.duration}</span>
+                  <span className="tag">{moduloMultiplicador.lessons.length} lições</span>
+                </div>
+
+                <div className="info-box">
+                  <div className="link-card-title">Objetivos de aprendizagem</div>
+                  <ul className="muted-body">
+                    {moduloMultiplicador.objectives.map((objective, index) => (
+                      <li key={index}>{objective}</li>
+                    ))}
+                  </ul>
+                </div>
+              </ScreenCard>
+
+              {moduloMultiplicador.lessons.map((lesson, index) => (
+                <ScreenCard key={lesson.id} title={`${index + 1}. ${lesson.title}`}>
+                  <span className="mini-muted">{lesson.estimatedTime}</span>
+                  {renderLessonContent(lesson.content)}
+                </ScreenCard>
+              ))}
+
+              <ScreenCard title="Autoverificação do multiplicador" icon={ListChecks}>
+                <ul className="muted-body">
+                  {moduloMultiplicador.checklist.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              </ScreenCard>
+
+              <ScreenCard title={moduloMultiplicador.practicalActivity.title} icon={FileCheck}>
+                <p className="muted-body">{moduloMultiplicador.practicalActivity.description}</p>
+                <div className="info-box">
+                  <ul className="muted-body">
+                    {moduloMultiplicador.practicalActivity.steps.map((step, index) => (
+                      <li key={index}>{step}</li>
+                    ))}
+                  </ul>
+                </div>
+              </ScreenCard>
+
+              <ScreenCard title="Requisitos de habilitação" icon={Award}>
+                <p className="muted-body">{moduloMultiplicador.habilitacao.observacao}</p>
+                <div className="info-box">
+                  <ul className="muted-body">
+                    {moduloMultiplicador.habilitacao.requisitos.map((requisito, index) => (
+                      <li key={index}>{requisito}</li>
+                    ))}
+                  </ul>
+                </div>
+              </ScreenCard>
+
+              <ScreenCard title="Materiais de apoio" icon={FileText}>
+                <div className="stack-sm">
+                  {moduloMultiplicador.resources.map((resource, index) =>
+                    resource.url ? (
+                      <a
+                        key={index}
+                        className="link-card"
+                        href={resource.url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <div className="link-card-title">{resource.label}</div>
+                        <div className="link-card-url">{resource.url}</div>
+                        <ExternalLink size={16} aria-hidden="true" focusable="false" />
+                      </a>
+                    ) : (
+                      <div key={index} className="info-box">
+                        <div className="link-card-title">{resource.label}</div>
+                        {resource.note ? <p className="muted-body">{resource.note}</p> : null}
+                      </div>
+                    ),
+                  )}
+                </div>
               </ScreenCard>
             </motion.div>
           )}
