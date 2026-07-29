@@ -6,7 +6,7 @@ export const finalAssessment = [
       'Clicar no link rapidamente para evitar o bloqueio anunciado',
       'Responder pedindo mais detalhes ao remetente da mensagem',
       'Interromper a interação e confirmar a situação por canal oficial independente',
-      'Compartilhar a mensagem em grupos para descobrir se outras pessoas receberam',
+      'Compartilhar a mensagem em grupos de conhecidos para descobrir se outras pessoas também receberam',
     ],
     answer: 2,
   },
@@ -17,7 +17,7 @@ export const finalAssessment = [
       'A proteção depende apenas da investigação policial depois do prejuízo',
       'Estado, setor privado, plataformas e cidadão atuam de forma complementar na prevenção e na resposta',
       'Somente bancos e empresas de tecnologia precisam adotar medidas de segurança',
-      'O cidadão deve investigar por conta própria antes de comunicar qualquer instituição',
+      'O cidadão deve investigar a origem do golpe por conta própria antes de comunicar qualquer instituição envolvida',
     ],
     answer: 1,
   },
@@ -27,7 +27,7 @@ export const finalAssessment = [
     options: [
       'Urgência, falsa autoridade, solicitação de código e tentativa de controlar a ação da vítima',
       'Mensagem curta, ausência de anexo e uso de linguagem educada',
-      'Atendimento por telefone, uso de protocolo e menção ao nome do banco',
+      'Atendimento por telefone, uso de número de protocolo e menção ao nome comercial do banco',
       'Contato em horário comercial e ausência de cobrança imediata',
     ],
     answer: 0,
@@ -36,7 +36,7 @@ export const finalAssessment = [
     question:
       'Uma senha vazada em uma loja online também era usada no e-mail principal da vítima. Qual é o principal risco?',
     options: [
-      'Apenas perder o histórico de compras da loja onde ocorreu o vazamento',
+      'Apenas perder o histórico de compras registrado na loja em que ocorreu o vazamento de dados',
       'Permitir que terceiros tentem acessar o e-mail e redefinir senhas de outros serviços',
       'Impedir que a vítima use autenticação em duas etapas no futuro',
       'Bloquear automaticamente todos os aplicativos instalados no celular',
@@ -58,7 +58,7 @@ export const finalAssessment = [
     question:
       'Por que a minimização de dados pessoais ajuda na prevenção de golpes?',
     options: [
-      'Porque impede qualquer vazamento de dados em empresas e órgãos públicos',
+      'Porque impede qualquer vazamento de dados pessoais em empresas privadas e órgãos públicos',
       'Porque elimina a necessidade de autenticação em duas etapas',
       'Porque reduz informações disponíveis para abordagens personalizadas e recuperação indevida de contas',
       'Porque substitui a necessidade de backups e atualizações de sistema',
@@ -71,7 +71,7 @@ export const finalAssessment = [
     options: [
       'Manter notificações completas visíveis na tela bloqueada',
       'Usar senha de desbloqueio forte, bloqueio automático, proteção de apps sensíveis e PIN do chip SIM',
-      'Guardar senhas bancárias em bloco de notas para facilitar a recuperação',
+      'Guardar as senhas bancárias em um bloco de notas do próprio aparelho para facilitar a recuperação posterior',
       'Desativar atualizações do sistema para evitar mudanças na interface',
     ],
     answer: 1,
@@ -83,7 +83,7 @@ export const finalAssessment = [
       'Instalar o aplicativo e remover depois se parecer suspeito',
       'Conceder permissões apenas durante a chamada para agilizar o atendimento',
       'Não instalar, encerrar o contato e buscar o canal oficial da instituição',
-      'Compartilhar a tela para que o atendente confirme se há risco',
+      'Compartilhar a tela do aparelho para que o suposto atendente confirme se existe risco na conta',
     ],
     answer: 2,
   },
@@ -94,7 +94,7 @@ export const finalAssessment = [
       'Manter a senha administrativa padrão do roteador para facilitar suporte técnico',
       'Usar WEP por ser compatível com equipamentos antigos',
       'Evitar transações sensíveis em Wi-Fi público e manter roteador com senha forte e firmware atualizado',
-      'Usar o nome da rede Wi-Fi com endereço completo para identificar melhor a residência',
+      'Usar o nome da rede Wi-Fi com o endereço completo do imóvel para identificar melhor a residência',
     ],
     answer: 2,
   },
@@ -103,7 +103,7 @@ export const finalAssessment = [
       'Antes de confirmar um Pix, boleto ou QR Code recebido por mensagem, qual verificação é mais importante?',
     options: [
       'Conferir recebedor, valor, origem da cobrança e canal oficial antes de pagar',
-      'Pagar rapidamente se a mensagem informar risco de multa ou bloqueio',
+      'Pagar rapidamente o valor se a mensagem recebida informar risco de multa ou de bloqueio',
       'Confiar no comprovante enviado por print pelo suposto vendedor',
       'Usar qualquer link recebido se a página tiver logotipo conhecido',
     ],
@@ -115,7 +115,7 @@ export const finalAssessment = [
     options: [
       'É seguro porque Pix confirma o pagamento imediatamente',
       'É sinal de risco, pois retira a negociação dos mecanismos de proteção da plataforma',
-      'É recomendável se o perfil tiver foto e poucas reclamações aparentes',
+      'É recomendável desde que o perfil do vendedor tenha foto de perfil e poucas reclamações aparentes',
       'É obrigatório para evitar taxas cobradas pela plataforma',
     ],
     answer: 1,
@@ -125,7 +125,7 @@ export const finalAssessment = [
       'Qual atitude é adequada diante de uma movimentação bancária desconhecida?',
     options: [
       'Aguardar novas mensagens do suposto atendente para entender o caso',
-      'Publicar dados da transação em redes sociais para alertar outras pessoas',
+      'Publicar os dados completos da transação em redes sociais para alertar outras pessoas sobre o golpe',
       'Acionar o banco por canal oficial, bloquear meios comprometidos, contestar a operação e guardar protocolos',
       'Apagar conversas e comprovantes para evitar exposição de dados pessoais',
     ],
@@ -136,7 +136,7 @@ export const finalAssessment = [
       'Uma mensagem de entrega informa taxa urgente por link encurtado, com ameaça de devolução do produto. Que tipo de risco está presente?',
     options: [
       'Phishing ou smishing, com tentativa de induzir clique, pagamento ou fornecimento de dados',
-      'Atualização legítima de sistema operacional enviada por transportadora',
+      'Atualização legítima do sistema operacional do aparelho, enviada diretamente pela transportadora responsável pela entrega',
       'Backup automático de encomenda em nuvem',
       'Procedimento obrigatório de autenticação bancária presencial',
     ],
@@ -146,7 +146,7 @@ export const finalAssessment = [
     question:
       'Qual conjunto de medidas reduz o impacto de ransomware?',
     options: [
-      'Abrir anexos rapidamente para identificar a origem e pagar resgate se houver bloqueio',
+      'Abrir os anexos rapidamente para identificar a origem e pagar o resgate exigido se houver bloqueio dos arquivos',
       'Manter sistemas atualizados, usar proteção antimalware, desconfiar de anexos e manter backups confiáveis',
       'Guardar o único backup sempre conectado ao computador principal',
       'Desativar firewall para evitar conflito com aplicativos de trabalho',
@@ -160,7 +160,7 @@ export const finalAssessment = [
       'Confiar nas mensagens porque citam dados reais da vítima',
       'Trocar senhas repetidas, ativar autenticação forte, revisar acessos e desconfiar de abordagens personalizadas',
       'Responder com documentos para confirmar identidade e encerrar o assunto',
-      'Desativar todas as contas digitais sem preservar registros ou buscar canais oficiais',
+      'Desativar todas as contas digitais sem antes preservar os registros nem buscar os canais oficiais de atendimento',
     ],
     answer: 1,
   },
@@ -168,7 +168,7 @@ export const finalAssessment = [
     question:
       'Qual é a ordem mais segura de resposta a um incidente digital com possível prejuízo financeiro?',
     options: [
-      'Confrontar o suspeito, publicar o caso e depois procurar o banco',
+      'Confrontar diretamente o suspeito, publicar o caso nas redes sociais e somente depois procurar o banco',
       'Conter o dano, proteger acessos, preservar evidências e acionar canais oficiais',
       'Apagar mensagens, trocar de aparelho e aguardar contato da instituição',
       'Continuar a conversa para obter mais informações do criminoso',
