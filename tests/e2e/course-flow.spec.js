@@ -97,7 +97,15 @@ test('valida atalho de acesso ao conteúdo e ausência de rolagem horizontal', a
   await page.keyboard.press('Enter')
   await expect(page.locator('#conteudo-principal')).toBeFocused()
 
-  const transversalViews = ['Glossário', 'Biblioteca', 'Vídeos', 'Checklists', 'Simulações', 'Início']
+  const transversalViews = [
+    'Glossário',
+    'Biblioteca',
+    'Vídeos',
+    'Checklists',
+    'Simulações',
+    'Multiplicadores',
+    'Início',
+  ]
 
   for (const viewName of transversalViews) {
     await page
