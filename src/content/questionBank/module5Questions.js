@@ -5,7 +5,7 @@ export const module5Questions = [
     options: [
       'Memorizar todos os nomes técnicos existentes.',
       'Reconhecer padrões de risco e escolher condutas preventivas adequadas.',
-      'Substituir a necessidade de confirmar informações por canais oficiais.',
+      'Substituir a necessidade de confirmar informações por canais oficiais independentes.',
       'Permitir que o usuário responda diretamente aos golpistas.',
     ],
     answer: 1,
@@ -19,7 +19,7 @@ export const module5Questions = [
       'Atualização automática feita pela loja oficial.',
       'Mensagem falsa que induz a vítima a clicar em link e informar dados.',
       'Backup manual feito antes de trocar de celular.',
-      'Uso de senha forte e verificação em duas etapas.',
+      'Uso de senha forte e de verificação em duas etapas em todas as contas.',
     ],
     answer: 1,
     explanation:
@@ -30,7 +30,7 @@ export const module5Questions = [
     question: 'Qual é a conduta correta diante de link recebido por mensagem com cobrança inesperada?',
     options: [
       'Clicar para verificar rapidamente.',
-      'Pagar se o valor for baixo.',
+      'Pagar se o valor cobrado for baixo e a mensagem parecer oficial.',
       'Confirmar a cobrança em canal oficial antes de qualquer ação.',
       'Encaminhar para amigos testarem.',
     ],
@@ -43,7 +43,7 @@ export const module5Questions = [
     question: 'O que caracteriza smishing?',
     options: [
       'Golpe por mensagem SMS ou texto com link ou solicitação fraudulenta.',
-      'Ataque por ligação de voz exclusivamente internacional.',
+      'Ataque por ligação de voz exclusivamente internacional, feito de fora do país.',
       'Backup automático de mensagens.',
       'Bloqueio de chip SIM por senha.',
     ],
@@ -55,7 +55,7 @@ export const module5Questions = [
     id: 'm5-q05',
     question: 'Em uma ligação, o suposto atendente pede token para cancelar compra suspeita. Qual é o sinal de alerta?',
     options: [
-      'A ligação veio durante o horário comercial.',
+      'A ligação veio durante o horário comercial de atendimento.',
       'O atendente pediu código sensível de autenticação.',
       'A pessoa usou linguagem educada.',
       'O número tinha DDD nacional.',
@@ -68,7 +68,7 @@ export const module5Questions = [
     id: 'm5-q06',
     question: 'Qual comportamento aumenta o risco de infecção por malware?',
     options: [
-      'Manter o sistema atualizado.',
+      'Manter o sistema operacional do aparelho sempre atualizado pela loja oficial.',
       'Instalar aplicativo enviado por link fora da loja oficial.',
       'Usar antivírus atualizado.',
       'Remover aplicativos desnecessários.',
@@ -83,7 +83,7 @@ export const module5Questions = [
     options: [
       'Ferramenta de backup em nuvem.',
       'Malware que bloqueia ou cifra dados e exige pagamento para suposta recuperação.',
-      'Mensagem legítima de atualização do sistema.',
+      'Mensagem legítima de atualização do sistema enviada pelo próprio fabricante do aparelho celular.',
       'Recurso de autenticação biométrica.',
     ],
     answer: 1,
@@ -94,7 +94,7 @@ export const module5Questions = [
     id: 'm5-q08',
     question: 'Qual medida reduz danos em caso de ransomware?',
     options: [
-      'Não fazer backup para economizar espaço.',
+      'Não fazer backup dos arquivos importantes para economizar espaço de armazenamento.',
       'Manter cópias de segurança atualizadas e separadas do dispositivo principal.',
       'Usar sempre a mesma senha.',
       'Abrir anexos para verificar sua origem.',
@@ -109,7 +109,7 @@ export const module5Questions = [
     options: [
       'Desenvolvedor oficial e avaliações consistentes.',
       'Nome parecido com o app legítimo, mas desenvolvedor desconhecido.',
-      'Disponibilidade na loja oficial com verificação do fabricante.',
+      'Disponibilidade na loja oficial de aplicativos com verificação do fabricante responsável.',
       'Permissões compatíveis com a finalidade do app.',
     ],
     answer: 1,
@@ -122,7 +122,7 @@ export const module5Questions = [
     options: [
       'Amigo muda de número e pede dinheiro com urgência.',
       'Publicação pública de notícia em portal reconhecido.',
-      'Atualização de foto de perfil sem pedido financeiro.',
+      'Atualização de foto de perfil sem qualquer pedido de natureza financeira.',
       'Comentário comum em postagem antiga.',
     ],
     answer: 0,
@@ -133,7 +133,7 @@ export const module5Questions = [
     id: 'm5-q11',
     question: 'Qual prática protege contas de redes sociais contra invasão?',
     options: [
-      'Repetir a senha em todos os serviços.',
+      'Repetir a mesma senha em todos os serviços utilizados no dia a dia.',
       'Ativar verificação em duas etapas e usar senha forte.',
       'Aceitar todos os seguidores.',
       'Autorizar qualquer aplicativo de teste ou jogo.',
@@ -148,7 +148,7 @@ export const module5Questions = [
     options: [
       'Preço muito abaixo do mercado e pedido de pagamento fora da plataforma.',
       'Venda com intermediação segura da plataforma.',
-      'Vendedor com histórico consistente e avaliações reais.',
+      'Vendedor com histórico consistente, avaliações reais e tempo longo de atuação na plataforma.',
       'Pagamento confirmado pela plataforma oficial.',
     ],
     answer: 0,
@@ -159,7 +159,7 @@ export const module5Questions = [
     id: 'm5-q13',
     question: 'Por que print de comprovante não basta para entregar produto vendido online?',
     options: [
-      'Porque todo print é automaticamente verdadeiro.',
+      'Porque todo print de tela é automaticamente verdadeiro e não pode ser editado.',
       'Porque prints podem ser falsificados ou mostrar operação não concluída.',
       'Porque o comprador sempre tem razão.',
       'Porque marketplaces proíbem comprovantes.',
@@ -174,7 +174,7 @@ export const module5Questions = [
     options: [
       'Comprar rápido antes que a oferta acabe.',
       'Conferir domínio, reputação e acessar a loja por canal oficial.',
-      'Enviar dados do cartão para reservar o preço.',
+      'Enviar os dados do cartão para reservar o preço promocional anunciado.',
       'Pagar via Pix direto para ganhar desconto.',
     ],
     answer: 1,
@@ -188,7 +188,7 @@ export const module5Questions = [
       'Fonte identificada e verificável.',
       'Pedido de compartilhamento urgente e título alarmista.',
       'Data e contexto claramente informados.',
-      'Correção pública de erro pela fonte original.',
+      'Correção pública do erro divulgada pela fonte original.',
     ],
     answer: 1,
     explanation:
@@ -200,7 +200,7 @@ export const module5Questions = [
     options: [
       'Compartilhar primeiro para alertar todos.',
       'Verificar fonte, data, contexto e confirmação em fontes confiáveis.',
-      'Confiar se veio de grupo familiar.',
+      'Confiar se a mensagem veio de um grupo familiar conhecido.',
       'Clicar em todos os links relacionados.',
     ],
     answer: 1,
@@ -214,7 +214,7 @@ export const module5Questions = [
       'Apenas melhorar qualidade de chamadas legítimas.',
       'Simular pessoas conhecidas para induzir transferências, desinformação ou golpes.',
       'Impedir qualquer fraude financeira.',
-      'Eliminar a necessidade de confirmação por outro canal.',
+      'Eliminar por completo a necessidade de confirmação por outro canal independente.',
     ],
     answer: 1,
     explanation:
@@ -224,7 +224,7 @@ export const module5Questions = [
     id: 'm5-q18',
     question: 'Qual atitude é adequada após saber que uma senha vazou?',
     options: [
-      'Trocar a senha apenas se houver prejuízo comprovado.',
+      'Trocar a senha apenas se houver prejuízo financeiro comprovado, apurado e formalmente reconhecido pela instituição financeira envolvida no caso.',
       'Trocar a senha em todos os serviços onde ela foi usada e ativar verificação em duas etapas.',
       'Enviar a senha antiga ao suporte por mensagem.',
       'Reutilizar a mesma senha com pequenas alterações.',
@@ -237,7 +237,7 @@ export const module5Questions = [
     id: 'm5-q19',
     question: 'Dados vazados podem ser usados para quê?',
     options: [
-      'Apenas para estatísticas sem risco individual.',
+      'Apenas para estatísticas gerais, sem risco individual para o titular.',
       'Golpes personalizados, invasão de contas e fraudes de identidade.',
       'Impedir phishing automaticamente.',
       'Atualizar aplicativos de forma segura.',
@@ -252,7 +252,7 @@ export const module5Questions = [
     options: [
       'Como respondo rapidamente?',
       'Quem está pedindo a ação e por qual canal?',
-      'Como compartilho com mais pessoas?',
+      'Como faço para compartilhar rapidamente essa informação com mais pessoas?',
       'Qual emoji devo usar?',
     ],
     answer: 1,
@@ -266,7 +266,7 @@ export const module5Questions = [
       'Procure o número oficial no cartão.',
       'Transfira seu dinheiro para uma conta segura.',
       'Não informe sua senha.',
-      'Acesse o aplicativo oficial por conta própria.',
+      'Acesse o aplicativo oficial do banco por conta própria.',
     ],
     answer: 1,
     explanation:
@@ -279,7 +279,7 @@ export const module5Questions = [
       'Apenas a lembrança do ocorrido.',
       'Prints, links, números, perfis, mensagens, comprovantes e protocolos.',
       'Senha da conta da vítima.',
-      'Código de verificação recebido por SMS.',
+      'Código de verificação recebido por SMS no celular cadastrado.',
     ],
     answer: 1,
     explanation:
@@ -289,7 +289,7 @@ export const module5Questions = [
     id: 'm5-q23',
     question: 'Qual conduta é correta diante de anexo inesperado?',
     options: [
-      'Abrir para descobrir do que se trata.',
+      'Abrir o arquivo para descobrir do que se trata antes de decidir.',
       'Executar se o nome parecer conhecido.',
       'Não abrir na dúvida e verificar a origem por outro canal.',
       'Reencaminhar para outros testarem.',
@@ -304,7 +304,7 @@ export const module5Questions = [
     options: [
       'Permissão para tema escuro.',
       'Acesso a SMS, acessibilidade, notificações, contatos ou controle de tela.',
-      'Permissão para alterar o tamanho da fonte.',
+      'Permissão para alterar o tamanho da fonte exibida na tela do aparelho.',
       'Permissão para escolher idioma.',
     ],
     answer: 1,
@@ -316,7 +316,7 @@ export const module5Questions = [
     question: 'Qual é a melhor resposta a uma mensagem de promoção com link encurtado e urgência?',
     options: [
       'Clicar imediatamente.',
-      'Informar dados pessoais para garantir desconto.',
+      'Informar os dados pessoais solicitados para garantir o desconto anunciado na promoção.',
       'Desconfiar, não clicar e verificar a promoção no site oficial.',
       'Compartilhar em grupos para ajudar amigos.',
     ],
@@ -328,7 +328,7 @@ export const module5Questions = [
     id: 'm5-q26',
     question: 'Qual frase resume a lógica de muitos golpes digitais?',
     options: [
-      'Eles sempre dependem de invasão técnica sofisticada.',
+      'Eles sempre dependem de uma invasão técnica sofisticada dos sistemas internos da instituição financeira atacada.',
       'Eles tentam provocar uma ação rápida da vítima sob confiança, medo ou vantagem.',
       'Eles só ocorrem com pessoas sem experiência.',
       'Eles não usam dados pessoais vazados.',
@@ -342,7 +342,7 @@ export const module5Questions = [
     question: 'Qual atitude reduz risco em redes sociais?',
     options: [
       'Aceitar todos os seguidores.',
-      'Deixar telefone, rotina e dados pessoais públicos.',
+      'Deixar telefone, rotina e dados pessoais públicos nas redes sociais.',
       'Ser seletivo com contatos e limitar exposição de informações.',
       'Autorizar todos os aplicativos de terceiros.',
     ],
@@ -354,7 +354,7 @@ export const module5Questions = [
     id: 'm5-q28',
     question: 'O que fazer ao receber pedido de código de verificação por mensagem?',
     options: [
-      'Enviar se a pessoa parecer conhecida.',
+      'Enviar o código recebido se a pessoa parecer conhecida.',
       'Nunca informar; códigos de verificação são credenciais sensíveis.',
       'Publicar o código para pedir ajuda.',
       'Enviar apenas uma parte do código.',
@@ -367,7 +367,7 @@ export const module5Questions = [
     id: 'm5-q29',
     question: 'Qual é a conduta mais segura diante de ameaça de divulgação de conteúdo íntimo?',
     options: [
-      'Pagar imediatamente e apagar tudo.',
+      'Pagar imediatamente o valor cobrado e apagar todas as mensagens recebidas.',
       'Preservar evidências, não ampliar a exposição e buscar orientação/autoridade competente.',
       'Enviar mais imagens para negociar.',
       'Responder com ameaças.',
@@ -383,7 +383,7 @@ export const module5Questions = [
       'Porque a tecnologia é a única culpada pelas fraudes.',
       'Para mostrar que, além de atacar os dispositivos (com malware e ransomware), os criminosos também atacam a confiança e as emoções do usuário (com engenharia social).',
       'Porque falhas humanas não causam prejuízo financeiro real.',
-      'Para indicar que o uso de antivírus impede qualquer falha humana.',
+      'Para indicar que o uso de um antivírus sempre atualizado impede qualquer falha humana e dispensa por completo a verificação de mensagens, links e pedidos recebidos por qualquer canal.',
     ],
     answer: 1,
     explanation:

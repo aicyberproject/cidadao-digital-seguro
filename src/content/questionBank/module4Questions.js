@@ -5,7 +5,7 @@ export const module4Questions = [
     options: [
       'Clicar rapidamente para não perder o prazo.',
       'Confirmar a solicitação por canal oficial independente antes de pagar.',
-      'Responder à mensagem pedindo mais detalhes ao remetente.',
+      'Responder à mensagem pedindo mais detalhes ao remetente antes de tomar qualquer decisão.',
       'Enviar o link para amigos verificarem primeiro.',
     ],
     answer: 1,
@@ -19,7 +19,7 @@ export const module4Questions = [
       'Informar os dados para evitar prejuízo.',
       'Instalar o aplicativo indicado pelo atendente.',
       'Encerrar a ligação e procurar o banco por canal oficial.',
-      'Pedir que o atendente envie um link de confirmação.',
+      'Pedir que o atendente envie um link de confirmação por mensagem para validar o atendimento.',
     ],
     answer: 2,
     explanation:
@@ -30,7 +30,7 @@ export const module4Questions = [
     question: 'Qual situação representa maior risco em marketplace?',
     options: [
       'Pagamento dentro da plataforma oficial.',
-      'Vendedor com histórico positivo e avaliações consistentes.',
+      'Vendedor com histórico positivo, avaliações consistentes e tempo longo de atuação na plataforma.',
       'Negociação migrada para aplicativo de mensagem com pedido de Pix direto.',
       'Compra com intermediação e proteção da plataforma.',
     ],
@@ -44,7 +44,7 @@ export const module4Questions = [
     options: [
       'A cor da tela do aplicativo.',
       'O nome ou identificação do recebedor e o valor da transação.',
-      'A quantidade de aplicativos instalados no celular.',
+      'A quantidade de aplicativos financeiros instalados no celular utilizado para a compra.',
       'A velocidade da conexão de internet.',
     ],
     answer: 1,
@@ -58,7 +58,7 @@ export const module4Questions = [
       'Pagar imediatamente para garantir o desconto.',
       'Ler o QR Code e conferir depois.',
       'Sempre conferir o valor e o destinatário na tela do banco ANTES de confirmar, pois o QR Code pode ter valores embutidos diferentes do prometido.',
-      'Encaminhar o QR Code para outra pessoa pagar.',
+      'Encaminhar o QR Code para outra pessoa pagar, pedindo que ela confirme o valor exibido na tela antes de concluir a transferência para o beneficiário indicado.',
     ],
     answer: 2,
     explanation:
@@ -69,7 +69,7 @@ export const module4Questions = [
     question: 'Qual prática reduz risco em compras online?',
     options: [
       'Comprar sempre pelo primeiro anúncio patrocinado.',
-      'Acessar a loja por link recebido em mensagem.',
+      'Acessar a loja por link recebido em mensagem de aplicativo, sem digitar o endereço.',
       'Pesquisar reputação do site, vendedor e produto antes do pagamento.',
       'Enviar dados do cartão por conversa privada.',
     ],
@@ -81,7 +81,7 @@ export const module4Questions = [
     id: 'm4-q07',
     question: 'O que caracteriza um possível falso comprovante?',
     options: [
-      'O valor já aparece confirmado na conta ou plataforma.',
+      'O valor já aparece confirmado na conta ou na plataforma utilizada para a venda.',
       'O comprador envia apenas um print e pressiona pela entrega imediata.',
       'A plataforma confirma o pagamento internamente.',
       'O vendedor aguarda compensação antes de entregar.',
@@ -94,7 +94,7 @@ export const module4Questions = [
     id: 'm4-q08',
     question: 'Qual é a melhor forma de instalar aplicativo financeiro?',
     options: [
-      'Por link enviado em rede social.',
+      'Por link enviado em rede social ou em grupo de mensagens de conhecidos.',
       'Por arquivo recebido em mensagem.',
       'Pela loja oficial do sistema, conferindo nome e desenvolvedor.',
       'Por indicação de suposto atendente telefônico.',
@@ -106,7 +106,7 @@ export const module4Questions = [
   {
     id: 'm4-q09',
     question: 'Qual dado nunca deve ser informado em ligação ou mensagem de suposta instituição financeira?',
-    options: ['Horário de atendimento da agência.', 'Senha, token ou código de verificação.', 'Endereço público da agência.', 'Nome comercial do banco.'],
+    options: ['Horário de atendimento da agência bancária mais próxima.', 'Senha, token ou código de verificação.', 'Endereço público da agência.', 'Nome comercial do banco.'],
     answer: 1,
     explanation:
       'Senha, token e códigos de verificação são credenciais sensíveis e não devem ser fornecidos por telefone ou mensagem.',
@@ -141,7 +141,7 @@ export const module4Questions = [
     id: 'm4-q12',
     question: 'Qual evidência é útil preservar após uma tentativa de golpe em compra online?',
     options: [
-      'Apenas a memória do ocorrido.',
+      'Apenas a memória do ocorrido, relatada depois ao atendimento telefônico do banco.',
       'Prints do anúncio, conversas, links, perfis, comprovantes e dados do vendedor.',
       'Somente o nome do produto.',
       'A senha usada na plataforma.',
@@ -157,7 +157,7 @@ export const module4Questions = [
       'Porque ele tem limite infinito.',
       'Porque ele não exige senha para aprovação.',
       'Porque muitos podem ser criados para "uso único". Se os dados vazarem, o criminoso não terá acesso ao seu cartão físico principal.',
-      'Porque ele permite compras apenas em lojas físicas.',
+      'Porque ele permite compras apenas em lojas físicas credenciadas, o que eliminaria por completo qualquer risco de fraude em transações realizadas pela internet.',
     ],
     answer: 2,
     explanation:
@@ -167,7 +167,7 @@ export const module4Questions = [
     id: 'm4-q14',
     question: 'Qual comportamento é típico de engenharia social em transações financeiras?',
     options: [
-      'Dar tempo para a vítima confirmar com calma.',
+      'Dar tempo para a vítima confirmar com calma os dados da transação.',
       'Pressionar por decisão urgente e criar medo de prejuízo imediato.',
       'Orientar a vítima a procurar o canal oficial.',
       'Recusar dados sensíveis por telefone.',
@@ -196,7 +196,7 @@ export const module4Questions = [
       'Clicar no link recebido por SMS.',
       'Usar anúncio patrocinado sem conferir domínio.',
       'Digitar o endereço oficial ou usar aplicativo legítimo já instalado.',
-      'Entrar por link enviado em grupo de mensagens.',
+      'Entrar por link enviado em grupo de mensagens por um contato conhecido.',
     ],
     answer: 2,
     explanation:
@@ -209,7 +209,7 @@ export const module4Questions = [
       'Porque ocupa muito espaço de armazenamento.',
       'Porque pode facilitar acesso indevido caso o aparelho seja comprometido ou furtado.',
       'Porque impede atualizações automáticas.',
-      'Porque reduz a velocidade do aplicativo bancário.',
+      'Porque reduz a velocidade do aplicativo bancário e atrasa a confirmação dos pagamentos.',
     ],
     answer: 1,
     explanation:
@@ -219,7 +219,7 @@ export const module4Questions = [
     id: 'm4-q18',
     question: 'Uma loja em rede social pede senha do cartão para “validar cadastro”. A orientação correta é:',
     options: [
-      'Enviar a senha se o perfil parecer profissional.',
+      'Enviar a senha se o perfil do vendedor parecer profissional.',
       'Enviar apenas se houver desconto.',
       'Não informar senha e procurar canal oficial da empresa.',
       'Trocar a senha e enviar a nova.',
@@ -234,7 +234,7 @@ export const module4Questions = [
     options: [
       'Receber mais notificações da plataforma.',
       'Perder mecanismos de proteção, mediação e registro da transação.',
-      'Aumentar o prazo de entrega oficial.',
+      'Aumentar o prazo de entrega oficial que foi informado pela transportadora.',
       'Gerar automaticamente nota fiscal.',
     ],
     answer: 1,
@@ -246,7 +246,7 @@ export const module4Questions = [
     question: 'Qual alternativa indica resposta correta após instalar aplicativo suspeito por orientação de falso atendente?',
     options: [
       'Continuar usando o aparelho normalmente.',
-      'Informar ao falso atendente que a instalação foi concluída.',
+      'Informar ao falso atendente que a instalação foi concluída e aguardar as próximas instruções que ele vier a enviar.',
       'Isolar o dispositivo, acionar o banco por canal oficial e alterar senhas a partir de dispositivo confiável.',
       'Apagar apenas o ícone do aplicativo da tela inicial.',
     ],
@@ -258,7 +258,7 @@ export const module4Questions = [
     id: 'm4-q21',
     question: 'Qual cuidado é adequado ao receber boleto por e-mail?',
     options: [
-      'Pagar sem conferir se o e-mail parece urgente.',
+      'Pagar sem conferir, se o e-mail recebido parecer urgente e vier de remetente conhecido.',
       'Conferir beneficiário, valor, vencimento e acessar a fonte oficial se houver dúvida.',
       'Pagar qualquer boleto com logotipo conhecido.',
       'Encaminhar o boleto para terceiros pagarem.',
@@ -284,7 +284,7 @@ export const module4Questions = [
     id: 'm4-q23',
     question: 'Qual frase resume uma boa prática diante de pagamento solicitado sob pressão?',
     options: [
-      'Na dúvida, pague primeiro e questione depois.',
+      'Na dúvida, pague primeiro e questione depois junto ao emissor do boleto.',
       'Pressa é sinal de oportunidade segura.',
       'Pare, desconfie, confirme por canal oficial e só então decida.',
       'Se veio de conhecido, não há risco.',
@@ -299,7 +299,7 @@ export const module4Questions = [
     options: [
       'Preço compatível com o mercado e loja conhecida.',
       'Vendedor exige pagamento imediato fora da plataforma com promessa de desconto extra.',
-      'Produto com avaliações reais e histórico longo de vendas.',
+      'Produto com avaliações reais, histórico longo de vendas e vendedor muito bem classificado.',
       'Compra feita dentro do aplicativo oficial.',
     ],
     answer: 1,
@@ -310,7 +310,7 @@ export const module4Questions = [
     id: 'm4-q25',
     question: 'Como agir diante de perfil de empresa em rede social que cobra taxa adicional inesperada?',
     options: [
-      'Pagar a taxa se o perfil usar logotipo conhecido.',
+      'Pagar a taxa solicitada se o perfil usar logotipo e nome de empresa conhecida.',
       'Confirmar a legitimidade do perfil e da cobrança em canal oficial.',
       'Enviar documento pessoal para liberar atendimento.',
       'Negociar apenas por mensagem privada.',
@@ -326,7 +326,7 @@ export const module4Questions = [
       'Clicar e comprar rapidamente.',
       'Conferir domínio, reputação e acessar o site oficial por busca própria ou endereço digitado.',
       'Repassar para familiares antes que acabe.',
-      'Informar os dados do cartão para reservar o desconto.',
+      'Informar os dados do cartão para reservar o desconto antes do fim da promoção anunciada.',
     ],
     answer: 1,
     explanation:
@@ -346,7 +346,7 @@ export const module4Questions = [
     options: [
       'Porque todos são fraudulentos.',
       'Porque criminosos podem promover páginas falsas que imitam lojas e instituições conhecidas.',
-      'Porque anúncios patrocinados não aparecem em redes sociais.',
+      'Porque anúncios patrocinados não aparecem em redes sociais nem em buscadores da internet.',
       'Porque impedem o uso de aplicativos oficiais.',
     ],
     answer: 1,
@@ -357,7 +357,7 @@ export const module4Questions = [
     id: 'm4-q29',
     question: 'Qual conduta é adequada antes de entregar produto vendido online?',
     options: [
-      'Confiar apenas no print do comprovante.',
+      'Confiar apenas no print do comprovante apresentado pelo cliente no momento da entrega.',
       'Confirmar se o valor entrou na conta ou foi validado pela plataforma.',
       'Entregar se o comprador parecer educado.',
       'Aceitar comprovante com dados incompletos.',
@@ -370,7 +370,7 @@ export const module4Questions = [
     id: 'm4-q30',
     question: 'Qual é o objetivo principal deste módulo?',
     options: [
-      'Ensinar técnicas ofensivas de fraude digital.',
+      'Ensinar técnicas ofensivas de fraude digital para que o cidadão reconheça o golpe por experiência própria.',
       'Estimular compras rápidas pela internet.',
       'Capacitar o cidadão a realizar transações e compras digitais com verificação, prudência e resposta segura.',
       'Substituir a necessidade de canais oficiais.',
