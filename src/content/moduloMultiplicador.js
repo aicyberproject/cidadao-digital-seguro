@@ -1,4 +1,4 @@
-// Módulo de Formação de Multiplicadores — conteúdo adicional, NÃO integrante da trilha cidadã.
+// Módulo de Formação de Multiplicadores, conteúdo adicional, NÃO integrante da trilha cidadã.
 //
 // Este módulo NÃO deve ser adicionado a `src/content/modules/index.js`. A matriz de 6 módulos do
 // curso Cidadão Digital Seguro está homologada (v2.9.0 e v3.0.0), o certificado declara "6 módulos,
@@ -12,7 +12,7 @@
 // `callout`), o mesmo vocabulário de `modules/module4.js` a `module6.js`, sem `icon` e sem qualquer
 // acoplamento à interface React.
 //
-// Chaves que NÃO existem nos módulos da trilha cidadã e foram introduzidas aqui — nada as consome
+// Chaves que NÃO existem nos módulos da trilha cidadã e foram introduzidas aqui; nada as consome
 // hoje, e o validador não as conhece:
 //   - `prerequisite`: exigência de conclusão do curso base, própria deste módulo.
 //   - `habilitacao`: especificação de requisitos para a ANP implementar, não recurso desta aplicação.
@@ -20,6 +20,8 @@
 //     pública (as demais entradas seguem o padrão `label` + `url`).
 //
 // Ver: docs/analise-adequacao-capacitacao-multiplicadores.md
+
+import { moduloMultiplicadorQuestions } from './moduloMultiplicadorQuestions'
 
 export const moduloMultiplicador = {
   id: 'mult',
@@ -32,7 +34,7 @@ export const moduloMultiplicador = {
   prerequisite:
     'Certificado de conclusão do curso Cidadão Digital Seguro (6 módulos, 20 horas).',
   summary:
-    'Este módulo não reapresenta o conteúdo de segurança digital: parte do princípio de que você já o domina, por ter concluído o curso. O foco aqui é outro — como levar esse conteúdo a uma plateia leiga, o que você pode e não pode afirmar como agente público, e o que fazer quando a palestra sai do roteiro.',
+    'Este módulo não reapresenta o conteúdo de segurança digital: parte do princípio de que você já o domina, por ter concluído o curso. O foco aqui é outro, como levar esse conteúdo a uma plateia leiga, o que você pode e não pode afirmar como agente público, e o que fazer quando a palestra sai do roteiro.',
   objectives: [
     'Conduzir o Kit de Palestra Pública padronizado preservando a uniformidade da mensagem institucional.',
     'Reconhecer e respeitar os limites de fala do agente público em atividade preventiva.',
@@ -111,7 +113,7 @@ export const moduloMultiplicador = {
             'Não prestar orientação jurídica individual: o multiplicador não é advogado da vítima nem define a via processual do caso dela.',
             'Não realizar atendimento de caso concreto durante ou após a palestra. O encaminhamento correto é indicar o canal oficial competente.',
             'Não assumir compromisso de acompanhar, agilizar ou interceder em caso individual.',
-            'Não orientar o cidadão a investigar, confrontar ou negociar com o suspeito — conduta que agrava o dano e expõe a vítima.',
+            'Não orientar o cidadão a investigar, confrontar ou negociar com o suspeito, conduta que agrava o dano e expõe a vítima.',
           ],
         },
         {
@@ -162,7 +164,7 @@ export const moduloMultiplicador = {
           type: 'list',
           title: 'Famílias de tipologia',
           items: [
-            'Fraude por engenharia social pura: falsa central de atendimento, falso parente, falso suporte técnico, falso funcionário. O criminoso não invade nada — convence.',
+            'Fraude por engenharia social pura: falsa central de atendimento, falso parente, falso suporte técnico, falso funcionário. O criminoso não invade nada; convence.',
             'Fraude com apoio técnico: aplicativo de acesso remoto instalado pela própria vítima, aplicativo falso de instituição financeira, sobreposição de tela em dispositivo móvel.',
             'Fraude documental sobre o instrumento de pagamento: alteração de dados de beneficiário, substituição de código de barras, substituição de QR Code.',
             'Fraude por apropriação de identidade digital: tomada de conta de aplicativo de mensagens ou de rede social e uso do vínculo de confiança para pedir valores a terceiros.',
@@ -173,7 +175,7 @@ export const moduloMultiplicador = {
           type: 'callout',
           title: 'Por que isto importa na palestra',
           text:
-            'Quando alguém da plateia descrever um golpe que não está nos slides — e isso acontece com frequência —, você não precisa reconhecer o golpe. Precisa reconhecer a estrutura, apontar em qual família ele se encaixa e indicar a conduta preventiva correspondente.',
+            'Quando alguém da plateia descrever um golpe que não está nos slides, e isso acontece com frequência, você não precisa reconhecer o golpe. Precisa reconhecer a estrutura, apontar em qual família ele se encaixa e indicar a conduta preventiva correspondente.',
         },
       ],
     },
@@ -190,7 +192,7 @@ export const moduloMultiplicador = {
         {
           type: 'paragraph',
           text:
-            'O valor obtido por fraude não permanece parado. Ele é fracionado e movimentado por contas de passagem, frequentemente abertas em nome de terceiros — os chamados laranjas, muitas vezes recrutados sob falsa oferta de trabalho ou de renda fácil. A cada movimentação, a possibilidade de bloqueio administrativo diminui.',
+            'O valor obtido por fraude não permanece parado. Ele é fracionado e movimentado por contas de passagem, frequentemente abertas em nome de terceiros, os chamados laranjas, muitas vezes recrutados sob falsa oferta de trabalho ou de renda fácil. A cada movimentação, a possibilidade de bloqueio administrativo diminui.',
         },
         {
           type: 'list',
@@ -212,7 +214,7 @@ export const moduloMultiplicador = {
           type: 'callout',
           title: 'Prevenção do lado do laranja',
           text:
-            'Vale incluir na fala, quando o público for jovem ou em situação de vulnerabilidade econômica: emprestar conta, abrir conta para terceiro ou receber valores de desconhecido mediante comissão não é favor nem trabalho informal — é conduta que pode gerar responsabilização penal. Esse é um recorte preventivo pouco explorado e de alto valor.',
+            'Vale incluir na fala, quando o público for jovem ou em situação de vulnerabilidade econômica: emprestar conta, abrir conta para terceiro ou receber valores de desconhecido mediante comissão não é favor nem trabalho informal; é conduta que pode gerar responsabilização penal. Esse é um recorte preventivo pouco explorado e de alto valor.',
         },
       ],
     },
@@ -224,7 +226,7 @@ export const moduloMultiplicador = {
         {
           type: 'paragraph',
           text:
-            'O multiplicador não precisa dominar direito penal, mas será perguntado sobre ele. O objetivo desta lição é permitir uma resposta correta e contida — e, sobretudo, evitar afirmação equivocada sobre atribuição e sobre o destino do caso.',
+            'O multiplicador não precisa dominar direito penal, mas será perguntado sobre ele. O objetivo desta lição é permitir uma resposta correta e contida, e, sobretudo, evitar afirmação equivocada sobre atribuição e sobre o destino do caso.',
         },
         {
           type: 'list',
@@ -240,7 +242,7 @@ export const moduloMultiplicador = {
           type: 'callout',
           title: 'Bloco pendente de validação jurídica',
           text:
-            'A tipificação penal aplicável às fraudes eletrônicas — incluindo as alterações trazidas pela Lei 14.155/2021 e as regras de competência correlatas — deve ser redigida e revisada pela área jurídica competente antes da primeira turma. Este material deliberadamente NÃO enuncia artigos, penas ou critérios de competência: fazê-lo sem validação formal criaria risco de o multiplicador reproduzir informação incorreta em nome da instituição. Trate este bloco como lacuna consciente, a ser preenchida por quem tem atribuição para tanto.',
+            'A tipificação penal aplicável às fraudes eletrônicas, incluindo as alterações trazidas pela Lei 14.155/2021 e as regras de competência correlatas, deve ser redigida e revisada pela área jurídica competente antes da primeira turma. Este material deliberadamente NÃO enuncia artigos, penas ou critérios de competência: fazê-lo sem validação formal criaria risco de o multiplicador reproduzir informação incorreta em nome da instituição. Trate este bloco como lacuna consciente, a ser preenchida por quem tem atribuição para tanto.',
         },
         {
           type: 'list',
@@ -447,6 +449,25 @@ export const moduloMultiplicador = {
       'Liste os itens do checklist logístico aplicáveis ao local previsto.',
     ],
   },
+  video: {
+    title: 'Videoaula do módulo de multiplicadores',
+    duration: 'Em preparação',
+    script:
+      'Esta videoaula organiza a condução do Kit de Palestra Pública pelo multiplicador: abertura, ritmo por bloco temático, uso de exemplos regionais sem exposição de vítimas, os limites de fala do agente público e o fechamento com indicação do curso completo. O roteiro cobre ainda o manejo de perguntas difíceis, caso concreto em andamento, vítima presente, revolta contra a instituição, e a orientação de encaminhar, nunca atender individualmente.',
+    status: 'Em preparação',
+    objectives: [
+      'Visualizar a condução completa do Kit de Palestra, do início ao fechamento.',
+      'Reconhecer, em situação simulada, os limites de fala do agente público em atividade preventiva.',
+    ],
+    topics: [
+      'Abertura e apresentação do papel do multiplicador',
+      'Condução dos seis blocos temáticos do Kit de Palestra',
+      'Resposta a perguntas difíceis e casos concretos trazidos pela plateia',
+      'Fechamento com indicação do curso completo',
+    ],
+  },
+  questionBank: moduloMultiplicadorQuestions,
+  quizSize: 10,
   habilitacao: {
     // Especificação de requisitos para implementação pela ANP. Não é funcionalidade desta aplicação.
     observacao:
@@ -454,13 +475,13 @@ export const moduloMultiplicador = {
     requisitos: [
       'Certificado de conclusão do curso Cidadão Digital Seguro (6 módulos, 20 horas).',
       'Aproveitamento mínimo no quiz deste módulo, no mesmo critério do curso base.',
-      'Apresentação supervisionada avaliada por multiplicador ou instância já habilitada — requisito prático, não substituível por prova objetiva.',
+      'Apresentação supervisionada avaliada por multiplicador ou instância já habilitada; requisito prático, não substituível por prova objetiva.',
       'Definição institucional de prazo de validade da habilitação e de periodicidade de reciclagem.',
     ],
   },
   resources: [
     {
-      label: 'Kit de Palestra Pública — Cidadão Digital Seguro (material institucional interno)',
+      label: 'Kit de Palestra Pública do curso Cidadão Digital Seguro (material institucional interno)',
       note: 'Instrumento oficial de apresentação, 15 slides com notas de apresentador.',
     },
     {
@@ -468,19 +489,19 @@ export const moduloMultiplicador = {
       url: 'https://aicyberproject.github.io/cidadao-digital-seguro/',
     },
     {
-      label: 'MJSP — Sofri um golpe, e agora?',
+      label: 'MJSP; Sofri um golpe, e agora?',
       url: 'https://www.gov.br/mj/pt-br/acesso-a-informacao/acoes-e-programas/sofri-um-golpe-e-agora',
     },
     {
-      label: 'Polícia Federal — Combate a Crimes Cibernéticos',
+      label: 'Polícia Federal; Combate a Crimes Cibernéticos',
       url: 'https://www.gov.br/pf/pt-br/assuntos/combate-a-crimes-ciberneticos',
     },
     {
-      label: 'CERT.br — Fascículo Golpes: Caiu? Veja o que Fazer',
+      label: 'CERT.br; Fascículo Golpes: Caiu? Veja o que Fazer',
       url: 'https://cartilha.cert.br/fasciculos/golpes-o-que-fazer/fasciculo-golpes-o-que-fazer.pdf',
     },
     {
-      label: 'Campanha #DigaNãoAosGolpes — FEBRABAN',
+      label: 'Campanha #DigaNãoAosGolpes; FEBRABAN',
       url: 'https://portal.febraban.org.br/AntiFraude/',
     },
   ],

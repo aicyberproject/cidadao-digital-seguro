@@ -1,13 +1,13 @@
 // Banco de questões do Módulo de Formação de Multiplicadores.
 //
-// NÃO integra `src/content/questionBank/index.js` — não é conteúdo da trilha cidadã.
+// NÃO integra `src/content/questionBank/index.js`; não é conteúdo da trilha cidadã.
 // Mesmo formato dos bancos existentes: { question, options[4], answer: índice da correta }.
 //
 // 20 questões, para quiz de 10 sorteadas, mantendo o critério de 70% de aproveitamento do curso base.
 // Peso concentrado em limites de fala e manejo de plateia: são os pontos de maior risco institucional.
 //
 // Construção dos distratores: cada distrator enuncia uma conduta ERRADA plausível, com o mesmo nível
-// de especificidade e extensão da alternativa correta. Isso é deliberado — se a resposta correta for
+// de especificidade e extensão da alternativa correta. Isso é deliberado; se a resposta correta for
 // sistematicamente a mais longa e detalhada, o candidato passa escolhendo a opção maior sem ler o
 // conteúdo, o que inviabiliza a avaliação justamente no módulo em que o aproveitamento condiciona a
 // habilitação. A posição da resposta e a extensão relativa das alternativas foram distribuídas.
