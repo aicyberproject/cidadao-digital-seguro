@@ -10,11 +10,13 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "validate:content": "node scripts/validateContent.js",
+    "build:scorm": "node scripts/buildScorm.js",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.111.0",
     "framer-motion": "^11.3.30",
     "jspdf": "^4.2.1",
     "lucide-react": "^0.453.0",
@@ -24,6 +26,7 @@
   "devDependencies": {
     "@playwright/test": "^1.60.0",
     "@vitejs/plugin-react": "^4.7.0",
+    "archiver": "^8.0.0",
     "gh-pages": "^6.1.1",
     "vite": "^7.1.0"
   }

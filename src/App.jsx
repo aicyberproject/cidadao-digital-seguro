@@ -20,6 +20,7 @@ import {
   XCircle,
   AlertOctagon,
   GraduationCap,
+  Lock,
 } from 'lucide-react'
 
 import { courseIntro } from './content/courseIntro'
@@ -32,6 +33,7 @@ import { videoLibrary } from './content/videoLibrary'
 import { practicalChecklists, checklistCategories, checklistModules } from './content/checklists'
 import { quickSimulations, simulationCategories, simulationModules } from './content/simulations'
 import { moduloMultiplicador } from './content/moduloMultiplicador'
+import { validarCertificado, registrarCertificadoEmitido } from './lib/supabaseClient'
 import { CharacterAvatar } from './components/CharacterAvatar'
 import { ScamAlertBlock, SpecialistWordBlock, LudicTransition } from './components/LudicBlocks'
 import packageInfo from '../package.json'
@@ -235,6 +237,21 @@ function getModuleContent(moduleItem) {
   return normalized
 }
 
+function getMultiplicadorContent() {
+  const base = getModuleContent(moduloMultiplicador)
+
+  if (moduloMultiplicador.habilitacao) {
+    base.push({
+      type: 'habilitacao',
+      title: 'Requisitos de habilitação',
+      observacao: moduloMultiplicador.habilitacao.observacao,
+      requisitos: moduloMultiplicador.habilitacao.requisitos,
+    })
+  }
+
+  return base
+}
+
 function defaultProgress() {
   const moduleState = Object.fromEntries(
     modules.map((m, index) => [
@@ -261,6 +278,17 @@ function defaultProgress() {
     finalAssessmentVersion: FINAL_ASSESSMENT_VERSION,
     finalAssessmentPassed: false,
     certificateUnlocked: false,
+    multAccessCodigo: null,
+    multQuizVariant: null,
+    multState: {
+      contentSeen: {},
+      checklist: {},
+      videoDone: false,
+      activityDone: false,
+      quizAnswers: {},
+      quizPassed: false,
+      completed: false,
+    },
   }
 }
 
@@ -299,6 +327,23 @@ function normalizeProgress(loaded) {
     ? scoreQuiz(finalAssessment, finalAssessmentAnswers).passed
     : false
 
+  const multState = {
+    ...fresh.multState,
+    ...(loaded.multState || {}),
+    contentSeen: {
+      ...fresh.multState.contentSeen,
+      ...(loaded.multState?.contentSeen || {}),
+    },
+    checklist: {
+      ...fresh.multState.checklist,
+      ...(loaded.multState?.checklist || {}),
+    },
+    quizAnswers: {
+      ...fresh.multState.quizAnswers,
+      ...(loaded.multState?.quizAnswers || {}),
+    },
+  }
+
   return {
     ...fresh,
     ...loaded,
@@ -308,6 +353,9 @@ function normalizeProgress(loaded) {
     finalAssessmentVersion: FINAL_ASSESSMENT_VERSION,
     finalAssessmentPassed,
     certificateUnlocked: finalAssessmentPassed,
+    multState,
+    multQuizVariant: loaded.multQuizVariant || null,
+    multAccessCodigo: loaded.multAccessCodigo || null,
   }
 }
 
@@ -520,6 +568,10 @@ export default function App() {
   const [selectedSimulationCategory, setSelectedSimulationCategory] = useState('Todos')
   const [selectedSimulationModule, setSelectedSimulationModule] = useState('Todos')
   const [simulationAnswers, setSimulationAnswers] = useState({})
+  const [multScreenIndex, setMultScreenIndex] = useState(0)
+  const [multAccessCode, setMultAccessCode] = useState('')
+  const [multAccessError, setMultAccessError] = useState('')
+  const [multAccessChecking, setMultAccessChecking] = useState(false)
 
   useEffect(() => {
     const loaded = loadProgress()
@@ -568,6 +620,43 @@ export default function App() {
       : hasAnsweredAllQuestions
         ? 'warning'
         : 'neutral'
+
+  const multiplicadorContent = getMultiplicadorContent()
+  const multCurrentItem = multiplicadorContent[multScreenIndex] || null
+  const multCurrentStepNumber = Math.min(multScreenIndex + 1, multiplicadorContent.length)
+  const multTotalSteps = multiplicadorContent.length
+  const multAccessGranted = !!progressState.multAccessCodigo
+
+  const activeMultQuiz = progressState.multQuizVariant || moduloMultiplicador.questionBank || []
+  const multQuizResult = scoreQuiz(activeMultQuiz, progressState.multState.quizAnswers || {})
+  const multAnsweredCount = Object.keys(progressState.multState.quizAnswers || {}).length
+  const multTotalQuestions = multQuizResult.total
+  const multHasAnsweredQuestions = multAnsweredCount > 0
+  const multHasAnsweredAllQuestions = multAnsweredCount === multTotalQuestions
+
+  const multQuizStatusLabel = progressState.multState.completed
+    ? 'Módulo concluído'
+    : !multHasAnsweredQuestions
+      ? 'Responda às questões para acompanhar seu desempenho'
+      : !multHasAnsweredAllQuestions
+        ? 'Continue respondendo'
+        : multQuizResult.passed
+          ? 'Aproveitamento suficiente'
+          : 'Aproveitamento insuficiente'
+
+  const multQuizStatusTone =
+    progressState.multState.completed || multQuizResult.passed
+      ? 'success'
+      : multHasAnsweredAllQuestions
+        ? 'warning'
+        : 'neutral'
+
+  const multCompletedScreens = Object.values(progressState.multState.contentSeen || {}).filter(Boolean).length
+  const multContentProgress = multTotalSteps > 0 ? Math.min(multCompletedScreens / multTotalSteps, 1) : 0
+  const multQuizProgressRatio = multTotalQuestions > 0 ? Math.min(multAnsweredCount / multTotalQuestions, 1) : 0
+  const multProgressValue = progressState.multState.completed
+    ? 100
+    : Math.round(((multContentProgress + multQuizProgressRatio) / 2) * 100)
 
   const finalResult = scoreQuiz(finalAssessment, progressState.finalAssessmentAnswers || {})
 
@@ -777,6 +866,24 @@ export default function App() {
     })
   }, [screenIndex, selectedModule.id, selectedModuleContent.length, selectedModule])
 
+  useEffect(() => {
+    const isMultQuizScreen = currentView === 'multiplicadores' && multScreenIndex === multiplicadorContent.length
+
+    if (!isMultQuizScreen) return
+
+    setProgressState((prev) => {
+      if (prev.multQuizVariant) return prev
+
+      return {
+        ...prev,
+        multQuizVariant: randomizeQuiz(
+          moduloMultiplicador.questionBank || [],
+          moduloMultiplicador.quizSize || 10,
+        ),
+      }
+    })
+  }, [currentView, multScreenIndex, multiplicadorContent.length])
+
   function generateCertificatePdf() {
     if (!progressState.certificateUnlocked) return
 
@@ -792,6 +899,8 @@ export default function App() {
     const completionDate = formatCertificateDate(issuedAt)
     const verificationCode = createCertificateCode(cleanName, issuedAt, issuedAt.getTime())
     const courseName = `${courseIntro.title} — ${courseIntro.subtitle}`
+
+    registrarCertificadoEmitido({ codigo: verificationCode, nome: cleanName, versao: COURSE_VERSION })
 
     doc.setFillColor(248, 247, 244)
     doc.rect(0, 0, 297, 210, 'F')
@@ -1084,6 +1193,125 @@ export default function App() {
     } else {
       setCurrentView('final-review')
     }
+  }
+
+  function markMultSeen(itemIndex) {
+    setProgressState((prev) => ({
+      ...prev,
+      multState: {
+        ...prev.multState,
+        contentSeen: {
+          ...prev.multState.contentSeen,
+          [itemIndex]: true,
+        },
+      },
+    }))
+  }
+
+  function toggleMultChecklist(item) {
+    setProgressState((prev) => ({
+      ...prev,
+      multState: {
+        ...prev.multState,
+        checklist: {
+          ...prev.multState.checklist,
+          [item]: !prev.multState.checklist[item],
+        },
+      },
+    }))
+  }
+
+  function setMultVideoDone() {
+    setProgressState((prev) => ({
+      ...prev,
+      multState: { ...prev.multState, videoDone: true },
+    }))
+  }
+
+  function setMultActivityDone() {
+    setProgressState((prev) => ({
+      ...prev,
+      multState: { ...prev.multState, activityDone: true },
+    }))
+  }
+
+  function completeMultCurrentStepAndAdvance() {
+    setProgressState((prev) => ({
+      ...prev,
+      multState: {
+        ...prev.multState,
+        contentSeen: {
+          ...prev.multState.contentSeen,
+          [multScreenIndex]: true,
+        },
+        videoDone: multCurrentItem?.type === 'video' ? true : prev.multState.videoDone,
+        activityDone: multCurrentItem?.type === 'activity' ? true : prev.multState.activityDone,
+      },
+    }))
+
+    setMultScreenIndex((s) => Math.min(multiplicadorContent.length, s + 1))
+  }
+
+  function answerMultQuiz(idx, answer) {
+    setProgressState((prev) => {
+      const quizForScoring = prev.multQuizVariant || moduloMultiplicador.questionBank || []
+      const nextAnswers = {
+        ...prev.multState.quizAnswers,
+        [idx]: answer,
+      }
+      const result = scoreQuiz(quizForScoring, nextAnswers)
+
+      return {
+        ...prev,
+        multState: {
+          ...prev.multState,
+          quizAnswers: nextAnswers,
+          quizPassed: result.passed,
+        },
+      }
+    })
+  }
+
+  function retryMultQuiz() {
+    setProgressState((prev) => ({
+      ...prev,
+      multQuizVariant: randomizeQuiz(
+        moduloMultiplicador.questionBank || [],
+        moduloMultiplicador.quizSize || 10,
+      ),
+      multState: {
+        ...prev.multState,
+        quizAnswers: {},
+        quizPassed: false,
+      },
+    }))
+  }
+
+  function completeMultiplicadores() {
+    setProgressState((prev) => ({
+      ...prev,
+      multState: { ...prev.multState, completed: true },
+    }))
+  }
+
+  async function handleMultAccessSubmit(event) {
+    event.preventDefault()
+    setMultAccessChecking(true)
+    setMultAccessError('')
+
+    const result = await validarCertificado(multAccessCode)
+
+    setMultAccessChecking(false)
+
+    if (!result.valido) {
+      setMultAccessError(result.error || 'Código verificador inválido.')
+      return
+    }
+
+    setProgressState((prev) => ({
+      ...prev,
+      multAccessCodigo: multAccessCode.trim().toUpperCase(),
+    }))
   }
 
   function answerFinalAssessment(idx, answer) {
@@ -2150,7 +2378,44 @@ export default function App() {
             </motion.div>
           )}
 
-          {currentView === 'multiplicadores' && (
+          {currentView === 'multiplicadores' && !multAccessGranted && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
+              <ScreenCard title="Acesso restrito ao módulo de formação de multiplicadores" icon={Lock}>
+                <p className="muted-body">
+                  Este módulo é destinado a agentes públicos autorizados a atuar como multiplicadores do
+                  curso Cidadão Digital Seguro. O acesso exige o código verificador de um certificado de
+                  conclusão válido, o mesmo código impresso no certificado emitido ao final do curso.
+                </p>
+
+                <form className="stack-md" onSubmit={handleMultAccessSubmit}>
+                  <label className="muted-body" htmlFor="mult-access-code">
+                    Código verificador do certificado
+                  </label>
+                  <input
+                    id="mult-access-code"
+                    className="text-input"
+                    type="text"
+                    placeholder="Ex.: CDS-310-XXXXXXX"
+                    value={multAccessCode}
+                    onChange={(event) => setMultAccessCode(event.target.value)}
+                    autoComplete="off"
+                  />
+
+                  {multAccessError ? (
+                    <div className="info-box muted-body" role="alert">
+                      {multAccessError}
+                    </div>
+                  ) : null}
+
+                  <button className="button" type="submit" disabled={multAccessChecking || !multAccessCode.trim()}>
+                    {multAccessChecking ? 'Validando...' : 'Validar acesso'}
+                  </button>
+                </form>
+              </ScreenCard>
+            </motion.div>
+          )}
+
+          {currentView === 'multiplicadores' && multAccessGranted && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
               <ScreenCard title={moduloMultiplicador.title} icon={GraduationCap}>
                 <p className="muted-body">{moduloMultiplicador.subtitle}</p>
@@ -2162,10 +2427,13 @@ export default function App() {
 
                 <p className="muted-body">{moduloMultiplicador.summary}</p>
 
+                <ProgressBar value={multProgressValue} label="Progresso do módulo de multiplicadores" />
+
                 <div className="tags-row">
                   <span className="tag">{moduloMultiplicador.level}</span>
                   <span className="tag">{moduloMultiplicador.duration}</span>
                   <span className="tag">{moduloMultiplicador.lessons.length} lições</span>
+                  {progressState.multState.completed ? <SectionTag>Concluído</SectionTag> : null}
                 </div>
 
                 <div className="info-box">
@@ -2178,67 +2446,273 @@ export default function App() {
                 </div>
               </ScreenCard>
 
-              {moduloMultiplicador.lessons.map((lesson, index) => (
-                <ScreenCard key={lesson.id} title={`${index + 1}. ${lesson.title}`}>
-                  <span className="mini-muted">{lesson.estimatedTime}</span>
-                  {renderLessonContent(lesson.content)}
-                </ScreenCard>
-              ))}
+              {multScreenIndex < multiplicadorContent.length && multCurrentItem && (
+                <ScreenCard
+                  title={multCurrentItem.title}
+                  icon={
+                    multCurrentItem.type === 'video'
+                      ? PlayCircle
+                      : multCurrentItem.type === 'links'
+                        ? BookOpen
+                        : multCurrentItem.type === 'checklist'
+                          ? ListChecks
+                          : multCurrentItem.type === 'activity'
+                            ? FileCheck
+                            : multCurrentItem.type === 'habilitacao'
+                              ? Award
+                              : GraduationCap
+                  }
+                >
+                  <div
+                    className="module-step-indicator"
+                    aria-label={`Tela ${multCurrentStepNumber} de ${multTotalSteps} do módulo de multiplicadores`}
+                  >
+                    Tela {multCurrentStepNumber} de {multTotalSteps}
+                  </div>
 
-              <ScreenCard title="Autoverificação do multiplicador" icon={ListChecks}>
-                <ul className="muted-body">
-                  {moduloMultiplicador.checklist.map((item, index) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
-              </ScreenCard>
+                  {multCurrentItem.content && renderLessonContent(multCurrentItem.content)}
 
-              <ScreenCard title={moduloMultiplicador.practicalActivity.title} icon={FileCheck}>
-                <p className="muted-body">{moduloMultiplicador.practicalActivity.description}</p>
-                <div className="info-box">
-                  <ul className="muted-body">
-                    {moduloMultiplicador.practicalActivity.steps.map((step, index) => (
-                      <li key={index}>{step}</li>
-                    ))}
-                  </ul>
-                </div>
-              </ScreenCard>
-
-              <ScreenCard title="Requisitos de habilitação" icon={Award}>
-                <p className="muted-body">{moduloMultiplicador.habilitacao.observacao}</p>
-                <div className="info-box">
-                  <ul className="muted-body">
-                    {moduloMultiplicador.habilitacao.requisitos.map((requisito, index) => (
-                      <li key={index}>{requisito}</li>
-                    ))}
-                  </ul>
-                </div>
-              </ScreenCard>
-
-              <ScreenCard title="Materiais de apoio" icon={FileText}>
-                <div className="stack-sm">
-                  {moduloMultiplicador.resources.map((resource, index) =>
-                    resource.url ? (
-                      <a
-                        key={index}
-                        className="link-card"
-                        href={resource.url}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <div className="link-card-title">{resource.label}</div>
-                        <div className="link-card-url">{resource.url}</div>
-                        <ExternalLink size={16} aria-hidden="true" focusable="false" />
-                      </a>
-                    ) : (
-                      <div key={index} className="info-box">
-                        <div className="link-card-title">{resource.label}</div>
-                        {resource.note ? <p className="muted-body">{resource.note}</p> : null}
+                  {multCurrentItem.type === 'video' && (
+                    <div className="stack-md">
+                      <div className="video-box">
+                        <PlayCircle size={42} aria-hidden="true" focusable="false" />
+                        <div className="video-title">{multCurrentItem.title}</div>
+                        <div className="muted-small">Duração sugerida: {multCurrentItem.duration}</div>
                       </div>
-                    ),
+
+                      {multCurrentItem.status ? (
+                        <div className="tags-row">
+                          <SectionTag>Status: {multCurrentItem.status}</SectionTag>
+                        </div>
+                      ) : null}
+
+                      <div className="info-box video-detail-box video-script-box">
+                        <div className="link-card-title">Roteiro preliminar</div>
+                        <p className="muted-body">{multCurrentItem.description}</p>
+                      </div>
+
+                      {Array.isArray(multCurrentItem.objectives) && multCurrentItem.objectives.length > 0 ? (
+                        <div className="info-box video-detail-box">
+                          <div className="link-card-title">Objetivos da videoaula</div>
+                          <ul className="muted-body">
+                            {multCurrentItem.objectives.map((objective) => (
+                              <li key={objective}>{objective}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : null}
+
+                      {Array.isArray(multCurrentItem.topics) && multCurrentItem.topics.length > 0 ? (
+                        <div className="info-box video-detail-box">
+                          <div className="link-card-title">Tópicos abordados</div>
+                          <ul className="muted-body">
+                            {multCurrentItem.topics.map((topic) => (
+                              <li key={topic}>{topic}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : null}
+
+                      <button
+                        className="button video-complete-button"
+                        onClick={() => {
+                          setMultVideoDone()
+                          markMultSeen(multScreenIndex)
+                        }}
+                      >
+                        Registrar videoaula como assistida
+                      </button>
+                    </div>
                   )}
-                </div>
-              </ScreenCard>
+
+                  {multCurrentItem.type === 'checklist' && (
+                    <div className="stack-md">
+                      {multCurrentItem.items.map((item) => (
+                        <label key={item} className="check-row">
+                          <input
+                            type="checkbox"
+                            checked={!!progressState.multState.checklist[item]}
+                            onChange={() => toggleMultChecklist(item)}
+                          />
+                          <span>{item}</span>
+                        </label>
+                      ))}
+                    </div>
+                  )}
+
+                  {multCurrentItem.type === 'links' && (
+                    <div className="grid-2">
+                      {multCurrentItem.items.map((link, index) =>
+                        link.url ? (
+                          <a
+                            key={link.url}
+                            href={link.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="link-card"
+                          >
+                            <div className="link-card-title">{link.label}</div>
+                            <div className="link-card-url">{link.url}</div>
+                            <ExternalLink size={16} aria-hidden="true" focusable="false" />
+                          </a>
+                        ) : (
+                          <div key={index} className="info-box">
+                            <div className="link-card-title">{link.label}</div>
+                            {link.note ? <p className="muted-body">{link.note}</p> : null}
+                          </div>
+                        ),
+                      )}
+                    </div>
+                  )}
+
+                  {multCurrentItem.type === 'activity' && (
+                    <div className="stack-md">
+                      <div className="info-box">{multCurrentItem.prompt}</div>
+                      <details className="details-box">
+                        <summary>Ver orientação de resposta</summary>
+                        <p>{multCurrentItem.reflection}</p>
+                      </details>
+
+                      <button
+                        className="button"
+                        onClick={() => {
+                          setMultActivityDone()
+                          markMultSeen(multScreenIndex)
+                        }}
+                      >
+                        Registrar atividade como concluída
+                      </button>
+                    </div>
+                  )}
+
+                  {multCurrentItem.type === 'habilitacao' && (
+                    <div className="stack-md">
+                      <div className="info-box muted-body">{multCurrentItem.observacao}</div>
+                      <ul className="muted-body">
+                        {multCurrentItem.requisitos.map((requisito, index) => (
+                          <li key={index}>{requisito}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  <div className="actions-between">
+                    <button
+                      className="button button-outline"
+                      disabled={multScreenIndex === 0}
+                      onClick={() => setMultScreenIndex((s) => Math.max(0, s - 1))}
+                    >
+                      Voltar
+                    </button>
+
+                    <button className="button" onClick={completeMultCurrentStepAndAdvance}>
+                      Registrar tela e avançar
+                    </button>
+                  </div>
+                </ScreenCard>
+              )}
+
+              {multScreenIndex === multiplicadorContent.length && (
+                <ScreenCard title="Quiz do módulo de multiplicadores" icon={CheckCircle2}>
+                  <div className="stack-lg">
+                    {activeMultQuiz.map((q, idx) => (
+                      <div key={`mult-${idx}-${q.question}`} className="quiz-box">
+                        <div className="quiz-question">
+                          {idx + 1}. {q.question}
+                        </div>
+
+                        <div className="stack-sm">
+                          {q.options.map((opt, optionIndex) => (
+                            <label key={`mult-${idx}-${optionIndex}-${opt}`} className="radio-row">
+                              <input
+                                type="radio"
+                                name={`mult-${idx}`}
+                                checked={progressState.multState.quizAnswers[idx] === optionIndex}
+                                onChange={() => answerMultQuiz(idx, optionIndex)}
+                              />
+                              <span>{opt}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="quiz-status-panel">
+                    <div className="quiz-status-grid">
+                      <div className="quiz-status-item">
+                        <span className="mini-muted">Respondidas</span>
+                        <div className="quiz-status-value">
+                          {multAnsweredCount}/{multTotalQuestions}
+                        </div>
+                      </div>
+                      <div className="quiz-status-item">
+                        <span className="mini-muted">Acertos</span>
+                        <div className="quiz-status-value">
+                          {multQuizResult.correct}/{multQuizResult.total}
+                        </div>
+                      </div>
+                      <div className="quiz-status-item">
+                        <span className="mini-muted">Mínimo</span>
+                        <div className="quiz-status-value">70%</div>
+                      </div>
+                    </div>
+                    <div className={`quiz-status-label ${multQuizStatusTone}`}>
+                      <div className="icon-box small" style={{ background: 'transparent', color: 'inherit' }}>
+                        {multQuizStatusTone === 'success' ? (
+                          <CheckCircle2 size={16} />
+                        ) : multQuizStatusTone === 'warning' ? (
+                          <AlertTriangle size={16} />
+                        ) : (
+                          <Shield size={16} />
+                        )}
+                      </div>
+                      {multQuizStatusLabel}
+                    </div>
+                  </div>
+
+                  <div className="info-box muted-body">
+                    Resultado atual: {multQuizResult.correct}/{multQuizResult.total} acertos. Aproveitamento
+                    mínimo: 70%.
+                  </div>
+
+                  <div className="actions-row">
+                    <button
+                      className="button button-outline"
+                      onClick={() => setMultScreenIndex(multiplicadorContent.length - 1)}
+                    >
+                      Voltar ao conteúdo
+                    </button>
+
+                    <button
+                      className="button button-outline"
+                      onClick={retryMultQuiz}
+                      disabled={
+                        progressState.multState.completed ||
+                        Object.keys(progressState.multState.quizAnswers || {}).length === 0
+                      }
+                    >
+                      Refazer quiz do módulo
+                    </button>
+
+                    <button
+                      className="button"
+                      disabled={
+                        !(progressState.multState.activityDone && progressState.multState.videoDone && multQuizResult.passed)
+                      }
+                      onClick={completeMultiplicadores}
+                    >
+                      Concluir módulo de multiplicadores
+                    </button>
+                  </div>
+
+                  {!progressState.multState.activityDone || !progressState.multState.videoDone ? (
+                    <div className="warning-text">
+                      Para concluir o módulo, registre a videoaula e conclua a atividade prática.
+                    </div>
+                  ) : null}
+                </ScreenCard>
+              )}
             </motion.div>
           )}
 

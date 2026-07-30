@@ -1,7 +1,10 @@
 node_modules/
 dist/
+dist-scorm/
 .vite/
 .env
+.env.local
+.env.*.local
 .DS_Store
 *.log
 .vs/
