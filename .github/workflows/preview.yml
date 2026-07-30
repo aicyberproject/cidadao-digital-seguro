@@ -22,16 +22,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout pull request
-        if: github.event_name == 'pull_request'
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Checkout current ref
-        if: github.event_name != 'pull_request'
-        uses: actions/checkout@v4
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
