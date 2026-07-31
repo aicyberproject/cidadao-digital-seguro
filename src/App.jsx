@@ -884,6 +884,10 @@ export default function App() {
     })
   }, [currentView, multScreenIndex, multiplicadorContent.length])
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [currentView, screenIndex, selectedModuleId, multScreenIndex])
+
   function generateCertificatePdf() {
     if (!progressState.certificateUnlocked) return
 
@@ -1368,6 +1372,9 @@ export default function App() {
     setCurrentView('home')
     setSelectedModuleId(modules[0].id)
     setScreenIndex(0)
+    setMultScreenIndex(0)
+    setMultAccessCode('')
+    setMultAccessError('')
   }
 
   return (

@@ -313,6 +313,14 @@ p {
   color: var(--text-main);
 }
 
+ul.muted-body {
+  padding-left: 1.1em;
+}
+
+ul.muted-body > li {
+  list-style-type: "- ";
+}
+
 .info-box,
 .scenario-box,
 .tip-box,
