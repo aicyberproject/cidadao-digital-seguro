@@ -210,6 +210,8 @@ const SHARED_CSS = `
   h1 { font-size: 1.5rem; margin-bottom: 8px; }
   h3 { font-size: 1.1rem; margin-bottom: 4px; }
   .cds-block { background: #fff; border: 1px solid #e2e2df; border-radius: 8px; padding: 16px 20px; margin: 16px 0; }
+  .cds-block ul { padding-left: 1.1em; }
+  .cds-block ul > li { list-style-type: "- "; }
   .cds-muted { color: #5b6470; font-size: 0.9rem; }
   .cds-scam { border-left: 4px solid #b3462c; }
   .cds-tip { border-left: 4px solid #235337; }
