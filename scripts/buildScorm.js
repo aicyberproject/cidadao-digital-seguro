@@ -248,6 +248,7 @@ window.CDS_SCORM = (function () {
   var initialized = false;
 
   function init() {
+    if (initialized) return true;
     api = cdsGetAPI();
     if (api) {
       var result = api.LMSInitialize('');
@@ -284,7 +285,7 @@ window.addEventListener('load', function () {
   window.CDS_SCORM.commit();
 });
 
-window.addEventListener('beforeunload', function () {
+window.addEventListener('unload', function () {
   window.CDS_SCORM.commit();
   window.CDS_SCORM.finish();
 });
