@@ -44,6 +44,9 @@ jobs:
         run: npm run build -- --base=/cidadao-digital-seguro-preview/
 
       - name: Checkout preview repository
+        id: checkout_preview
+        if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+        continue-on-error: true
         uses: actions/checkout@v4
         with:
           repository: aicyberproject/cidadao-digital-seguro-preview
@@ -52,6 +55,9 @@ jobs:
           path: preview-repo
 
       - name: Publish preview
+        id: publish_preview
+        if: steps.checkout_preview.outcome == 'success'
+        continue-on-error: true
         run: |
           find preview-repo -mindepth 1 -maxdepth 1 ! -name '.git' ! -name '.nojekyll' -exec rm -rf {} +
           cp -a dist/. preview-repo/
@@ -69,7 +75,7 @@ jobs:
           fi
 
       - name: Comment preview URL
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && steps.publish_preview.outcome == 'success'
         uses: actions/github-script@v7
         with:
           script: |
