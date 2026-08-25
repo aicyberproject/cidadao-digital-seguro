@@ -21,6 +21,8 @@ O arquivo `slides/index.html` abre em qualquer navegador, **sem internet** (as f
 | **N** | Abre e fecha as notas do apresentador |
 | **O** | Índice visual de todos os slides — clique para pular |
 
+> O deck tem **38 slides**: os 37 do fluxo cronometrado (blocos A–J) mais um **apêndice fora do tempo** (slide 38, bloco X), com um resumo do projeto Cidadão Digital Seguro. Use a tecla **O** para saltar até ele se alguém — coordenação, aluno, imprensa presente — perguntar "o que é esse projeto, afinal?", e **O** de novo para voltar ao ponto da aula. Para perguntas mais específicas (governança do repositório, validade do certificado, se substitui denúncia formal), a versão completa com 5 perguntas frequentes está em `materiais/cartao-referencia-cidadao-digital-seguro.md`.
+
 > **Aperte T assim que a turma sentar.** O deck só é útil como instrumento de ritmo se o relógio estiver correndo.
 
 **Antes da aula, edite dois pontos do arquivo:**
