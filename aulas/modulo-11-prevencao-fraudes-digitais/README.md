@@ -23,13 +23,14 @@ O professor fala cerca de **26 dos 100 minutos**. Os alunos ocupam 54. A aula te
 | **[`briefing-coordenacao.md`](briefing-coordenacao.md)** · **[`.html`](briefing-coordenacao.html)** | Coordenação | Apresentação do desenho da aula em 10 seções: o que muda no PD, por quê, como a aula funciona, o que a coordenação recebe e providencia, a decisão pendente e os riscos. Versão HTML pronta para projetar ou enviar por link |
 | **[`plano-de-aula.md`](plano-de-aula.md)** | Coordenação e professor | Plano completo: convergência com o PD, desenho metodológico, cronograma minuto a minuto, detalhamento por bloco, recursos, avaliação, riscos e redação sugerida para atualização do PD |
 | **[`roteiro-do-professor.md`](roteiro-do-professor.md)** | Professor | Documento de mesa. Condução slide a slide, falas sugeridas, teclas do deck, o que cortar se atrasar |
-| **[`slides/index.html`](slides/index.html)** | Professor | Deck de 37 slides, autocontido, com cronômetro de aula, cronômetro por atividade, notas do apresentador e índice visual. Funciona offline |
+| **[`slides/index.html`](slides/index.html)** | Professor | Deck de 38 slides (37 no fluxo cronometrado + 1 apêndice de consulta livre), autocontido, com cronômetro de aula, cronômetro por atividade, notas do apresentador e índice visual. Funciona offline |
 | **[`materiais/pre-aula-invertida.md`](materiais/pre-aula-invertida.md)** | Aluno (5 a 7 dias antes) | Tarefa prévia de 20–25 min + micro-quiz de 5 questões com gabarito comentado |
 | **[`materiais/estudos-de-caso.md`](materiais/estudos-de-caso.md)** | Professor e alunos | 4 casos compostos, ficha de Crime Script, gabaritos comentados, Mapa dos 5 Atores e anexo sobre a cadeia de dissipação |
 | **[`materiais/kit-atividades.md`](materiais/kit-atividades.md)** | Impressão | Cartões de votação, 12 cartões de pergunta difícil, ficha do observador, ficha "Plano 30 Dias", termo de saída 3-2-1 e cartaz das 5 regras de ouro |
 | **[`materiais/avaliacao-e-rubrica.md`](materiais/avaliacao-e-rubrica.md)** | Professor e coordenação | Mapa de verificação por objetivo, rubricas formativas, leitura dos termos de saída e autoavaliação do professor |
 | **[`materiais/banco-de-videos-e-fontes.md`](materiais/banco-de-videos-e-fontes.md)** | Professor | Curadoria de vídeos com alternativas, todas as fontes dos dados com data de consulta e a fundamentação teórica |
 | **[`materiais/lista-de-materiais-30-alunos.md`](materiais/lista-de-materiais-30-alunos.md)** | Coordenação, almoxarifado, secretaria | Quantitativos fechados por tamanho de turma (15 a 40), requisitos da sala e texto pronto de requisição |
+| **[`materiais/cartao-referencia-cidadao-digital-seguro.md`](materiais/cartao-referencia-cidadao-digital-seguro.md)** · **[`.html`](materiais/cartao-referencia-cidadao-digital-seguro.html)** | Professor | Ficha de uma página sobre o projeto: os dois componentes, o que representa e 5 perguntas frequentes. Para responder dúvidas em qualquer contexto, não só na aula |
 
 ---
 
