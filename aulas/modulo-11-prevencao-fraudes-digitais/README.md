@@ -20,6 +20,7 @@ O professor fala cerca de **26 dos 100 minutos**. Os alunos ocupam 54. A aula te
 
 | Arquivo | Para quem | O que é |
 |---|---|---|
+| **[`briefing-coordenacao.md`](briefing-coordenacao.md)** · **[`.html`](briefing-coordenacao.html)** | Coordenação | Apresentação do desenho da aula em 10 seções: o que muda no PD, por quê, como a aula funciona, o que a coordenação recebe e providencia, a decisão pendente e os riscos. Versão HTML pronta para projetar ou enviar por link |
 | **[`plano-de-aula.md`](plano-de-aula.md)** | Coordenação e professor | Plano completo: convergência com o PD, desenho metodológico, cronograma minuto a minuto, detalhamento por bloco, recursos, avaliação, riscos e redação sugerida para atualização do PD |
 | **[`roteiro-do-professor.md`](roteiro-do-professor.md)** | Professor | Documento de mesa. Condução slide a slide, falas sugeridas, teclas do deck, o que cortar se atrasar |
 | **[`slides/index.html`](slides/index.html)** | Professor | Deck de 37 slides, autocontido, com cronômetro de aula, cronômetro por atividade, notas do apresentador e índice visual. Funciona offline |
