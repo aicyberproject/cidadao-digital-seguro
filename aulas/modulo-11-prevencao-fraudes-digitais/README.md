@@ -28,13 +28,14 @@ O professor fala cerca de **26 dos 100 minutos**. Os alunos ocupam 54. A aula te
 | **[`materiais/kit-atividades.md`](materiais/kit-atividades.md)** | Impressão | Cartões de votação, 12 cartões de pergunta difícil, ficha do observador, ficha "Plano 30 Dias", termo de saída 3-2-1 e cartaz das 5 regras de ouro |
 | **[`materiais/avaliacao-e-rubrica.md`](materiais/avaliacao-e-rubrica.md)** | Professor e coordenação | Mapa de verificação por objetivo, rubricas formativas, leitura dos termos de saída e autoavaliação do professor |
 | **[`materiais/banco-de-videos-e-fontes.md`](materiais/banco-de-videos-e-fontes.md)** | Professor | Curadoria de vídeos com alternativas, todas as fontes dos dados com data de consulta e a fundamentação teórica |
+| **[`materiais/lista-de-materiais-30-alunos.md`](materiais/lista-de-materiais-30-alunos.md)** | Coordenação, almoxarifado, secretaria | Quantitativos fechados por tamanho de turma (15 a 40), requisitos da sala e texto pronto de requisição |
 
 ---
 
 ## Como usar, na ordem
 
 1. **Uma semana antes** — envie `materiais/pre-aula-invertida.md` e o link do micro-quiz à turma.
-2. **Dois dias antes** — teste e **baixe** os vídeos (`materiais/banco-de-videos-e-fontes.md`), imprima as peças de `materiais/kit-atividades.md`, leia `materiais/estudos-de-caso.md` inteiro.
+2. **Dois dias antes** — solicite o material com base em `materiais/lista-de-materiais-30-alunos.md`, teste e **baixe** os vídeos (`materiais/banco-de-videos-e-fontes.md`), imprima as peças de `materiais/kit-atividades.md`, leia `materiais/estudos-de-caso.md` inteiro.
 3. **Edite o deck** — slide 6, atributos `data-pct` com o agregado real do micro-quiz; slide 20, a URL da segunda peça de vídeo.
 4. **No dia** — mesas já dispostas em grupos antes de a turma entrar. Abra `slides/index.html`, tecla **F** para tela cheia, tecla **T** quando a turma sentar.
 5. **Em 48 horas** — encaminhe à coordenação as fotos dos cartazes, as fichas "Plano 30 Dias" e a lista de interessados em credenciamento.

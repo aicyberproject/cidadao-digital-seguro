@@ -304,8 +304,10 @@ Trios. Papéis: **multiplicador**, **plateia** e **observador**. Cartões em `ma
 | Cartões de pergunta difícil | 1 jogo por trio | Bloco H |
 | Fichas "Plano 30 Dias" | 1 por grupo | Bloco I |
 | Termo de saída 3-2-1 | 1 por aluno | Bloco J |
-| Cartões de votação (3 cores) ou app de enquete | 1 jogo por aluno | Bloco B |
+| Cartões de votação (jogo A/B/C/D) ou app de enquete | 1 jogo por aluno | Bloco B |
 | Cronômetro visível | 1 | Todos (já embutido no deck) |
+
+**Quantitativos fechados por tamanho de turma**, incluindo insumos de reprografia, material de consumo, equipamento, requisitos da sala e texto pronto de requisição: `materiais/lista-de-materiais-30-alunos.md`. Dois itens que costumam faltar e comprometem blocos inteiros: **caixa de som** (o bloco F roda vídeo) e **pincel atômico vermelho** (a seta vermelha é elemento da ficha, não decoração).
 
 **Plano B sem internet:** o deck (`slides/index.html`) é autocontido e funciona offline. Os vídeos do bloco F devem ser **baixados previamente** e, na ausência deles, substituídos pela leitura em voz alta de dois roteiros de campanha impressos (`materiais/banco-de-videos-e-fontes.md`, anexo). A demonstração do bloco G tem capturas de tela embutidas no deck.
 
@@ -363,6 +365,7 @@ A rubrica de correção das fichas — usada para *feedback*, não para nota —
 | Grupos estouram o tempo no bloco C | Alta | Cronômetro na tela desde o início; aviso aos 10' e aos 13'. Aceitar cartaz incompleto: o incompleto também socializa. |
 | Falha de projeção ou de internet | Média | Deck offline autocontido; vídeos baixados; demo do bloco G por capturas. |
 | Turma pequena (menos de 8 alunos) | Média | Fundir para 2 grupos e usar apenas os casos 1 e 2. Roleplay em duplas, com o professor no papel de observador. |
+| Turma de 30 — bloco D sem folga | Alta | Seis grupos × 90 s = exatamente os 9 min do bloco. Cronometre sem exceção, ou o bloco E começa atrasado. Alternativa: 4 grupos sorteados apresentam e os outros 2 afixam o cartaz para leitura. |
 | Turma grande (mais de 30) | Média | Manter grupos de 5; no bloco D, sortear 4 grupos para apresentar e recolher os demais cartazes na parede (*gallery walk* de 3'). |
 | Aula reduzida para 50 min | Baixa | Executar A, C (10'), D (6'), G (10'), I (12'), J (5'). Cortar B, E, F e H. |
 
@@ -394,3 +397,4 @@ Carga horária, objetivos específicos e conteúdo permanecem inalterados.
 | `materiais/kit-atividades.md` | Cartões de pergunta difícil, ficha Plano 30 Dias, termo de saída, cartões de votação |
 | `materiais/avaliacao-e-rubrica.md` | Rubricas formativas e instrumento de autoavaliação do professor |
 | `materiais/banco-de-videos-e-fontes.md` | Curadoria de vídeos com alternativas, e todas as fontes com data de consulta |
+| `materiais/lista-de-materiais-30-alunos.md` | Quantitativos por tamanho de turma, requisitos da sala e texto pronto de requisição |
