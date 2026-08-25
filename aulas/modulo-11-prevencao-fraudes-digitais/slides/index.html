@@ -979,6 +979,42 @@ table.dry td b{color:var(--bone);font-weight:600}
     <div class="notes"><p>Deixe este slide na tela enquanto recolhe os termos de saída. Não fale mais nada.</p></div>
   </section>
 
+  <!-- ============ APÊNDICE — fora do fluxo cronometrado ============ -->
+  <!-- Slide de consulta sob demanda: pule para cá (tecla O) se alguém, -->
+  <!-- coordenação ou aluno, perguntar "o que é esse projeto, afinal?"  -->
+
+  <section class="slide" data-block="X" data-title="Apêndice — O que é o Cidadão Digital Seguro" data-mat="paper">
+    <div class="eyebrow">Fora do tempo da aula · consulta sob demanda</div>
+    <h2 style="font-size:40px">O projeto Cidadão Digital Seguro, em resumo</h2>
+    <div class="cols c2" style="margin-top:22px;flex:none">
+      <div class="stack" style="gap:10px">
+        <h3 style="font-size:20px">O curso · para o cidadão</h3>
+        <ul class="tick" style="gap:9px">
+          <li style="font-size:15px"><b>6 módulos, ~20 h</b>, autoinstrucional</li>
+          <li style="font-size:15px">Ecossistema · higiene · dispositivos · transações · golpes · incidentes</li>
+          <li style="font-size:15px">Avaliação final e <b>certificado digital verificável</b></li>
+          <li style="font-size:15px">Gratuito, acesso público, sem cadastro prévio</li>
+        </ul>
+      </div>
+      <div class="stack" style="gap:10px">
+        <h3 style="font-size:20px">Multiplicadores · para o policial</h3>
+        <ul class="tick" style="gap:9px">
+          <li style="font-size:15px">Módulo adicional, <b>pré-requisito: certificado do curso</b></li>
+          <li style="font-size:15px">Ensina a conduzir o <b>Kit de Palestra Pública</b> (15 slides) a público externo</li>
+          <li style="font-size:15px">Foco: os <b>limites de fala do agente público</b> — visto no bloco H</li>
+          <li style="font-size:15px">Credenciamento formal previsto pela ANP</li>
+        </ul>
+      </div>
+    </div>
+    <div class="rule" style="margin:22px 0"></div>
+    <h3 style="font-size:19px;margin-bottom:8px">O que ele representa</h3>
+    <p style="font-size:15.5px;line-height:1.5;color:#4C463A;max-width:88ch">Resposta a um desequilíbrio de escala: a PF faz centenas de operações por ano; o país tem dezenas de milhões de vítimas no mesmo período. <b>Repressão não escala; prevenção, em tese, sim</b> — daí o braço preventivo estruturado, em vez de depender da iniciativa individual de cada policial.</p>
+    <div class="spread" style="margin-top:18px">
+      <p style="font-size:14px;color:#6B6353"><span class="pill" style="border-color:#C9BFAB;color:#6B6353">Institucional PF</span> &nbsp; <span class="mono">aicyberproject.github.io/cidadao-digital-seguro</span></p>
+    </div>
+    <div class="notes"><p>Este slide não faz parte do cronograma dos 100 minutos. Use a tecla <b>O</b> para saltar até ele se alguém — coordenação, aluno, imprensa presente — perguntar "o que é esse projeto, afinal?", e a tecla <b>O</b> de novo (ou uma seta) para retornar ao ponto da aula.</p><p><b>Se pedirem mais detalhe</b> (governança do repositório, validade do certificado, se substitui denúncia formal): use o cartão de referência completo, com 5 perguntas frequentes — <span class="mono">materiais/cartao-referencia-cidadao-digital-seguro.md</span> ou a versão <span class="mono">.html</span>, que pode ficar aberta em outra aba durante a aula.</p></div>
+  </section>
+
   <div class="hud bot"><div class="rail"><i id="railfill"></i></div></div>
 </div>
 
@@ -1003,7 +1039,7 @@ table.dry td b{color:var(--bone);font-weight:600}
 
   var BLOCKS={A:'Abertura · o confronto',B:'Onde vocês divergem',C:'Quatro casos',D:'Quem podia agir',
     E:'Por que prevenir',F:'O que é campanha boa',G:'O que a PF já faz',H:'Sala de espelhos',
-    I:'Plano 30 dias',J:'O que você leva'};
+    I:'Plano 30 dias',J:'O que você leva',X:'Apêndice · fora do tempo'};
 
   /* ---- escala do palco ---- */
   function fit(){
@@ -1059,7 +1095,7 @@ table.dry td b{color:var(--bone);font-weight:600}
     }
     var sec=Math.floor((Date.now()-t0)/1000);
     var mm=Math.floor(sec/60), ss=sec%60;
-    el.textContent = pad(mm)+':'+pad(ss)+' / '+target+"'";
+    el.textContent = target ? (pad(mm)+':'+pad(ss)+' / '+target+"'") : (pad(mm)+':'+pad(ss)+' · apêndice');
     el.className = (target && mm>=target) ? 'over' : '';
   }
   function pad(n){ return (n<10?'0':'')+n; }

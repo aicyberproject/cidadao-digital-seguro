@@ -1,0 +1,188 @@
+<title>Cidadão Digital Seguro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap">
+
+<style>
+/* ============================================================
+   CARTÃO DE REFERÊNCIA — CIDADÃO DIGITAL SEGURO
+   Uma página, para consulta rápida quando alguém pergunta
+   "o que é esse projeto, afinal?". Mesma família visual do
+   briefing e do deck da Unidade 11, em registro de ficha técnica:
+   mais denso, mais tabular, feito para escanear em 60 segundos.
+   ============================================================ */
+:root{
+  --ground:#F2F1EC; --surface:#FBFAF7; --sunk:#E9E7DF;
+  --ink:#191C22; --ink-2:#565D6B; --ink-3:#868D9A;
+  --rule:#DBD7CD; --rule-soft:#E6E3DA;
+  --accent:#24705A; --accent-soft:#E2EDE7;
+  --flag:#A4552B; --flag-soft:#F4E7DD;
+  --display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#13161B; --surface:#1A1F27; --sunk:#0F1216;
+    --ink:#E8EBF0; --ink-2:#98A2B1; --ink-3:#6D7787;
+    --rule:#2A313C; --rule-soft:#222831;
+    --accent:#4FB286; --accent-soft:#16281F;
+    --flag:#D08152; --flag-soft:#2A1C13;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#13161B; --surface:#1A1F27; --sunk:#0F1216;
+  --ink:#E8EBF0; --ink-2:#98A2B1; --ink-3:#6D7787;
+  --rule:#2A313C; --rule-soft:#222831;
+  --accent:#4FB286; --accent-soft:#16281F;
+  --flag:#D08152; --flag-soft:#2A1C13;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-weight:300;font-size:15.5px;line-height:1.56;margin:0;padding:0 22px 72px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px;margin:0 auto}
+
+header{padding:48px 0 0}
+.kicker{font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin:0 0 16px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,5vw,42px);line-height:1.05;letter-spacing:-.025em;margin:0 0 14px;text-wrap:balance}
+.standfirst{font-size:17px;line-height:1.5;color:var(--ink-2);max-width:62ch;margin:0 0 24px;font-weight:300}
+
+.factbar{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));
+  gap:1px;background:var(--rule);border:1px solid var(--rule);margin:0 0 4px;
+}
+.factbar div{background:var(--surface);padding:13px 14px 12px}
+.factbar .n{font-family:var(--display);font-weight:700;font-size:21px;letter-spacing:-.01em;display:block;line-height:1.1;font-variant-numeric:tabular-nums}
+.factbar .l{font-family:var(--mono);font-size:9px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);display:block;margin-top:5px;line-height:1.4}
+
+section{margin:34px 0 0;padding:24px 0 0;border-top:1px solid var(--rule)}
+h2{font-family:var(--display);font-weight:700;font-size:19px;line-height:1.2;letter-spacing:-.012em;margin:0 0 14px;display:flex;align-items:baseline;gap:10px}
+h2 .no{font-family:var(--mono);font-size:11px;color:var(--ink-3);font-weight:500;letter-spacing:.1em}
+p{margin:0 0 12px;max-width:66ch}
+p:last-child{margin-bottom:0}
+strong{font-weight:600;color:var(--ink)}
+
+.two{display:grid;grid-template-columns:1fr;gap:20px}
+@media(min-width:600px){.two{grid-template-columns:1fr 1fr}}
+.panel{background:var(--surface);border:1px solid var(--rule);padding:16px 18px}
+.panel .t{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 10px;font-weight:500}
+.panel ul{margin:0;padding-left:0;list-style:none}
+.panel li{position:relative;padding-left:17px;margin-bottom:9px;font-size:14px;line-height:1.48;color:var(--ink-2)}
+.panel li:last-child{margin-bottom:0}
+.panel li::before{content:"";position:absolute;left:0;top:.66em;width:8px;height:1px;background:var(--accent)}
+.panel li b{color:var(--ink);font-weight:500}
+
+.faq{margin-top:4px}
+.qa{padding:14px 0;border-bottom:1px solid var(--rule-soft)}
+.qa:last-child{border-bottom:0;padding-bottom:0}
+.qa .q{font-family:var(--display);font-weight:600;font-size:15.5px;color:var(--ink);margin:0 0 6px;letter-spacing:-.006em}
+.qa .a{font-size:14.5px;color:var(--ink-2);margin:0;max-width:64ch}
+
+.pill{
+  display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--rule);
+  padding:4px 10px;color:var(--ink-2);background:var(--surface);
+}
+.pillrow{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+
+code{font-family:var(--mono);font-size:.9em;background:var(--sunk);padding:1px 6px;border:1px solid var(--rule-soft)}
+
+footer{
+  margin:44px 0 0;padding:18px 0 0;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:10px;letter-spacing:.09em;color:var(--ink-3);
+  text-transform:uppercase;line-height:1.9;
+}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media print{ body{background:#fff;color:#000;padding:0} section{break-inside:avoid} .factbar div{background:#fff} }
+</style>
+
+<div class="wrap">
+
+<header>
+  <p class="kicker">Cartão de referência · consulta rápida</p>
+  <h1>Cidadão Digital Seguro</h1>
+  <p class="standfirst">Projeto de prevenção da Polícia Federal a crimes cibernéticos, fraudes bancárias eletrônicas e golpes digitais. Para responder, em qualquer contexto, à pergunta "o que é esse projeto, afinal?".</p>
+
+  <div class="factbar">
+    <div><span class="n">6</span><span class="l">módulos do curso</span></div>
+    <div><span class="n">~20h</span><span class="l">carga horária</span></div>
+    <div><span class="n">2</span><span class="l">públicos-alvo</span></div>
+    <div><span class="n">15</span><span class="l">slides do kit de palestra</span></div>
+    <div><span class="n">PF</span><span class="l">titularidade institucional</span></div>
+  </div>
+</header>
+
+<section>
+  <h2><span class="no">01</span>Dois componentes que se somam</h2>
+  <div class="two">
+    <div class="panel">
+      <p class="t">O curso · para o cidadão comum</p>
+      <ul>
+        <li><b>6 módulos, ~20 horas</b>, autoinstrucional, com progressão liberada gradualmente</li>
+        <li>Ecossistema digital → higiene digital → dispositivos e redes → transações seguras → catálogo de golpes → resposta a incidentes</li>
+        <li>Avaliação final e <b>certificado digital verificável</b></li>
+        <li>Glossário, biblioteca de documentos oficiais, vídeos educativos curados, checklists e simulações de decisão</li>
+        <li>Gratuito e de acesso público</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <p class="t">Formação de multiplicadores · para o policial federal</p>
+      <ul>
+        <li>Módulo adicional, <b>pré-requisito: certificado do curso</b> de 20h</li>
+        <li>Ensina a conduzir o <b>Kit de Palestra Pública</b> (15 slides padronizados) perante público externo</li>
+        <li>Foco central: os <b>limites de fala do agente público</b> — o que pode e não pode afirmar</li>
+        <li>Credenciamento formal previsto pela ANP</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="no">02</span>O que ele representa</h2>
+  <p>Resposta institucional a um desequilíbrio de escala: a Polícia Federal realiza algumas centenas de operações de repressão por ano contra fraudes bancárias eletrônicas; o país registra dezenas de milhões de vítimas de golpes digitais no mesmo período. <strong>Repressão não escala; prevenção, em tese, sim.</strong></p>
+  <p style="margin-bottom:0">O projeto dá à PF um braço preventivo estruturado — com material padronizado, testado e de mensagem uniforme — em vez de deixar a orientação ao público depender da iniciativa individual de cada policial.</p>
+</section>
+
+<section>
+  <h2><span class="no">03</span>Perguntas frequentes</h2>
+  <div class="faq">
+    <div class="qa">
+      <p class="q">Isso é oficial, ou é um projeto pessoal?</p>
+      <p class="a">É um projeto institucional da Polícia Federal, ligado ao eixo de combate a crimes cibernéticos. O <strong>repositório de código e conteúdo</strong> é mantido por colaboradores do projeto — vale distinguir a governança técnica do conteúdo (mantido em repositório aberto, com controle de versão) da titularidade institucional (PF), se a pergunta for sobre isso.</p>
+    </div>
+    <div class="qa">
+      <p class="q">Qual a diferença entre o curso e o módulo de multiplicadores?</p>
+      <p class="a">O curso ensina segurança digital ao cidadão. O módulo de multiplicadores <strong>não reensina esse conteúdo</strong> — parte do princípio de que o policial já o domina, por ter concluído o curso — e ensina, em vez disso, como apresentá-lo a um público leigo dentro dos limites de fala do agente público.</p>
+    </div>
+    <div class="qa">
+      <p class="q">O certificado do curso tem validade oficial?</p>
+      <p class="a">É emitido automaticamente ao final da avaliação, com código verificador. Para fins de credenciamento como multiplicador, funciona como pré-requisito formal dentro do próprio programa.</p>
+    </div>
+    <div class="qa">
+      <p class="q">Onde posso acessar o curso?</p>
+      <p class="a"><code>aicyberproject.github.io/cidadao-digital-seguro</code> — acesso gratuito, sem cadastro prévio necessário para iniciar.</p>
+    </div>
+    <div class="qa">
+      <p class="q">Isso substitui o registro de ocorrência ou a denúncia formal?</p>
+      <p class="a">Não. O projeto é preventivo e orientador. Em nenhum momento — no curso ou nas palestras do multiplicador — se promete recuperação de valores, identificação de autores ou se substitui a apuração formal pela autoridade competente.</p>
+    </div>
+  </div>
+</section>
+
+<div class="pillrow">
+  <span class="pill">Curso público</span>
+  <span class="pill">6 módulos · 20h</span>
+  <span class="pill">Formação de multiplicadores</span>
+  <span class="pill">Kit de Palestra · 15 slides</span>
+  <span class="pill">Credenciamento via ANP</span>
+</div>
+
+<footer>
+  Cartão de referência · Projeto Cidadão Digital Seguro · Polícia Federal<br>
+  Material de apoio à Unidade 11 — Gestão de Investigações de Fraudes Bancárias Eletrônicas
+</footer>
+
+</div>
