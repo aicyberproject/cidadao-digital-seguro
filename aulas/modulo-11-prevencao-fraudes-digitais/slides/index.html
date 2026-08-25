@@ -1,0 +1,1145 @@
+<title>Sala de Situação — Prevenção</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap">
+
+<style>
+/* ============================================================
+   UNIDADE 11 — PREVENÇÃO / DECK "SALA DE SITUAÇÃO"
+   Direção: tela de sala de situação (fundo tinta-marinho) em
+   contraste com o papel do instrumento impresso que o policial
+   leva a campo. A cor carrega o argumento:
+     âmbar  = o lado do dano e da repressão
+     verde  = o lado da prevenção
+     rubro  = apenas vedações e a "seta vermelha"
+   Deck de tema único, deliberado. Todas as cores pintadas.
+   ============================================================ */
+:root{
+  --ink:#0A111D;
+  --ink-2:#111C2E;
+  --ink-3:#17243A;
+  --line:#25344F;
+  --bone:#EBEFF6;
+  --haze:#8496B1;
+  --haze-2:#5D6E88;
+  --signal:#F2A03D;
+  --guard:#4FB286;
+  --flag:#D2564B;
+  --paper:#EDE7DA;
+  --paper-ink:#191713;
+  --paper-line:#C9BFAB;
+
+  --display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--ink);
+  color:var(--bone);
+  font-family:var(--body);
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+}
+
+/* ---------- palco 1280x720 escalado ---------- */
+#stage{
+  position:relative;
+  width:1280px;height:720px;
+  transform-origin:center center;
+  background:
+    radial-gradient(1100px 620px at 78% -12%, #1B2C47 0%, rgba(27,44,71,0) 62%),
+    radial-gradient(900px 700px at -8% 110%, #16283F 0%, rgba(22,40,63,0) 58%),
+    var(--ink);
+  overflow:hidden;
+  box-shadow:0 40px 120px rgba(0,0,0,.6);
+}
+#stage::after{ /* grão */
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/></filter><rect width='120' height='120' filter='url(%23n)' opacity='.5'/></svg>");
+  mix-blend-mode:overlay;
+}
+
+/* ---------- HUD ---------- */
+.hud{position:absolute;left:0;right:0;z-index:40;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--haze)}
+.hud.top{top:0;display:flex;justify-content:space-between;align-items:center;padding:18px 34px}
+.hud.bot{bottom:0;padding:0}
+.tag{display:flex;align-items:center;gap:10px}
+.blockmark{
+  display:grid;place-items:center;width:22px;height:22px;
+  border:1px solid var(--line);color:var(--signal);
+  font-weight:600;font-size:11px;letter-spacing:0;
+}
+.hud .right{display:flex;align-items:center;gap:18px}
+#clock{color:var(--bone);font-variant-numeric:tabular-nums}
+#clock.over{color:var(--signal)}
+#clock.idle{color:var(--haze-2)}
+#counterHud{color:var(--haze-2);font-variant-numeric:tabular-nums}
+.rail{height:2px;background:#182437;position:relative}
+.rail i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--signal),var(--guard));transition:width .35s cubic-bezier(.22,1,.36,1)}
+
+/* ---------- slides ---------- */
+.slide{
+  position:absolute;inset:0;z-index:10;
+  padding:78px 82px 68px;
+  display:none;
+  flex-direction:column;
+}
+.slide.on{display:flex}
+.slide .notes{display:none}
+
+/* materiais */
+.slide[data-mat="paper"]{background:var(--paper);color:var(--paper-ink)}
+.slide[data-mat="paper"] .eyebrow{color:#8A7C62}
+.slide[data-mat="paper"] .rule{background:var(--paper-line)}
+.slide[data-mat="paper"] .eyebrow::after{background:var(--paper-line)}
+.slide[data-mat="paper"] .card{border-color:var(--paper-line);background:rgba(0,0,0,.025)}
+.slide[data-mat="paper"] .card p{color:#4C463A}
+.slide[data-mat="paper"] h3{color:var(--paper-ink)}
+html[data-mat="paper"] .hud{color:#8A7C62}
+html[data-mat="paper"] #clock,html[data-mat="paper"] #pos{color:#3A342A}
+html[data-mat="paper"] #counterHud{color:#A2957D}
+html[data-mat="paper"] .blockmark{border-color:var(--paper-line);color:#B08246}
+html[data-mat="paper"] .rail{background:#DAD1BE}
+html[data-mat="paper"] #help{color:#B3A895}
+html[data-mat="paper"] #help b{color:#8A7C62}
+.slide[data-mat="void"]{background:#05090F;padding:0}
+
+/* tipografia */
+.eyebrow{
+  font-family:var(--mono);font-size:12px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--signal);margin-bottom:22px;display:flex;align-items:center;gap:12px;
+}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--line);max-width:200px}
+h1{
+  font-family:var(--display);font-weight:900;font-size:78px;line-height:.94;
+  letter-spacing:-.03em;text-wrap:balance;
+}
+h2{
+  font-family:var(--display);font-weight:800;font-size:52px;line-height:1.0;
+  letter-spacing:-.022em;text-wrap:balance;
+}
+h3{font-family:var(--display);font-weight:700;font-size:27px;line-height:1.1;letter-spacing:-.012em;overflow-wrap:break-word;hyphens:auto}
+p,li{overflow-wrap:break-word}
+.lede{font-size:22px;line-height:1.45;color:var(--haze);max-width:62ch;font-weight:300}
+.slide[data-mat="paper"] .lede{color:#4C463A}
+p{font-size:18px;line-height:1.55}
+strong{font-weight:600;color:#fff}
+.slide[data-mat="paper"] strong{color:#000}
+em{font-style:normal;color:var(--signal)}
+.rule{height:1px;background:var(--line);margin:26px 0}
+.mono{font-family:var(--mono)}
+.num{font-family:var(--display);font-weight:900;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.guard{color:var(--guard)}
+.signal{color:var(--signal)}
+.flag{color:var(--flag)}
+
+/* animação de entrada */
+.slide.on > *{animation:rise .62s cubic-bezier(.19,1,.22,1) backwards}
+.slide.on > *:nth-child(1){animation-delay:.02s}
+.slide.on > *:nth-child(2){animation-delay:.09s}
+.slide.on > *:nth-child(3){animation-delay:.16s}
+.slide.on > *:nth-child(4){animation-delay:.23s}
+.slide.on > *:nth-child(5){animation-delay:.30s}
+.slide.on > *:nth-child(6){animation-delay:.37s}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* ---------- componentes ---------- */
+.cols{display:grid;gap:30px;flex:1;min-height:0}
+.c2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.c5{grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.c-2-3{grid-template-columns:2fr 3fr}
+.c-3-2{grid-template-columns:3fr 2fr}
+.stack{display:flex;flex-direction:column;gap:16px}
+.spread{margin-top:auto;display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+
+.card{
+  min-width:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+  border:1px solid var(--line);padding:22px 22px 20px;display:flex;flex-direction:column;gap:10px;
+}
+.card .k{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--haze-2)}
+.card p{font-size:16px;line-height:1.5;color:var(--haze)}
+.c5 .card h3{font-size:19px;line-height:1.14}
+.c5 .card p{font-size:14px;line-height:1.45}
+.c5 .card .k{font-size:10px}
+.card.hot{border-color:rgba(242,160,61,.5);background:linear-gradient(180deg,rgba(242,160,61,.11),rgba(242,160,61,.02))}
+.card.cool{border-color:rgba(79,178,134,.45);background:linear-gradient(180deg,rgba(79,178,134,.10),rgba(79,178,134,.02))}
+
+ul.tick{list-style:none;display:flex;flex-direction:column;gap:13px}
+ul.tick li{position:relative;padding-left:26px;font-size:18px;line-height:1.45;color:var(--haze)}
+ul.tick li::before{content:"";position:absolute;left:0;top:.62em;width:11px;height:1px;background:var(--signal)}
+ul.tick li b{color:var(--bone);font-weight:600}
+.slide[data-mat="paper"] ul.tick li{color:#4C463A}
+.slide[data-mat="paper"] ul.tick li b{color:#000}
+.slide[data-mat="paper"] ul.tick li::before{background:#B08246}
+
+.pill{
+  display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.16em;text-transform:uppercase;border:1px solid var(--line);
+  padding:6px 12px;color:var(--haze);
+}
+.pill.hot{border-color:rgba(242,160,61,.55);color:var(--signal)}
+.pill.cool{border-color:rgba(79,178,134,.5);color:var(--guard)}
+.pill.bad{border-color:rgba(210,86,75,.55);color:var(--flag)}
+
+/* cronômetro de atividade */
+.countbox{
+  display:flex;align-items:baseline;gap:16px;border:1px solid var(--line);
+  padding:16px 24px;align-self:flex-start;background:rgba(255,255,255,.03);
+}
+.countbox .t{font-family:var(--display);font-weight:900;font-size:64px;letter-spacing:-.04em;font-variant-numeric:tabular-nums;line-height:1}
+.countbox .t.run{color:var(--guard)}
+.countbox .t.done{color:var(--flag)}
+.countbox .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--haze-2);max-width:150px;line-height:1.5}
+
+/* cold open */
+#coldopen{position:absolute;inset:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#coldopen .big{
+  font-family:var(--display);font-weight:900;font-size:210px;line-height:1;
+  letter-spacing:-.05em;font-variant-numeric:tabular-nums;color:#fff;
+  text-shadow:0 0 90px rgba(242,160,61,.28);
+}
+#coldopen .cap{
+  font-family:var(--mono);font-size:14px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--haze-2);margin-top:26px;text-align:center;line-height:2;
+}
+#coldopen .beat{position:absolute;top:52%;left:50%;width:8px;height:8px;border-radius:50%;background:var(--signal);opacity:0;transform:translate(-50%,-50%)}
+#coldopen .beat.b{animation:beat 2s linear infinite}
+@keyframes beat{0%{opacity:.9;transform:translate(-50%,-50%) scale(1)}70%{opacity:0;transform:translate(-50%,-50%) scale(9)}100%{opacity:0}}
+
+/* números grandes lado a lado */
+.duel{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:40px;flex:1}
+.duel .side{display:flex;flex-direction:column;gap:14px}
+.duel .side .n{font-family:var(--display);font-weight:900;font-size:112px;line-height:.86;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
+.duel .side .n.sm{font-size:80px}
+.duel .side .cap{font-size:17px;line-height:1.45;color:var(--haze);max-width:34ch}
+.duel .side .src{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--haze-2)}
+.duel .vs{font-family:var(--mono);font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--haze-2);writing-mode:vertical-rl;padding:34px 8px;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+
+/* linha do tempo do roteiro criminal */
+.script{display:grid;grid-template-columns:repeat(6,1fr);gap:0;border:1px solid var(--line)}
+.script .st{padding:18px 16px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:9px;position:relative}
+.script .st:last-child{border-right:0}
+.script .st .i{font-family:var(--mono);font-size:10px;color:var(--haze-2);letter-spacing:.2em}
+.script .st .n{font-family:var(--display);font-weight:700;font-size:19px;line-height:1.1}
+.script .st .d{font-size:13px;line-height:1.45;color:var(--haze)}
+.script .st.red{background:rgba(210,86,75,.09)}
+.script .st.red .n{color:var(--flag)}
+
+/* mapa dos 5 atores */
+.actors{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;flex:1}
+.actors .a{border-top:2px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:11px}
+.actors .a h4{font-family:var(--display);font-weight:700;font-size:19px;line-height:1.15}
+.actors .a ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.actors .a li{font-size:14px;line-height:1.4;color:var(--haze)}
+.actors .a.pf{border-top-color:var(--signal)}
+.actors .a.pf h4{color:var(--signal)}
+.actors .a.pf li.key{color:var(--bone);font-weight:600}
+
+/* funil */
+.funnel{display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;flex:1}
+.funnel .lvl{
+  display:flex;align-items:center;justify-content:space-between;gap:24px;padding:12px 22px;
+  border:1px solid var(--line);font-family:var(--mono);font-size:12.5px;letter-spacing:.05em;
+  background:rgba(255,255,255,.03);white-space:nowrap;
+}
+.funnel .lvl b{font-family:var(--display);font-weight:700;letter-spacing:0;font-size:16px;margin-right:30px}
+.funnel .lvl span{color:var(--haze)}
+.funnel .gap{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--signal);text-transform:uppercase}
+
+/* barras do termômetro */
+.bars{display:flex;flex-direction:column;gap:12px}
+.bar{display:grid;grid-template-columns:26px 1fr 46px;align-items:center;gap:14px}
+.bar .l{font-family:var(--mono);font-size:13px;color:var(--haze)}
+.bar .t{height:20px;background:#16233A;border:1px solid var(--line);position:relative;overflow:hidden}
+.bar .t i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,rgba(242,160,61,.75),rgba(242,160,61,.35));width:0;transition:width .9s cubic-bezier(.19,1,.22,1)}
+.bar.right .t i{background:linear-gradient(90deg,rgba(79,178,134,.8),rgba(79,178,134,.35))}
+.bar .v{font-family:var(--mono);font-size:13px;color:var(--haze-2);text-align:right;font-variant-numeric:tabular-nums}
+
+/* QR */
+.qrs{display:flex;gap:34px;align-items:flex-start}
+.qr{display:flex;flex-direction:column;gap:11px;align-items:center;width:154px}
+.qr svg{width:126px;height:126px;background:#0F1A2B;border:1px solid var(--line);padding:8px;shape-rendering:crispEdges}
+.qr .l{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--haze);text-align:center;line-height:1.6}
+
+/* cartões de vídeo */
+.cue{display:flex;gap:22px;flex:1}
+.cue .v{
+  flex:1;border:1px solid var(--line);padding:26px;display:flex;flex-direction:column;gap:14px;
+  background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.01));
+}
+.cue .v .play{width:48px;height:48px;border:1px solid var(--signal);display:grid;place-items:center;color:var(--signal);font-size:16px}
+.cue .v .u{font-family:var(--mono);font-size:12px;color:var(--haze);word-break:break-all;line-height:1.6}
+
+/* regras de ouro, material papel */
+.golden{display:grid;grid-template-columns:1fr 1fr;gap:0;flex:1;border-top:2px solid var(--paper-ink)}
+.golden .g{
+  padding:24px 30px 24px 0;border-bottom:1px solid var(--paper-line);display:flex;gap:20px;align-items:flex-start;
+}
+.golden .g:nth-child(odd){padding-right:36px;border-right:1px solid var(--paper-line)}
+.golden .g:nth-child(even){padding-left:36px}
+.golden .g .n{font-family:var(--display);font-weight:900;font-size:40px;line-height:.9;color:#B08246;letter-spacing:-.04em}
+.golden .g h4{font-family:var(--display);font-weight:800;font-size:23px;line-height:1.05;margin-bottom:7px;letter-spacing:-.01em}
+.golden .g p{font-size:15px;line-height:1.5;color:#4C463A}
+.golden .g.wide{grid-column:1/-1;border-right:0;padding-right:0;border-bottom:0}
+
+/* agenda */
+.agenda{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;flex:1;align-content:start}
+.agenda .it{border-top:2px solid var(--line);padding:14px 12px 18px;display:flex;flex-direction:column;gap:7px}
+.agenda .it .b{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--signal)}
+.agenda .it .n{font-family:var(--display);font-weight:700;font-size:17px;line-height:1.12}
+.agenda .it .t{font-family:var(--mono);font-size:11px;color:var(--haze-2);letter-spacing:.08em}
+.agenda .it.act{border-top-color:var(--guard)}
+.agenda .it.act .b{color:var(--guard)}
+
+/* tabela seca */
+table.dry{width:100%;border-collapse:collapse;font-size:15px}
+table.dry th{
+  text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--haze-2);font-weight:400;padding:0 14px 10px 0;border-bottom:1px solid var(--line);
+}
+table.dry td{padding:13px 14px 13px 0;border-bottom:1px solid rgba(37,52,79,.6);color:var(--haze);line-height:1.45;vertical-align:top}
+table.dry td b{color:var(--bone);font-weight:600}
+
+/* painel de notas / overview */
+#notes{
+  position:fixed;right:20px;bottom:20px;width:380px;max-height:56vh;overflow:auto;z-index:80;
+  background:#0D1727;border:1px solid var(--line);padding:20px 22px;display:none;
+  font-size:14px;line-height:1.6;color:var(--haze);
+}
+#notes.on{display:block}
+#notes h5{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--signal);margin-bottom:12px}
+#notes b{color:var(--bone)}
+#notes p+p{margin-top:10px}
+
+#over{position:fixed;inset:0;z-index:90;background:rgba(5,9,15,.97);display:none;padding:40px;overflow:auto}
+#over.on{display:block}
+#over .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+#over .th{
+  border:1px solid var(--line);padding:12px;cursor:pointer;display:flex;flex-direction:column;gap:6px;
+  background:#0D1727;text-align:left;color:inherit;font:inherit;
+}
+#over .th:hover,#over .th:focus-visible{border-color:var(--signal);outline:none}
+#over .th .i{font-family:var(--mono);font-size:10px;color:var(--signal);letter-spacing:.16em}
+#over .th .n{font-size:13px;line-height:1.35;color:var(--haze)}
+#over h5{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--haze-2);margin-bottom:20px}
+
+#help{
+  position:fixed;left:20px;bottom:20px;z-index:80;font-family:var(--mono);font-size:10px;
+  letter-spacing:.12em;color:#3E4C64;line-height:1.9;text-transform:uppercase;
+  opacity:1;transition:opacity .7s ease;
+}
+#help.dim{opacity:0}
+#help b{color:var(--haze-2);font-weight:500}
+
+:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+}
+</style>
+
+<div id="stage">
+
+  <div class="hud top">
+    <div class="tag"><span class="blockmark" id="bmark">A</span><span id="btitle">Abertura</span></div>
+    <div class="right">
+      <span id="counterHud"></span>
+      <span id="clock" class="idle">--:-- / 100</span>
+      <span id="pos">1 / 37</span>
+    </div>
+  </div>
+
+  <!-- ============ BLOCO A ============ -->
+
+  <section class="slide" data-block="A" data-title="Cold open — o contador" data-mat="void" data-end="5">
+    <div id="coldopen">
+      <div class="beat b"></div>
+      <div class="big" id="cnt">0</div>
+      <div class="cap">tentativas de fraude digital no Brasil<br>desde que esta aula começou</div>
+    </div>
+    <div class="notes">
+      <p><b>Não fale por 60 segundos.</b> Deixe o contador correr. Luz baixa, se possível. O silêncio é o instrumento.</p>
+      <p>Ritmo derivado de <b>uma tentativa a cada 2 segundos</b> (relatório <i>A Jornada dos Golpes</i>). É estimativa de ritmo, e deve ser apresentada como tal se alguém perguntar.</p>
+      <p>Aos ~60 s, avance. Primeira fala, no slide 3: <b>“Vocês passaram 30 horas desta disciplina aprendendo a fazer as 678. Estas duas últimas horas são sobre os 24 milhões.”</b></p>
+    </div>
+  </section>
+
+  <section class="slide" data-block="A" data-title="Três dados" data-end="5">
+    <div class="eyebrow">O tamanho da coisa</div>
+    <div class="cols c3">
+      <div class="card hot">
+        <div class="k">Vítimas · 12 meses</div>
+        <div class="num" style="font-size:70px">24<span style="font-size:26px;letter-spacing:0"> mi</span></div>
+        <p>brasileiros vítimas de golpes com Pix ou boletos, com prejuízo estimado em <strong>R$ 29 bilhões</strong>.</p>
+        <div class="mono" style="font-size:10px;letter-spacing:.14em;color:#5D6E88;margin-top:auto">FEBRABAN · Tec. Bancária 2026 · jul/24–jun/25</div>
+      </div>
+      <div class="card hot">
+        <div class="k">Ritmo</div>
+        <div class="num" style="font-size:70px">2<span style="font-size:26px;letter-spacing:0">s</span></div>
+        <p>é o intervalo médio entre <strong>tentativas de fraude digital</strong> no país.</p>
+        <div class="mono" style="font-size:10px;letter-spacing:.14em;color:#5D6E88;margin-top:auto">A Jornada dos Golpes · FBSP · Datafolha · FEBRABAN · Serasa</div>
+      </div>
+      <div class="card hot">
+        <div class="k">Mundo · 42 países</div>
+        <div class="num" style="font-size:70px">442<span style="font-size:26px;letter-spacing:0"> bi</span></div>
+        <p>de dólares perdidos em golpes; <strong>23%</strong> dos entrevistados perderam dinheiro em 12 meses.</p>
+        <div class="mono" style="font-size:10px;letter-spacing:.14em;color:#5D6E88;margin-top:auto">GASA · Global State of Scams 2025</div>
+      </div>
+    </div>
+    <div class="spread"><p class="lede">Três séries diferentes: tentativa, vítima e prejuízo consumado. Não se somam — e são somadas com frequência.</p></div>
+    <div class="notes"><p>Datar todo número na tela é regra da casa. “24 milhões” sem período de referência vira boato citando a PF.</p></div>
+  </section>
+
+  <section class="slide" data-block="A" data-title="678 contra 24 milhões" data-end="5">
+    <div class="eyebrow">O confronto</div>
+    <div class="duel">
+      <div class="side">
+        <div class="n signal">678</div>
+        <div class="cap">operações da Polícia Federal contra fraudes bancárias eletrônicas, com <strong>1.741 mandados</strong> e <strong>311 prisões</strong>.</div>
+        <div class="src">2018 – 2025 · oito anos · dados Tentáculos</div>
+      </div>
+      <div class="vs">contra</div>
+      <div class="side">
+        <div class="n sm">24.000.000</div>
+        <div class="cap">brasileiros vitimados por golpes com Pix ou boletos.</div>
+        <div class="src">doze meses · FEBRABAN 2026</div>
+      </div>
+    </div>
+    <div class="notes"><p>Aqui entra a primeira fala. Depois <b>silêncio de dois segundos</b> antes de avançar. Não explique o slide — ele se explica.</p><p>Se alguém reagir “mas não dá pra comparar”: exatamente. É esse o ponto. Guarde a fala para o bloco D.</p></div>
+  </section>
+
+  <section class="slide" data-block="A" data-title="A pergunta geradora" data-end="5">
+    <h1>Quantas operações<br>seriam necessárias?</h1>
+    <div class="rule"></div>
+    <p class="lede">A resposta não é um número. Nas próximas duas horas, vocês vão construí-la.</p>
+    <div class="spread">
+      <span class="pill hot">Unidade 11 · 2 h/a</span>
+      <span class="pill">Gestão de Investigações de Fraudes Bancárias Eletrônicas</span>
+    </div>
+    <div class="notes"><p>Não responda. Não antecipe. A pergunta fica na parede da cabeça deles até o bloco D.</p></div>
+  </section>
+
+  <section class="slide" data-block="A" data-title="Roteiro da aula" data-end="5">
+    <div class="eyebrow">Como estas duas horas funcionam</div>
+    <div class="agenda">
+      <div class="it act"><div class="b">A</div><div class="n">O confronto</div><div class="t">5 min</div></div>
+      <div class="it"><div class="b">B</div><div class="n">Onde vocês divergem</div><div class="t">9 min · voto</div></div>
+      <div class="it"><div class="b">C</div><div class="n">Quatro casos</div><div class="t">15 min · grupo</div></div>
+      <div class="it"><div class="b">D</div><div class="n">Quem podia agir</div><div class="t">9 min · plenária</div></div>
+      <div class="it"><div class="b">E</div><div class="n">Por que prevenir</div><div class="t">8 min</div></div>
+      <div class="it"><div class="b">F</div><div class="n">O que é campanha boa</div><div class="t">7 min · vídeo</div></div>
+      <div class="it"><div class="b">G</div><div class="n">O que a PF já faz</div><div class="t">11 min</div></div>
+      <div class="it"><div class="b">H</div><div class="n">Sala de espelhos</div><div class="t">12 min · simulação</div></div>
+      <div class="it"><div class="b">I</div><div class="n">Plano 30 dias</div><div class="t">16 min · produção</div></div>
+      <div class="it"><div class="b">J</div><div class="n">O que você leva</div><div class="t">8 min</div></div>
+    </div>
+    <div class="spread"><p class="lede">Vocês falam mais do que eu. Isso é de propósito: prevenção não se aprende assistindo.</p></div>
+    <div class="notes"><p>Trinta segundos, no máximo. Diga só duas coisas: que eles vão trabalhar em grupo três vezes, e que saem daqui com um plano escrito.</p></div>
+  </section>
+
+  <!-- ============ BLOCO B ============ -->
+
+  <section class="slide" data-block="B" data-title="Termômetro da turma" data-end="14">
+    <div class="eyebrow">O que vocês responderam antes de entrar</div>
+    <div class="cols c2">
+      <div class="stack">
+        <h3>“Prevenção baseada em inteligência e dados” significa principalmente…</h3>
+        <div class="bars" data-bars>
+          <div class="bar"><span class="l">A</span><span class="t"><i data-pct="0"></i></span><span class="v">–</span></div>
+          <div class="bar right"><span class="l">B</span><span class="t"><i data-pct="0"></i></span><span class="v">–</span></div>
+          <div class="bar"><span class="l">C</span><span class="t"><i data-pct="0"></i></span><span class="v">–</span></div>
+          <div class="bar"><span class="l">D</span><span class="t"><i data-pct="0"></i></span><span class="v">–</span></div>
+        </div>
+      </div>
+      <div class="stack">
+        <h3>“Eu vou receber meu dinheiro de volta?” — a resposta adequada é…</h3>
+        <div class="bars" data-bars>
+          <div class="bar"><span class="l">A</span><span class="t"><i data-pct="0"></i></span><span class="v">–</span></div>
+          <div class="bar"><span class="l">B</span><span class="t"><i data-pct="0"></i></span><span class="v">–</span></div>
+          <div class="bar right"><span class="l">C</span><span class="t"><i data-pct="0"></i></span><span class="v">–</span></div>
+          <div class="bar"><span class="l">D</span><span class="t"><i data-pct="0"></i></span><span class="v">–</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="spread"><p class="lede">Sem correção agora. Voltamos nisso no fim.</p></div>
+    <div class="notes"><p><b>Preparação:</b> edite os atributos <span class="mono">data-pct</span> deste slide com a distribuição real da turma antes da aula (valores de 0 a 100). O texto da porcentagem aparece sozinho.</p><p>Projete as duas questões e <b>não corrija</b>. Só aponte onde a turma se dividiu.</p></div>
+  </section>
+
+  <section class="slide" data-block="B" data-title="Q1 — primeira votação" data-end="14">
+    <div class="eyebrow">Votação · cartões erguidos na altura do peito</div>
+    <h2>Só nos próximos 12 meses: qual medida evitaria mais vítimas de fraude bancária eletrônica no Brasil?</h2>
+    <div class="cols c4" style="margin-top:34px">
+      <div class="card"><div class="k">A</div><p style="font-size:17px;color:var(--bone)">Dobrar o número de operações de repressão</p></div>
+      <div class="card"><div class="k">B</div><p style="font-size:17px;color:var(--bone)">Reduzir em 30% o tempo entre a fraude e o acionamento do banco pela vítima</p></div>
+      <div class="card"><div class="k">C</div><p style="font-size:17px;color:var(--bone)">Aumentar a pena dos crimes correlatos</p></div>
+      <div class="card"><div class="k">D</div><p style="font-size:17px;color:var(--bone)">Ampliar a cobertura das campanhas de conscientização</p></div>
+    </div>
+    <div class="notes"><p>Todos votam ao mesmo tempo. Leia a distribuição em voz alta e <b>não comente</b>.</p></div>
+  </section>
+
+  <section class="slide" data-block="B" data-title="Convença o vizinho" data-end="14">
+    <div class="eyebrow">Dois minutos · em duplas</div>
+    <h1>Convença<br>o vizinho.</h1>
+    <div class="rule"></div>
+    <ul class="tick">
+      <li>Só vale argumento com mecanismo: <b>“isso evitaria vítimas porque…”</b></li>
+      <li>Quem não mudar de ideia, tem de dizer <b>o que faria mudar</b>.</li>
+      <li>Depois, votamos de novo. Eu continuo sem dar a resposta.</li>
+    </ul>
+    <div class="spread">
+      <div class="countbox"><span class="t" data-count="120">02:00</span><span class="lbl">Tecla C inicia</span></div>
+    </div>
+    <div class="notes"><p>Circule e escute. Anote uma frase boa de aluno — você vai usá-la no bloco D, com crédito. Isso vale mais que qualquer slide.</p><p><b>Não dê a resposta na revotação.</b> É o erro mais comum desta aula.</p></div>
+  </section>
+
+  <!-- ============ BLOCO C ============ -->
+
+  <section class="slide" data-block="C" data-title="Bloco C — instruções" data-end="29">
+    <div class="eyebrow">Estudo de caso · grupos de 4 a 5</div>
+    <h2>Vocês já sabem reconstruir o roteiro de uma fraude <em>para provar</em>.<br>Agora reconstruam <em>para interromper</em>.</h2>
+    <div class="cols c-3-2" style="margin-top:30px">
+      <ul class="tick">
+        <li><b>1.</b> Reconstruam a fraude em <b>seis etapas</b>.</li>
+        <li><b>2.</b> Em cada etapa, nomeiem o <b>vetor de vulnerabilidade</b> explorado.</li>
+        <li><b>3.</b> Escolham <b>três pontos de interrupção</b>: quem podia agir ali, e o que faria.</li>
+        <li><b>4.</b> Marquem a <b class="flag">seta vermelha</b>: onde a investigação já só chega depois do dano.</li>
+      </ul>
+      <div class="card" style="border-color:rgba(210,86,75,.5)">
+        <div class="k flag">Regra inegociável</div>
+        <p style="color:var(--bone)">Nenhum caso real de inquérito próprio, ainda que descaracterizado. Em sala com colegas de várias unidades, a descaracterização falha.</p>
+        <p>Os quatro casos da ficha são compostos.</p>
+      </div>
+    </div>
+    <div class="spread">
+      <div class="countbox"><span class="t" data-count="900">15:00</span><span class="lbl">Tecla C inicia</span></div>
+    </div>
+    <div class="notes"><p>Mesas <b>já montadas em grupos</b> antes de a turma entrar. Remontar mesas em aula custa cinco minutos e mata este bloco.</p><p>Intervenção padrão quando um grupo travar: <b>“Quem, nesse minuto exato, ainda podia ter parado isso?”</b></p><p>Avise aos 10' e aos 13'. Cartaz incompleto também socializa.</p></div>
+  </section>
+
+  <section class="slide" data-block="C" data-title="Os quatro casos" data-end="29">
+    <div class="eyebrow">Um caso por grupo</div>
+    <div class="cols c4">
+      <div class="card"><div class="k">Caso 1</div><h3>A falsa central</h3><p>71 anos. Trinta e quatro minutos ao telefone. Quatro transferências. Ninguém invadiu nada.</p></div>
+      <div class="card"><div class="k">Caso 2</div><h3>A renda extra</h3><p>Vinte e um anos, três mensalidades atrasadas, um contrato em PDF. Ele não era o alvo — era a infraestrutura.</p></div>
+      <div class="card"><div class="k">Caso 3</div><h3>O comprovante</h3><p>Sexta, 17h40, loja cheia. A tela do celular do cliente. Oito mil e novecentos reais em cimento.</p></div>
+      <div class="card"><div class="k">Caso 4</div><h3>O suporte técnico</h3><p>O aplicativo era legítimo, estava na loja oficial e tinha boas avaliações. Não havia o que bloquear.</p></div>
+    </div>
+    <div class="notes"><p>Distribua as fichas impressas. Leia o aviso do material em voz alta antes.</p></div>
+  </section>
+
+  <section class="slide" data-block="C" data-title="As seis etapas" data-end="29">
+    <div class="eyebrow">A ficha · parte 1</div>
+    <div class="script" style="margin:14px 0 26px">
+      <div class="st"><div class="i">01</div><div class="n">Preparação</div><div class="d">Obtém dado, ferramenta ou infraestrutura</div></div>
+      <div class="st"><div class="i">02</div><div class="n">Contato</div><div class="d">Como alcança a vítima</div></div>
+      <div class="st"><div class="i">03</div><div class="n">Confiança</div><div class="d">Como se torna crível</div></div>
+      <div class="st"><div class="i">04</div><div class="n">Pressão</div><div class="d">O que suprime a verificação</div></div>
+      <div class="st red"><div class="i">05</div><div class="n">Ato da vítima</div><div class="d">O que só ela podia fazer</div></div>
+      <div class="st"><div class="i">06</div><div class="n">Dissipação</div><div class="d">O que acontece com o valor</div></div>
+    </div>
+    <div class="cols c2">
+      <div class="stack">
+        <h3>Vetores possíveis</h3>
+        <p style="color:var(--haze);font-size:16px">dado pessoal previamente exposto · autoridade presumida de instituição · canal que a vítima não consegue verificar · urgência e medo · isolamento deliberado · baixo letramento digital · ausência de fricção na transação · vínculo de confiança sequestrado · incentivo econômico a terceiro</p>
+      </div>
+      <div class="stack">
+        <h3>Atores possíveis</h3>
+        <p style="color:var(--haze);font-size:16px">vítima · instituição financeira · plataforma ou telecom · regulador · polícia · terceiro próximo (família, colega, o comerciante do lado)</p>
+      </div>
+    </div>
+    <div class="notes"><p>A <b>seta vermelha</b> quase sempre cai no fim da etapa 5. A pergunta que vem depois dela é a que importa: <b>quanto tempo passa até a polícia saber?</b></p></div>
+  </section>
+
+  <!-- ============ BLOCO D ============ -->
+
+  <section class="slide" data-block="D" data-title="Socialização" data-end="38">
+    <div class="eyebrow">Noventa segundos por grupo</div>
+    <h1>O caso.<br>Os três pontos.<br>Quem age em cada um.</h1>
+    <div class="rule"></div>
+    <p class="lede">Nada além disso. Eu anoto só os atores e os verbos.</p>
+    <div class="spread">
+      <div class="countbox"><span class="t" data-count="90">01:30</span><span class="lbl">Tecla C · por grupo</span></div>
+    </div>
+    <div class="notes"><p>Monte o quadro de cinco colunas na lousa <b>enquanto</b> eles falam. Não deixe para depois.</p><p>Se um grupo passar de 90 s, corte com gentileza. Grupo que não apresenta esvazia o bloco inteiro.</p></div>
+  </section>
+
+  <section class="slide" data-block="D" data-title="Mapa dos 5 atores" data-end="38">
+    <div class="eyebrow">O que a turma acabou de construir</div>
+    <div class="actors">
+      <div class="a"><h4>Vítima</h4><ul><li>desligar e ligar de volta</li><li>conferir no próprio app</li><li>não instalar</li><li>avisar alguém</li><li>acionar em minutos</li></ul></div>
+      <div class="a"><h4>Instituição financeira</h4><ul><li>fricção em transação atípica</li><li>confirmação por 2º canal</li><li>limite e atraso</li><li>alerta ao titular</li><li>MED</li></ul></div>
+      <div class="a"><h4>Plataforma e telecom</h4><ul><li>moderar anúncio</li><li>avisar na instalação</li><li>derrubar perfil imitador</li><li>barrar número</li></ul></div>
+      <div class="a"><h4>Regulador</h4><ul><li>regra de devolução</li><li>controle auditável</li><li>padrão de rastreamento</li></ul></div>
+      <div class="a pf"><h4>Polícia</h4><ul><li>investigar</li><li>desarticular</li><li class="key">e produzir o mapa que diz a quem avisar</li></ul></div>
+    </div>
+    <div class="rule"></div>
+    <p class="lede">A coluna mais curta é a nossa. E a última linha dela é o que sustenta as outras quatro.</p>
+    <div class="notes"><p>Fala de virada: <b>“Vocês acabaram de fazer, sem o nome, uma coisa que a criminologia chama de prevenção situacional. E repararam onde a coluna ‘Polícia’ ficou mais vazia? Não é falha de vocês. É a informação mais importante desta aula.”</b></p></div>
+  </section>
+
+  <!-- ============ BLOCO E ============ -->
+
+  <section class="slide" data-block="E" data-title="Escala" data-end="46">
+    <div class="eyebrow">Por que prevenir · 1 de 3</div>
+    <h2>A repressão é <em>intensiva em recurso</em> e opera caso a caso.<br>A fraude opera em <em>volume industrial</em>.</h2>
+    <div class="rule"></div>
+    <div class="cols c2">
+      <div class="card hot"><div class="k">Um inquérito</div><p style="color:var(--bone);font-size:17px">Consome equipe, cautelar, perícia, tempo de delegado. É insubstituível — e é caro por unidade.</p></div>
+      <div class="card cool"><div class="k">Uma mensagem certa, no público certo</div><p style="color:var(--bone);font-size:17px">Custa quase nada por pessoa alcançada e age <strong>antes</strong> do dano. Não substitui o inquérito: reduz quantos precisarão existir.</p></div>
+    </div>
+    <div class="spread"><p class="lede">A razão entre as duas não fecha por esforço. Não é falta de empenho: é aritmética.</p></div>
+    <div class="notes"><p>Oito minutos para os três blocos. Ritmo alto. Se alguém quiser discutir, segure para o fim do E.</p></div>
+  </section>
+
+  <section class="slide" data-block="E" data-title="A janela de dissipação" data-end="46">
+    <div class="eyebrow">Por que prevenir · 2 de 3 · o tempo</div>
+    <h3 style="margin-bottom:22px">O valor não fica parado. Ele é fracionado e movimentado por contas de passagem — e a cada movimentação, a chance de bloqueio cai.</h3>
+    <div class="script">
+      <div class="st"><div class="i">T+0</div><div class="n">Transferência</div><div class="d">Autorizada pela vítima</div></div>
+      <div class="st"><div class="i">minutos</div><div class="n">1ª camada</div><div class="d">Fracionamento em contas de terceiros</div></div>
+      <div class="st"><div class="i">minutos</div><div class="n">2ª camada</div><div class="d">Nova divisão, novas contas</div></div>
+      <div class="st"><div class="i">horas</div><div class="n">Conversão</div><div class="d">Saque, compra, ativo</div></div>
+      <div class="st red"><div class="i">horas / dias</div><div class="n">A vítima reage</div><div class="d">Vergonha e hesitação, não falta de informação</div></div>
+      <div class="st"><div class="i">dias</div><div class="n">Notícia-crime</div><div class="d">Onde a nossa parte começa</div></div>
+    </div>
+    <div class="rule"></div>
+    <div class="cols c2">
+      <ul class="tick">
+        <li>Acionar o banco e registrar a ocorrência são medidas <b>paralelas</b>, não sequenciais.</li>
+        <li>Aguardar orientação, tentar contato com o golpista ou negociar consome exatamente a janela útil.</li>
+      </ul>
+      <div class="card" style="border-color:rgba(210,86,75,.5)">
+        <div class="k flag">Cuidado de linguagem</div>
+        <p style="color:var(--bone)">Explique a dissipação para <strong>justificar a urgência</strong>, nunca para sugerir que o rastreamento é simples ou que a devolução é provável.</p>
+      </div>
+    </div>
+    <div class="notes"><p>O MED 2.0, em operação desde maio de 2026, ampliou o rastreamento por múltiplos níveis. Isso muda a <b>probabilidade</b>, não a natureza: continua sendo tentativa célere, jamais resultado assegurado.</p></div>
+  </section>
+
+  <section class="slide" data-block="E" data-title="O funil" data-end="46">
+    <div class="eyebrow">Por que prevenir · 3 de 3 · o funil</div>
+    <div class="funnel">
+      <div class="lvl" style="width:100%"><span><b>Tentativas</b></span><span>uma a cada dois segundos</span></div>
+      <div class="gap">↓ nem toda tentativa vence a barreira</div>
+      <div class="lvl" style="width:87%"><span><b>Fraudes consumadas</b></span><span>24 milhões de vítimas em 12 meses</span></div>
+      <div class="gap">↓ nem toda vítima comunica</div>
+      <div class="lvl" style="width:74%"><span><b>Notícias-crime</b></span><span>a subnotificação é regra, não exceção</span></div>
+      <div class="gap">↓ nem toda notícia-crime vira apuração federal</div>
+      <div class="lvl" style="width:61%"><span><b>Inquéritos</b></span><span>atribuição, materialidade, vínculo</span></div>
+      <div class="gap">↓ nem todo inquérito chega à estrutura</div>
+      <div class="lvl" style="width:48%"><span><b>Operações</b></span><span>678 em oito anos</span></div>
+    </div>
+    <div class="rule"></div>
+    <p class="lede">Cada estreitamento é uma oportunidade de intervenção <em>anterior</em> ao estreitamento seguinte. Só olhamos para o último.</p>
+    <div class="notes"><p>As larguras são <b>ilustrativas do formato do funil</b>, não proporções medidas. Diga isso se perguntarem — a turma é técnica e vai perguntar.</p></div>
+  </section>
+
+  <section class="slide" data-block="E" data-title="Três níveis de prevenção" data-end="46">
+    <div class="eyebrow">Quadro de referência · níveis</div>
+    <div class="cols c3">
+      <div class="card"><div class="k">Primária</div><h3>Antes de qualquer contato</h3><p>Dirigida à população em geral. Campanha, currículo escolar, mídia. Alcance grande, precisão baixa.</p></div>
+      <div class="card cool"><div class="k">Secundária</div><h3>Grupos de maior risco</h3><p>Dirigida por dados: quem está sendo atacado, onde e como. Alcance menor, precisão alta. <strong>É aqui que a nossa inteligência entra.</strong></p></div>
+      <div class="card"><div class="k">Terciária</div><h3>Quem já foi vítima</h3><p>Evitar repetição e revitimização. A vítima de um golpe é alvo preferencial do próximo — inclusive do falso “recuperador de valores”.</p></div>
+    </div>
+    <div class="spread"><p class="lede">A prevenção terciária é a mais esquecida — e é a única em que a polícia já tem a pessoa na frente.</p></div>
+    <div class="notes"><p>Se der tempo, mencione o golpe do falso recuperador de valores: revitimização em estado puro, e prevenção terciária resolve.</p></div>
+  </section>
+
+  <section class="slide" data-block="E" data-title="As cinco famílias" data-end="46">
+    <div class="eyebrow">Quadro de referência · prevenção situacional</div>
+    <div class="cols c5">
+      <div class="card"><div class="k">01</div><h3>Aumentar o esforço</h3><p>Fricção em transação atípica. Confirmação por segundo canal. Limite noturno.</p></div>
+      <div class="card"><div class="k">02</div><h3>Aumentar o risco</h3><p>Verificação de identidade na abertura de conta. Compartilhamento de dados entre instituições.</p></div>
+      <div class="card"><div class="k">03</div><h3>Reduzir a recompensa</h3><p>Bloqueio rápido. MED. Encarecer o recrutamento de contas de passagem.</p></div>
+      <div class="card"><div class="k">04</div><h3>Remover as desculpas</h3><p>“Emprestar conta não é bico.” Deixar explícito o que é conduta ilícita.</p></div>
+      <div class="card"><div class="k">05</div><h3>Reduzir as provocações</h3><p>Moderar anúncio de renda fácil. Derrubar perfil que imita instituição.</p></div>
+    </div>
+    <div class="rule"></div>
+    <p class="lede">Sempre que possível, preencha estas cinco caixas com os exemplos que <em>os cartazes deles</em> produziram. O quadro é de Clarke; o conteúdo é da turma.</p>
+    <div class="notes"><p>Ref.: CLARKE, R. V. <i>Situational Crime Prevention</i>. Não vire aula de criminologia — trinta segundos por família, no máximo.</p></div>
+  </section>
+
+  <!-- ============ BLOCO F ============ -->
+
+  <section class="slide" data-block="F" data-title="A pergunta do vídeo" data-end="53">
+    <div class="eyebrow">Análise crítica · duas peças</div>
+    <h1>Ao sair da sala,<br>o espectador sabe<br>exatamente o que fazer<br>na segunda-feira?</h1>
+    <div class="spread"><p class="lede">Guardem essa pergunta. Vale para as duas peças — e vai valer para a de vocês, no bloco I.</p></div>
+    <div class="notes"><p>Projete <b>antes</b> de rodar. Sem essa pergunta na cabeça, eles assistem como plateia, não como avaliadores.</p></div>
+  </section>
+
+  <section class="slide" data-block="F" data-title="Rodar as peças" data-end="53">
+    <div class="eyebrow">Abrir em nova aba · arquivos baixados de preferência</div>
+    <div class="cue">
+      <div class="v">
+        <div class="play">▶</div>
+        <div class="k mono" style="font-size:11px;letter-spacing:.18em;color:var(--haze-2)">Peça 1 · entrega conduta · ~90 s</div>
+        <h3>Papo Seguro — O Golpe da Falsa Central</h3>
+        <div class="u">https://youtu.be/n0GvVfx4Y1s</div>
+        <p style="color:var(--haze);font-size:15px;margin-top:auto">Alternativas: fzZixOUV9os (motoboy) · DMNxapx10dg (WhatsApp)</p>
+      </div>
+      <div class="v" style="border-color:rgba(210,86,75,.4)">
+        <div class="play" style="border-color:var(--flag);color:var(--flag)">▶</div>
+        <div class="k mono" style="font-size:11px;letter-spacing:.18em;color:var(--haze-2)">Peça 2 · alerta sem conduta · ~60 s</div>
+        <h3>Reportagem de telejornal sobre um golpe novo</h3>
+        <div class="u">gravar da programação da semana da aula</div>
+        <p style="color:var(--haze);font-size:15px;margin-top:auto">Emergência: rode a Peça 1 cortada aos 40 s, antes da parte da conduta. Funciona.</p>
+      </div>
+    </div>
+    <div class="notes"><p><b>Baixe as duas antes.</b> Não dependa da conectividade da sala.</p><p>O objeto da crítica é a <b>estrutura da mensagem</b>, não a instituição que a produziu. Diga isso antes de rodar.</p></div>
+  </section>
+
+  <section class="slide" data-block="F" data-title="O que faz uma campanha funcionar" data-end="53">
+    <div class="eyebrow">Critérios · construídos pela turma</div>
+    <ul class="tick" style="font-size:20px">
+      <li><b>Alerta sem conduta produz ansiedade, não comportamento.</b> Se a peça acaba no susto, ela não muda nada.</li>
+      <li><b>Medo só funciona com eficácia percebida.</b> “Dá para se proteger, e é assim” — sem a segunda metade, a primeira paralisa.</li>
+      <li><b>A mensagem tem que caber na memória.</b> Cinco regras, não trinta dicas.</li>
+      <li><b>Público específico vence público geral.</b> Idoso, comerciante, jovem e servidor não respondem à mesma peça.</li>
+      <li><b>Uniformidade importa.</b> Orientação divergente entre fontes oficiais produz inação: o cidadão, na dúvida, não faz nada.</li>
+    </ul>
+    <div class="spread"><p class="lede">O último critério é a razão de existir de um kit padronizado — e o assunto do próximo bloco.</p></div>
+    <div class="notes"><p>Só nomeie o critério que a turma <b>não</b> tiver alcançado sozinha. O que eles disseram vale mais.</p></div>
+  </section>
+
+  <!-- ============ BLOCO G ============ -->
+
+  <section class="slide" data-block="G" data-title="O que a PF já faz" data-end="64">
+    <div class="eyebrow">Três camadas</div>
+    <h1>Nada disso<br>está por construir.</h1>
+    <div class="rule"></div>
+    <div class="cols c3">
+      <div class="card"><div class="k">Camada 1</div><h3>A inteligência que a repressão produz</h3><p>Tentáculos e ferramentas CBAN não servem só para chegar à ORCRIM.</p></div>
+      <div class="card"><div class="k">Camada 2</div><h3>A arquitetura interinstitucional</h3><p>Aliança Nacional, MED 2.0, integração de polícias civis e credenciadoras.</p></div>
+      <div class="card cool"><div class="k">Camada 3</div><h3>O projeto estruturado de prevenção</h3><p>Curso, kit padronizado, formação de multiplicadores, credenciamento.</p></div>
+    </div>
+    <div class="notes"><p>Onze minutos, três camadas, três minutos cada — e a terceira leva cinco, com a demonstração.</p></div>
+  </section>
+
+  <section class="slide" data-block="G" data-title="Tentáculos como prevenção" data-end="64">
+    <div class="eyebrow">Camada 1 · a virada de leitura</div>
+    <h2>A mesma base que aponta <em>de onde partiu</em><br>também diz <em>quem será o próximo</em>.</h2>
+    <div class="rule"></div>
+    <div class="cols c2">
+      <div class="stack">
+        <h3>O que vocês já usam para</h3>
+        <ul class="tick">
+          <li>identificar vínculos e redes</li>
+          <li>agrupar ocorrências dispersas</li>
+          <li>chegar à estrutura por trás do caso isolado</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <h3 class="guard">Serve igualmente para</h3>
+        <ul class="tick">
+          <li><b>quem</b> está sendo atacado — perfil etário, ocupacional, territorial</li>
+          <li><b>onde</b> — município, bairro, ramo de comércio</li>
+          <li><b>sobre o quê</b> — qual tipologia está crescendo <b>neste</b> trimestre</li>
+        </ul>
+      </div>
+    </div>
+    <div class="spread">
+      <p class="lede">Isto é, textualmente, o objetivo 2 desta unidade no Plano de Disciplina: <em>prevenção baseada em inteligência e análise de dados</em>. A campanha deixa de mirar “a população” e passa a mirar um perfil e um território.</p>
+    </div>
+    <div class="notes"><p>Este é o slide que converte a turma. Eles reconhecem a ferramenta; o que é novo é a pergunta feita a ela.</p></div>
+  </section>
+
+  <section class="slide" data-block="G" data-title="A arquitetura interinstitucional" data-end="64">
+    <div class="eyebrow">Camada 2 · onde a PF entra</div>
+    <table class="dry">
+      <tr><th style="width:26%">Instrumento</th><th style="width:44%">O que é</th><th>O que muda para quem investiga</th></tr>
+      <tr>
+        <td><b>Aliança Nacional de Combate a Fraudes Bancárias Digitais</b><br><span class="mono" style="font-size:11px;color:#5D6E88">MJSP–FEBRABAN · acordo 2024 · plano dez/2025</span></td>
+        <td>Mais de 20 ações em eixos de prevenção, detecção, repressão e apoio à vítima.</td>
+        <td>Interlocução formalizada com o setor financeiro e canal público de orientação à vítima.</td>
+      </tr>
+      <tr>
+        <td><b>MED 2.0</b><br><span class="mono" style="font-size:11px;color:#5D6E88">Banco Central · em operação desde maio/2026</span></td>
+        <td>Rastreamento do valor por vários níveis de transferência, e não apenas o primeiro salto.</td>
+        <td>Amplia a janela útil de bloqueio — e reforça, não substitui, a urgência da reação da vítima.</td>
+      </tr>
+      <tr>
+        <td><b>Plataforma Tentáculos ampliada</b><br><span class="mono" style="font-size:11px;color:#5D6E88">polícias civis · +90 credenciadoras</span></td>
+        <td>Mais origens de dado, mais cobertura de meios de pagamento.</td>
+        <td>Base mais densa para agrupamento — e para o direcionamento preventivo do slide anterior.</td>
+      </tr>
+    </table>
+    <div class="spread"><p class="lede">Nenhum desses instrumentos foi desenhado como campanha. Todos produzem insumo para uma.</p></div>
+    <div class="notes"><p>Não se alongue nos marcos normativos. A turma já viu as unidades 1 a 10. O ponto aqui é <b>a leitura preventiva</b> de cada um.</p></div>
+  </section>
+
+  <section class="slide" data-block="G" data-title="Cidadão Digital Seguro" data-end="64">
+    <div class="eyebrow">Camada 3 · o projeto nominado no conteúdo desta unidade</div>
+    <h2>Cidadão Digital Seguro</h2>
+    <p class="lede" style="margin:14px 0 26px">Projeto de prevenção a crimes cibernéticos relacionados a fraudes bancárias eletrônicas e golpes digitais, no âmbito da Polícia Federal.</p>
+    <div class="cols c5">
+      <div class="card"><div class="k">Trilha</div><h3>Curso autoinstrucional</h3><p>6 módulos · 20 h · progressão e certificado</p></div>
+      <div class="card"><div class="k">Apoio</div><h3>Ferramentas transversais</h3><p>Glossário · biblioteca oficial · checklists · simulações de decisão</p></div>
+      <div class="card cool"><div class="k">Campo</div><h3>Kit de Palestra Pública</h3><p>15 slides padronizados, com notas de apresentador · 20 a 25 min</p></div>
+      <div class="card cool"><div class="k">Formação</div><h3>Módulo de Multiplicadores</h3><p>Ensina a conduzir o kit. Pré-requisito: o certificado do curso</p></div>
+      <div class="card"><div class="k">Habilitação</div><h3>Credenciamento</h3><p>Previsto na plataforma da ANP, com apresentação supervisionada</p></div>
+    </div>
+    <div class="notes"><p>Deixe claro que o kit é <b>material padronizado</b>: o multiplicador entrega a mensagem, não produz mensagem nova. Padronização protege a mensagem, não limita quem apresenta.</p></div>
+  </section>
+
+  <section class="slide" data-block="G" data-title="Demonstração" data-end="64">
+    <div class="eyebrow">Três minutos · ao vivo</div>
+    <div class="cols c-2-3">
+      <div class="stack">
+        <h2>Vejam com<br>os próprios olhos.</h2>
+        <ul class="tick">
+          <li>Um módulo do curso</li>
+          <li>Uma simulação de decisão</li>
+          <li>O checklist de bolso</li>
+        </ul>
+        <p style="color:var(--haze);font-size:15px">Sem internet? As capturas estão nas notas deste slide e o roteiro segue igual.</p>
+      </div>
+      <div class="qrs" style="align-items:center;justify-content:flex-end">
+        <div class="qr"><svg viewBox="0 0 37 37" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="37" height="37" class="segno"><path class="qrline" stroke="#fff" d="M2 2.5h7m1 0h1m1 0h3m6 0h2m2 0h1m2 0h7m-33 1h1m5 0h1m1 0h1m2 0h1m2 0h1m2 0h2m4 0h1m2 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m2 0h1m2 0h5m1 0h1m4 0h1m2 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m6 0h1m2 0h4m2 0h1m1 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m3 0h3m1 0h3m1 0h3m3 0h1m1 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-25 1h1m2 0h2m1 0h4m1 0h1m2 0h1m1 0h1m-25 1h1m1 0h2m1 0h3m1 0h1m2 0h1m1 0h4m1 0h1m1 0h1m4 0h1m2 0h1m1 0h2m-31 1h1m4 0h3m2 0h2m2 0h1m1 0h6m2 0h2m1 0h2m1 0h1m-33 1h1m5 0h4m1 0h3m2 0h1m5 0h3m1 0h4m1 0h2m-31 1h1m5 0h2m1 0h2m6 0h2m1 0h1m4 0h1m1 0h1m2 0h1m-33 1h1m2 0h2m1 0h1m2 0h2m3 0h4m4 0h4m1 0h3m1 0h2m-31 1h3m2 0h2m4 0h2m4 0h1m4 0h1m2 0h1m1 0h1m1 0h1m-31 1h3m1 0h5m3 0h2m2 0h6m1 0h1m1 0h1m1 0h3m-29 1h2m1 0h1m4 0h1m1 0h4m2 0h1m1 0h2m2 0h3m2 0h2m-31 1h1m3 0h1m1 0h5m1 0h3m1 0h1m1 0h1m1 0h3m1 0h3m1 0h3m-31 1h1m1 0h2m5 0h1m3 0h1m1 0h1m1 0h1m2 0h1m2 0h4m1 0h2m1 0h2m-31 1h1m3 0h1m7 0h2m1 0h1m3 0h1m3 0h4m1 0h1m-28 1h1m3 0h1m1 0h1m1 0h2m1 0h1m2 0h4m1 0h1m2 0h1m2 0h1m2 0h1m-32 1h4m2 0h1m2 0h2m2 0h1m1 0h3m3 0h1m3 0h1m3 0h2m1 0h1m-33 1h4m1 0h1m4 0h2m2 0h3m1 0h4m1 0h1m2 0h1m5 0h1m-28 1h2m1 0h8m2 0h1m4 0h1m2 0h2m3 0h2m-32 1h1m2 0h1m2 0h2m3 0h1m2 0h1m2 0h1m3 0h1m1 0h1m3 0h2m1 0h1m-32 1h1m2 0h2m1 0h1m1 0h4m5 0h1m4 0h1m1 0h5m3 0h1m-25 1h3m2 0h4m2 0h1m1 0h4m3 0h2m-30 1h7m1 0h1m3 0h1m3 0h5m2 0h2m1 0h1m1 0h1m-29 1h1m5 0h1m1 0h1m1 0h1m1 0h5m2 0h3m1 0h2m3 0h4m-32 1h1m1 0h3m1 0h1m2 0h1m3 0h1m3 0h1m1 0h1m1 0h1m1 0h6m1 0h1m-31 1h1m1 0h3m1 0h1m1 0h1m1 0h2m1 0h2m1 0h2m2 0h1m1 0h2m3 0h1m1 0h1m2 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m3 0h2m1 0h1m2 0h1m1 0h1m5 0h2m2 0h1m-31 1h1m5 0h1m2 0h2m1 0h1m4 0h2m4 0h3m1 0h2m3 0h1m-33 1h7m1 0h1m3 0h2m3 0h2m2 0h1m1 0h1m4 0h1m1 0h1"/></svg><span class="l">O curso<br>aicyberproject.github.io</span></div>
+        <div class="qr"><svg viewBox="0 0 37 37" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="53" height="53" class="segno"><path class="qrline" stroke="#fff" d="M2 2.5h7m3 0h7m3 0h1m2 0h1m1 0h1m1 0h1m2 0h3m7 0h1m1 0h7m-49 1h1m5 0h1m2 0h3m1 0h4m1 0h1m3 0h1m1 0h1m1 0h1m7 0h7m1 0h1m5 0h1m-49 1h1m1 0h3m1 0h1m1 0h1m3 0h3m1 0h2m1 0h1m2 0h1m1 0h1m2 0h2m1 0h1m1 0h2m1 0h1m3 0h2m1 0h1m1 0h3m1 0h1m-49 1h1m1 0h3m1 0h1m1 0h1m1 0h6m3 0h1m4 0h1m1 0h1m2 0h1m1 0h1m2 0h4m1 0h1m2 0h1m1 0h3m1 0h1m-49 1h1m1 0h3m1 0h1m1 0h3m3 0h3m4 0h6m1 0h3m1 0h1m2 0h3m4 0h1m1 0h3m1 0h1m-49 1h1m5 0h1m1 0h2m1 0h2m1 0h1m3 0h2m2 0h1m3 0h1m1 0h2m3 0h2m2 0h2m3 0h1m5 0h1m-49 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-41 1h1m1 0h1m1 0h2m1 0h1m2 0h1m3 0h1m3 0h1m1 0h3m1 0h1m2 0h1m3 0h2m-41 1h1m1 0h5m2 0h1m4 0h1m5 0h7m2 0h3m3 0h3m1 0h2m1 0h5m-47 1h4m1 0h1m1 0h3m1 0h1m1 0h1m1 0h5m1 0h1m2 0h2m3 0h2m1 0h1m2 0h1m1 0h1m3 0h2m2 0h1m-43 1h1m1 0h3m2 0h1m2 0h4m2 0h1m2 0h1m1 0h1m1 0h2m6 0h3m1 0h1m2 0h1m5 0h2m-49 1h1m1 0h2m1 0h1m4 0h3m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h1m2 0h3m1 0h1m11 0h2m2 0h1m-49 1h1m1 0h6m3 0h1m1 0h3m2 0h1m2 0h5m4 0h2m1 0h1m1 0h4m1 0h1m2 0h1m2 0h3m-48 1h3m1 0h1m2 0h3m1 0h2m1 0h2m1 0h3m1 0h4m1 0h1m1 0h3m10 0h1m1 0h1m1 0h2m-47 1h1m1 0h8m2 0h4m3 0h3m1 0h1m1 0h2m4 0h4m2 0h1m8 0h2m-48 1h1m2 0h1m2 0h3m2 0h2m5 0h2m1 0h1m5 0h2m1 0h3m3 0h2m5 0h2m2 0h1m-48 1h1m1 0h1m1 0h3m1 0h3m1 0h1m1 0h1m1 0h1m1 0h3m1 0h3m3 0h3m1 0h4m1 0h6m2 0h1m-42 1h1m1 0h1m1 0h2m1 0h3m2 0h1m1 0h1m3 0h1m1 0h1m3 0h3m3 0h3m3 0h2m-43 1h1m1 0h1m1 0h5m1 0h3m2 0h1m5 0h1m1 0h1m1 0h4m2 0h1m1 0h3m2 0h2m3 0h1m1 0h1m2 0h1m-47 1h4m1 0h1m1 0h1m3 0h1m1 0h1m3 0h1m1 0h1m5 0h2m2 0h2m1 0h1m2 0h1m4 0h3m2 0h1m-48 1h1m1 0h1m1 0h3m1 0h2m1 0h1m4 0h1m1 0h1m1 0h6m1 0h1m1 0h2m3 0h3m2 0h4m3 0h2m-48 1h4m3 0h3m2 0h1m1 0h1m1 0h4m2 0h4m1 0h5m3 0h1m1 0h1m3 0h5m1 0h1m-45 1h7m1 0h1m1 0h3m6 0h7m2 0h6m1 0h1m1 0h5m3 0h1m-47 1h3m3 0h1m1 0h5m1 0h1m1 0h3m1 0h1m3 0h8m3 0h2m1 0h1m3 0h1m2 0h2m-48 1h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h3m2 0h3m1 0h1m1 0h1m2 0h3m1 0h4m3 0h1m1 0h1m1 0h4m-47 1h4m3 0h1m4 0h3m1 0h3m2 0h1m3 0h2m2 0h1m4 0h2m2 0h2m3 0h2m-46 1h2m1 0h7m1 0h1m1 0h7m2 0h5m1 0h1m2 0h1m1 0h4m1 0h7m2 0h2m-49 1h1m4 0h1m1 0h2m2 0h3m2 0h3m1 0h1m2 0h2m1 0h1m1 0h3m1 0h2m3 0h2m1 0h2m3 0h1m1 0h2m-49 1h3m2 0h2m1 0h1m3 0h1m3 0h1m2 0h1m2 0h1m1 0h3m2 0h1m1 0h1m4 0h2m1 0h1m2 0h5m1 0h1m-49 1h2m2 0h2m2 0h4m1 0h3m2 0h1m2 0h2m1 0h8m5 0h1m2 0h1m2 0h1m1 0h1m-46 1h2m1 0h4m1 0h4m2 0h3m2 0h1m2 0h2m1 0h1m1 0h1m1 0h1m3 0h2m1 0h1m1 0h2m1 0h3m3 0h2m-48 1h1m2 0h2m2 0h2m1 0h2m1 0h3m4 0h1m2 0h1m1 0h5m1 0h2m6 0h1m2 0h3m1 0h2m-49 1h4m1 0h2m3 0h1m2 0h2m5 0h2m3 0h1m4 0h2m4 0h4m1 0h1m1 0h2m1 0h1m1 0h1m-49 1h6m3 0h1m2 0h1m1 0h2m1 0h1m1 0h1m1 0h4m3 0h3m4 0h1m1 0h1m1 0h3m1 0h1m-44 1h3m1 0h1m1 0h2m2 0h3m1 0h1m1 0h2m1 0h3m2 0h2m5 0h1m2 0h2m2 0h3m1 0h1m1 0h2m1 0h2m-46 1h3m2 0h5m1 0h2m1 0h1m1 0h2m1 0h2m2 0h1m1 0h1m1 0h1m1 0h1m1 0h1m3 0h1m1 0h1m2 0h1m4 0h1m-48 1h2m2 0h3m2 0h3m2 0h1m1 0h1m2 0h1m1 0h1m2 0h1m9 0h2m2 0h4m1 0h1m1 0h2m-48 1h1m1 0h3m3 0h4m2 0h2m3 0h1m1 0h2m1 0h2m1 0h7m1 0h3m1 0h1m1 0h1m1 0h1m2 0h1m-46 1h1m3 0h7m1 0h4m2 0h1m2 0h4m1 0h1m5 0h2m2 0h2m2 0h3m2 0h1m1 0h1m-48 1h3m3 0h4m2 0h1m2 0h2m1 0h1m1 0h1m1 0h2m1 0h4m1 0h2m1 0h1m2 0h2m1 0h1m2 0h3m1 0h1m-48 1h3m3 0h4m3 0h3m1 0h2m1 0h1m1 0h5m2 0h1m1 0h1m2 0h4m1 0h9m-40 1h3m1 0h3m1 0h1m2 0h1m1 0h2m3 0h1m1 0h6m1 0h1m1 0h1m2 0h1m3 0h1m1 0h1m-47 1h7m4 0h1m2 0h2m3 0h4m1 0h1m1 0h2m3 0h4m1 0h3m1 0h1m1 0h1m1 0h1m2 0h2m-49 1h1m5 0h1m1 0h1m3 0h1m2 0h1m1 0h1m3 0h2m3 0h1m1 0h1m1 0h1m1 0h3m2 0h1m2 0h1m3 0h1m3 0h1m-49 1h1m1 0h3m1 0h1m1 0h3m1 0h3m1 0h3m3 0h5m2 0h3m3 0h2m3 0h9m-49 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m4 0h4m1 0h1m3 0h1m2 0h4m2 0h3m2 0h6m1 0h2m-49 1h1m1 0h3m1 0h1m1 0h2m1 0h5m1 0h1m2 0h1m1 0h4m5 0h2m1 0h3m1 0h1m2 0h3m-44 1h1m5 0h1m5 0h2m3 0h4m4 0h1m1 0h2m3 0h1m8 0h2m2 0h1m2 0h1m-49 1h7m1 0h4m3 0h1m1 0h2m1 0h1m4 0h2m2 0h3m3 0h3m7 0h4"/></svg><span class="l">O pacote<br>desta aula</span></div>
+      </div>
+    </div>
+    <div class="notes"><p>Abra o curso, entre em um módulo, rode uma simulação e mostre o checklist. <b>Três minutos.</b> Não navegue à toa.</p><p>Se não houver rede, diga que há QR na tela e siga — não tente reconectar em sala.</p></div>
+  </section>
+
+  <section class="slide" data-block="G" data-title="O gargalo" data-end="64" data-mat="paper">
+    <div class="eyebrow">O ponto de virada</div>
+    <h1 style="font-size:64px">O material existe,<br>está pronto<br>e está padronizado.</h1>
+    <div class="rule"></div>
+    <h2 style="font-size:38px;color:#7A2E28">O que falta é gente habilitada para levá-lo.</h2>
+    <div class="spread"><p class="lede">Vocês são exatamente o público desse gargalo. É por isso que esta unidade fecha a disciplina, e não abre.</p></div>
+    <div class="notes"><p>Pausa de dois segundos depois da segunda linha. Este slide muda de material de propósito: sai a tela da sala de situação, entra o papel que se leva a campo.</p></div>
+  </section>
+
+  <!-- ============ BLOCO H ============ -->
+
+  <section class="slide" data-block="H" data-title="Sala de espelhos" data-end="76">
+    <div class="eyebrow">Simulação · trios</div>
+    <h2>Levar o material a campo é fácil.<br>Difícil é a <em>quarta pergunta</em> da plateia.</h2>
+    <div class="cols c3" style="margin-top:30px">
+      <div class="card"><div class="k">Papel 1</div><h3>Multiplicador</h3><p>Responde. Noventa segundos. Sem consultar nada.</p></div>
+      <div class="card"><div class="k">Papel 2</div><h3>Plateia</h3><p>Sorteia um cartão e pergunta. Insiste uma vez, se a resposta escapar.</p></div>
+      <div class="card"><div class="k">Papel 3</div><h3>Observador</h3><p>Não fala. Marca só: houve promessa? houve caso concreto? houve orientação jurídica individual?</p></div>
+    </div>
+    <div class="spread">
+      <div class="countbox"><span class="t" data-count="90">01:30</span><span class="lbl">Tecla C · por rodada</span></div>
+    </div>
+    <div class="notes"><p>Duas rodadas com troca de papéis. Se o tempo apertar, uma rodada só — e use os cartões 1 a 6.</p><p>No debriefing, recolha <b>as frases que funcionaram</b> e escreva na tela. Nunca corrija aluno individualmente em público: nomeie o padrão, não a pessoa.</p></div>
+  </section>
+
+  <section class="slide" data-block="H" data-title="As perguntas" data-end="76">
+    <div class="eyebrow">Amostra dos cartões</div>
+    <div class="cols c2">
+      <ul class="tick" style="font-size:17px">
+        <li>“Doutor, eu perdi doze mil reais. Eu vou receber esse dinheiro de volta?”</li>
+        <li>“Meu caso está na delegacia há sete meses. Quanto tempo isso demora?”</li>
+        <li>“Vocês vão pegar quem fez isso comigo?”</li>
+        <li>“Eu trouxe os prints. O senhor pode dar uma olhada agora?”</li>
+        <li>“Isso é caso de Polícia Federal ou de Civil? Na delegacia me mandaram embora.”</li>
+        <li>“O banco não quis devolver. Eles são coniventes, né?”</li>
+      </ul>
+      <ul class="tick" style="font-size:17px">
+        <li>“Aquela operação de semana passada era o mesmo esquema que pegou meu pai?”</li>
+        <li>“Descobri o nome do cara pelo Instagram e já mandei mensagem. Devo ir na casa dele?”</li>
+        <li>“Denunciar não adianta nada. Pra que perder meu dia registrando ocorrência?”</li>
+        <li><i>(a pessoa começa a chorar e conta que perdeu a aposentadoria do marido falecido)</i></li>
+        <li><i>(um repórter no fundo da sala pede uma declaração rápida)</i></li>
+        <li>“Se eu botar o dinheiro na conta da minha filha, o golpista não pega, né?”</li>
+      </ul>
+    </div>
+    <div class="notes"><p>O jogo completo, impresso, está em <span class="mono">materiais/kit-atividades.md</span>. Um jogo por trio.</p></div>
+  </section>
+
+  <section class="slide" data-block="H" data-title="Limites de fala" data-end="76" data-mat="paper">
+    <div class="eyebrow">O que não se diz · vale para todos, sempre</div>
+    <div class="cols c2">
+      <ul class="tick" style="font-size:17px">
+        <li><b>Não prometer recuperação de valores.</b> Devolução administrativa é tentativa célere, nunca resultado assegurado.</li>
+        <li><b>Não prometer identificação, punição ou prazo.</b> Apuração criminal não admite promessa em palestra.</li>
+        <li><b>Não mencionar investigação em curso</b>, operação, alvo ou dado sob sigilo funcional.</li>
+        <li><b>Não usar caso real identificável</b> como exemplo, ainda que sem nomear a vítima.</li>
+      </ul>
+      <ul class="tick" style="font-size:17px">
+        <li><b>Não prestar orientação jurídica individual</b> nem atender caso concreto. O certo é encaminhar.</li>
+        <li><b>Não orientar a investigar, confrontar ou negociar</b> com o suspeito. Agrava o dano e expõe a vítima.</li>
+        <li><b>Diante de imprensa</b>, remeter à assessoria de comunicação competente.</li>
+        <li>Dizer <b>“evidências digitais”</b>, não “provas”. Prova é categoria do processo.</li>
+      </ul>
+    </div>
+    <div class="rule"></div>
+    <h3 style="color:#7A2E28;font-size:24px">Resposta incerta dada por policial federal é recebida pela plateia como orientação oficial.</h3>
+    <p style="color:#4C463A;margin-top:10px">Diante de pergunta que você não domina: diga que não vai responder de improviso e indique o canal oficial. Isso não é fraqueza — é a única resposta correta.</p>
+    <div class="notes"><p>Leia a frase em destaque em voz alta, devagar. É a coisa mais importante do bloco H e a que mais falha na prática.</p></div>
+  </section>
+
+  <!-- ============ BLOCO I ============ -->
+
+  <section class="slide" data-block="I" data-title="Plano 30 dias — os cinco campos" data-end="92">
+    <div class="eyebrow">Produção em grupo · dez minutos · uma página</div>
+    <div class="cols c5">
+      <div class="card"><div class="k">01</div><h3>Público</h3><p>Um só. Específico. Existente na área da sua unidade. Não vale “a população”.</p></div>
+      <div class="card"><div class="k">02</div><h3>Canal e parceiro</h3><p>Um só, com a instituição nomeada. Associação, escola, sindicato, CRAS, rádio.</p></div>
+      <div class="card"><div class="k">03</div><h3>Mensagem</h3><p>Até três condutas, tiradas do kit padronizado. Não invente mensagem nova.</p></div>
+      <div class="card"><div class="k">04</div><h3>Quem executa</h3><p>Função, não nome. Quantas pessoas, quantas horas.</p></div>
+      <div class="card cool"><div class="k">05</div><h3>Indicador</h3><p>Um número que alguém consiga contar em 30 dias.</p></div>
+    </div>
+    <div class="spread">
+      <div class="countbox"><span class="t" data-count="600">10:00</span><span class="lbl">Tecla C inicia</span></div>
+    </div>
+    <div class="notes"><p>Cinco campos e só. A restrição é o instrumento didático: plano que cabe numa página é plano que sai do papel.</p><p><b>Fotografe todos os cartazes.</b> Este é o produto institucional da aula.</p></div>
+  </section>
+
+  <section class="slide" data-block="I" data-title="Frágil e executável" data-end="92">
+    <div class="eyebrow">Antes de começar · a diferença</div>
+    <table class="dry">
+      <tr><th style="width:16%">Campo</th><th style="width:32%">Frágil</th><th>Executável</th></tr>
+      <tr><td><b>Público</b></td><td>“A população da cidade”</td><td>Os cerca de 120 lojistas do calçadão da avenida central</td></tr>
+      <tr><td><b>Canal</b></td><td>“Redes sociais”</td><td>Reunião mensal da Associação Comercial, dia 14, com 40 a 60 presentes</td></tr>
+      <tr><td><b>Mensagem</b></td><td>“Orientações sobre golpes digitais”</td><td>1) Confira o recebimento no seu app, nunca no celular do cliente. 2) Nenhuma central pede que você não desligue. 3) Ligou avisando de fraude? Desligue e ligue de volta pelo número do cartão.</td></tr>
+      <tr><td><b>Quem</b></td><td>“A equipe”</td><td>1 policial habilitado como multiplicador · 2 horas, incluindo deslocamento</td></tr>
+      <tr><td><b>Indicador</b></td><td>“Conscientizar os comerciantes”</td><td>Presentes na reunião + checklists de bolso distribuídos</td></tr>
+    </table>
+    <div class="notes"><p>Trinta segundos neste slide. Ele existe só para calibrar o nível antes de os grupos começarem.</p></div>
+  </section>
+
+  <section class="slide" data-block="I" data-title="Pitch" data-end="92">
+    <div class="eyebrow">Quarenta e cinco segundos por grupo</div>
+    <h1>Comece pelo público.<br>Termine pelo indicador.</h1>
+    <div class="rule"></div>
+    <p class="lede">Quem começar com “a gente pensou em…” perde dez segundos. Eu aviso na hora — faz parte.</p>
+    <div class="spread">
+      <div class="countbox"><span class="t" data-count="45">00:45</span><span class="lbl">Tecla C · por grupo</span></div>
+    </div>
+    <div class="notes"><p>Depois de cada pitch, escolha <b>uma</b> pergunta de pressão, em 20 segundos:</p><p>1. “Quem é a pessoa que você vai ligar amanhã para marcar isso?”<br>2. “Se só metade acontecer, o que ainda sobra de útil?”<br>3. “Esse indicador, quem conta e onde anota?”</p></div>
+  </section>
+
+  <!-- ============ BLOCO J ============ -->
+
+  <section class="slide" data-block="J" data-title="As cinco regras de ouro" data-end="100" data-mat="paper">
+    <div class="eyebrow">O que sobrevive de qualquer palestra</div>
+    <div class="golden">
+      <div class="g"><div class="n">1</div><div><h4>Desligue e ligue de volta</h4><p>Contato recebido nunca se confirma pelo número que veio no contato.</p></div></div>
+      <div class="g"><div class="n">2</div><div><h4>Senha e código não se compartilham</h4><p>Com ninguém. Nem com o banco. Nem com a polícia.</p></div></div>
+      <div class="g"><div class="n">3</div><div><h4>Pressa é sinal de golpe</h4><p>Quem tem razão espera cinco minutos.</p></div></div>
+      <div class="g"><div class="n">4</div><div><h4>Confira no seu aplicativo</h4><p>Nunca no comprovante que a outra pessoa te mostra.</p></div></div>
+      <div class="g wide"><div class="n">5</div><div><h4>Caiu? Avise o banco agora</h4><p>Antes de contar pra alguém, antes da delegacia, antes de a vergonha passar. O tempo decide.</p></div></div>
+    </div>
+    <div class="notes"><p><b>Conferir a redação com a versão vigente do checklist de bolso do Kit de Palestra</b> antes de imprimir ou distribuir. Divergência entre fontes oficiais produz inação — é o problema que a padronização existe para evitar.</p></div>
+  </section>
+
+  <section class="slide" data-block="J" data-title="Prevenir é investigar melhor" data-end="100">
+    <div class="eyebrow">O que volta para o inquérito</div>
+    <h2>Prevenção não é atividade paralela ao inquérito.<br>Ela <em>realimenta</em> o inquérito.</h2>
+    <div class="rule"></div>
+    <div class="cols c3">
+      <div class="card cool"><div class="k">Vítima orientada</div><p style="color:var(--bone)">Aciona a instituição dentro da janela útil e preserva evidência digital melhor. <strong>Melhora a qualidade do que chega até você.</strong></p></div>
+      <div class="card cool"><div class="k">Base apreendida</div><p style="color:var(--bone)">Listas de vítimas potenciais encontradas em investigação permitem <strong>notificação preventiva</strong> antes do contato do criminoso.</p></div>
+      <div class="card cool"><div class="k">Modus operandi consolidado</div><p style="color:var(--bone)">O padrão que você identifica neste inquérito é <strong>a campanha do trimestre que vem</strong>.</p></div>
+    </div>
+    <div class="spread"><p class="lede">A pergunta do começo tinha resposta, afinal: não é quantas operações. É quantas deixam de ser necessárias.</p></div>
+    <div class="notes"><p>Feche o arco. Volte ao slide 4 se a turma estiver ligada — vale a repetição visual.</p></div>
+  </section>
+
+  <section class="slide" data-block="J" data-title="Convite e saída" data-end="100">
+    <div class="eyebrow">O que fazer na segunda-feira</div>
+    <div class="cols c-3-2">
+      <div class="stack">
+        <h2>Credenciem-se<br>como multiplicadores.</h2>
+        <ul class="tick">
+          <li>Concluir o curso <b>Cidadão Digital Seguro</b> — 6 módulos, 20 h.</li>
+          <li>Fazer o <b>Módulo de Formação de Multiplicadores</b>.</li>
+          <li>Apresentação supervisionada, e o credenciamento sai pela ANP.</li>
+        </ul>
+        <div class="rule"></div>
+        <h3>Termo de saída · três minutos · entrego na porta</h3>
+        <p style="color:var(--haze);font-size:16px"><b class="signal">3</b> vetores que você vai citar na primeira conversa com um colega · <b class="signal">2</b> coisas que você não vai dizer numa palestra · <b class="signal">1</b> ação que você assume executar em 30 dias.</p>
+      </div>
+      <div class="qrs" style="justify-content:flex-end;align-items:center">
+        <div class="qr"><svg viewBox="0 0 37 37" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="37" height="37" class="segno"><path class="qrline" stroke="#fff" d="M2 2.5h7m1 0h1m1 0h3m6 0h2m2 0h1m2 0h7m-33 1h1m5 0h1m1 0h1m2 0h1m2 0h1m2 0h2m4 0h1m2 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m2 0h1m2 0h5m1 0h1m4 0h1m2 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m6 0h1m2 0h4m2 0h1m1 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m3 0h3m1 0h3m1 0h3m3 0h1m1 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-25 1h1m2 0h2m1 0h4m1 0h1m2 0h1m1 0h1m-25 1h1m1 0h2m1 0h3m1 0h1m2 0h1m1 0h4m1 0h1m1 0h1m4 0h1m2 0h1m1 0h2m-31 1h1m4 0h3m2 0h2m2 0h1m1 0h6m2 0h2m1 0h2m1 0h1m-33 1h1m5 0h4m1 0h3m2 0h1m5 0h3m1 0h4m1 0h2m-31 1h1m5 0h2m1 0h2m6 0h2m1 0h1m4 0h1m1 0h1m2 0h1m-33 1h1m2 0h2m1 0h1m2 0h2m3 0h4m4 0h4m1 0h3m1 0h2m-31 1h3m2 0h2m4 0h2m4 0h1m4 0h1m2 0h1m1 0h1m1 0h1m-31 1h3m1 0h5m3 0h2m2 0h6m1 0h1m1 0h1m1 0h3m-29 1h2m1 0h1m4 0h1m1 0h4m2 0h1m1 0h2m2 0h3m2 0h2m-31 1h1m3 0h1m1 0h5m1 0h3m1 0h1m1 0h1m1 0h3m1 0h3m1 0h3m-31 1h1m1 0h2m5 0h1m3 0h1m1 0h1m1 0h1m2 0h1m2 0h4m1 0h2m1 0h2m-31 1h1m3 0h1m7 0h2m1 0h1m3 0h1m3 0h4m1 0h1m-28 1h1m3 0h1m1 0h1m1 0h2m1 0h1m2 0h4m1 0h1m2 0h1m2 0h1m2 0h1m-32 1h4m2 0h1m2 0h2m2 0h1m1 0h3m3 0h1m3 0h1m3 0h2m1 0h1m-33 1h4m1 0h1m4 0h2m2 0h3m1 0h4m1 0h1m2 0h1m5 0h1m-28 1h2m1 0h8m2 0h1m4 0h1m2 0h2m3 0h2m-32 1h1m2 0h1m2 0h2m3 0h1m2 0h1m2 0h1m3 0h1m1 0h1m3 0h2m1 0h1m-32 1h1m2 0h2m1 0h1m1 0h4m5 0h1m4 0h1m1 0h5m3 0h1m-25 1h3m2 0h4m2 0h1m1 0h4m3 0h2m-30 1h7m1 0h1m3 0h1m3 0h5m2 0h2m1 0h1m1 0h1m-29 1h1m5 0h1m1 0h1m1 0h1m1 0h5m2 0h3m1 0h2m3 0h4m-32 1h1m1 0h3m1 0h1m2 0h1m3 0h1m3 0h1m1 0h1m1 0h1m1 0h6m1 0h1m-31 1h1m1 0h3m1 0h1m1 0h1m1 0h2m1 0h2m1 0h2m2 0h1m1 0h2m3 0h1m1 0h1m2 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m3 0h2m1 0h1m2 0h1m1 0h1m5 0h2m2 0h1m-31 1h1m5 0h1m2 0h2m1 0h1m4 0h2m4 0h3m1 0h2m3 0h1m-33 1h7m1 0h1m3 0h2m3 0h2m2 0h1m1 0h1m4 0h1m1 0h1"/></svg><span class="l">Curso<br>Cidadão Digital Seguro</span></div>
+        <div class="qr"><svg viewBox="0 0 37 37" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="45" height="45" class="segno"><path class="qrline" stroke="#fff" d="M2 2.5h7m6 0h1m2 0h8m1 0h1m2 0h1m1 0h3m1 0h7m-41 1h1m5 0h1m4 0h2m2 0h1m1 0h1m2 0h2m3 0h4m1 0h1m1 0h1m1 0h1m5 0h1m-41 1h1m1 0h3m1 0h1m1 0h1m2 0h2m4 0h6m2 0h1m4 0h1m3 0h1m1 0h3m1 0h1m-41 1h1m1 0h3m1 0h1m1 0h2m1 0h1m3 0h1m3 0h1m1 0h1m1 0h2m1 0h2m2 0h1m3 0h1m1 0h3m1 0h1m-41 1h1m1 0h3m1 0h1m1 0h4m1 0h1m1 0h1m2 0h3m1 0h2m1 0h1m2 0h1m1 0h3m1 0h1m1 0h3m1 0h1m-41 1h1m5 0h1m1 0h3m1 0h1m1 0h1m1 0h1m3 0h1m1 0h1m2 0h3m1 0h1m2 0h1m1 0h1m5 0h1m-41 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-33 1h1m2 0h1m2 0h2m2 0h2m1 0h4m1 0h1m1 0h1m3 0h1m-33 1h1m1 0h5m2 0h2m2 0h2m2 0h2m1 0h1m1 0h1m1 0h4m1 0h1m1 0h2m1 0h5m-34 1h1m4 0h1m2 0h3m1 0h5m1 0h4m1 0h1m2 0h6m1 0h3m-41 1h2m1 0h1m2 0h2m1 0h1m1 0h1m2 0h1m2 0h1m3 0h1m2 0h5m1 0h1m1 0h1m-33 1h1m1 0h1m1 0h2m1 0h1m2 0h1m1 0h1m1 0h2m5 0h4m1 0h1m1 0h1m2 0h2m1 0h1m1 0h2m-32 1h3m1 0h1m4 0h1m1 0h1m2 0h1m1 0h1m1 0h8m3 0h1m1 0h2m1 0h1m-41 1h1m1 0h1m5 0h1m4 0h1m1 0h4m2 0h1m3 0h3m1 0h2m2 0h8m-41 1h4m2 0h1m1 0h1m1 0h4m6 0h9m3 0h2m1 0h4m-37 1h4m2 0h1m1 0h1m2 0h1m1 0h1m2 0h1m2 0h3m2 0h2m6 0h4m-37 1h3m1 0h3m3 0h3m1 0h1m1 0h1m4 0h8m3 0h1m1 0h1m2 0h1m1 0h1m-41 1h2m1 0h2m4 0h1m1 0h2m1 0h1m4 0h2m2 0h2m3 0h5m1 0h4m1 0h2m-40 1h3m1 0h2m3 0h2m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m4 0h3m3 0h1m2 0h2m1 0h1m-40 1h2m1 0h2m4 0h3m3 0h1m3 0h2m3 0h1m1 0h1m1 0h4m2 0h1m1 0h1m2 0h2m-41 1h1m1 0h2m2 0h1m1 0h1m2 0h2m5 0h1m2 0h4m13 0h2m-35 1h1m2 0h2m1 0h3m1 0h1m1 0h1m1 0h2m2 0h1m2 0h1m1 0h1m1 0h2m2 0h4m1 0h2m-41 1h1m2 0h2m1 0h5m1 0h3m1 0h1m3 0h3m2 0h3m1 0h1m2 0h1m1 0h4m-38 1h2m1 0h1m3 0h2m1 0h1m1 0h1m1 0h3m4 0h2m1 0h1m3 0h1m2 0h2m1 0h1m1 0h1m2 0h1m-40 1h1m2 0h1m1 0h3m1 0h3m1 0h1m1 0h3m2 0h1m1 0h1m2 0h1m3 0h1m1 0h1m3 0h1m2 0h3m-40 1h2m5 0h1m1 0h2m3 0h1m2 0h3m2 0h1m4 0h2m1 0h1m1 0h5m1 0h2m-40 1h2m1 0h5m1 0h1m2 0h1m6 0h1m1 0h1m1 0h2m1 0h1m4 0h1m1 0h1m1 0h1m2 0h1m-38 1h1m1 0h1m2 0h1m1 0h1m1 0h3m2 0h1m2 0h6m3 0h1m2 0h2m1 0h1m1 0h2m-38 1h1m2 0h1m1 0h2m3 0h1m1 0h2m3 0h1m1 0h1m5 0h2m2 0h1m1 0h1m5 0h2m-39 1h2m1 0h3m7 0h1m2 0h1m3 0h1m3 0h1m2 0h2m1 0h3m1 0h3m2 0h2m-41 1h1m2 0h1m2 0h1m1 0h1m1 0h1m2 0h2m1 0h1m1 0h2m1 0h2m2 0h2m3 0h1m2 0h3m1 0h1m1 0h1m-40 1h1m1 0h1m7 0h4m2 0h1m1 0h5m1 0h1m3 0h1m2 0h1m1 0h2m1 0h2m2 0h1m-41 1h1m2 0h1m1 0h3m1 0h3m4 0h2m1 0h1m4 0h3m2 0h1m2 0h5m1 0h2m-32 1h2m4 0h1m2 0h5m1 0h1m1 0h2m4 0h2m3 0h3m1 0h1m-41 1h7m3 0h2m1 0h5m2 0h2m2 0h5m1 0h3m1 0h1m1 0h2m-38 1h1m5 0h1m1 0h1m1 0h1m1 0h1m4 0h2m1 0h6m5 0h2m3 0h2m1 0h2m-41 1h1m1 0h3m1 0h1m1 0h4m1 0h3m3 0h1m1 0h1m2 0h1m1 0h2m2 0h1m1 0h8m-40 1h1m1 0h3m1 0h1m1 0h2m1 0h3m1 0h1m1 0h4m1 0h2m1 0h1m2 0h1m2 0h3m1 0h1m1 0h2m-39 1h1m1 0h3m1 0h1m1 0h3m3 0h2m2 0h1m1 0h1m4 0h5m1 0h1m1 0h5m-38 1h1m5 0h1m2 0h1m1 0h1m2 0h1m4 0h3m5 0h1m4 0h2m2 0h2m1 0h1m-40 1h7m1 0h3m1 0h1m1 0h2m3 0h1m3 0h4m2 0h3m2 0h3m1 0h1"/></svg><span class="l">MJSP<br>Sofri um golpe, e agora?</span></div>
+        <div class="qr"><svg viewBox="0 0 37 37" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="45" height="45" class="segno"><path class="qrline" stroke="#fff" d="M2 2.5h7m3 0h2m1 0h2m3 0h6m2 0h2m1 0h3m2 0h7m-41 1h1m5 0h1m2 0h1m2 0h1m1 0h1m1 0h2m2 0h1m2 0h2m2 0h1m2 0h1m1 0h1m1 0h1m5 0h1m-41 1h1m1 0h3m1 0h1m4 0h2m1 0h1m1 0h2m2 0h4m2 0h2m2 0h1m1 0h1m1 0h1m1 0h3m1 0h1m-41 1h1m1 0h3m1 0h1m3 0h3m2 0h1m1 0h1m1 0h1m1 0h2m1 0h2m3 0h3m2 0h1m1 0h3m1 0h1m-41 1h1m1 0h3m1 0h1m2 0h1m2 0h2m9 0h1m3 0h2m1 0h1m1 0h1m1 0h1m1 0h3m1 0h1m-41 1h1m5 0h1m1 0h1m1 0h4m1 0h1m1 0h1m1 0h4m1 0h2m1 0h1m1 0h1m1 0h1m2 0h1m5 0h1m-41 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-32 1h2m2 0h1m2 0h2m1 0h3m1 0h2m2 0h5m-32 1h1m2 0h1m1 0h2m1 0h1m1 0h1m3 0h3m1 0h1m1 0h2m2 0h3m1 0h1m4 0h1m1 0h1m-35 1h1m3 0h1m1 0h7m1 0h3m2 0h3m1 0h2m2 0h1m3 0h3m2 0h4m-41 1h1m2 0h1m1 0h3m1 0h1m3 0h2m1 0h1m1 0h3m4 0h1m2 0h2m1 0h1m3 0h1m1 0h3m-40 1h2m1 0h2m2 0h2m1 0h2m1 0h1m4 0h1m1 0h4m1 0h1m1 0h1m2 0h1m2 0h1m4 0h3m-40 1h10m2 0h5m2 0h2m3 0h1m1 0h3m1 0h5m1 0h1m-37 1h2m1 0h2m3 0h1m1 0h1m1 0h2m1 0h1m1 0h1m1 0h1m2 0h1m1 0h3m5 0h1m5 0h1m-36 1h1m1 0h1m2 0h2m1 0h1m3 0h2m1 0h1m1 0h1m1 0h1m2 0h4m4 0h1m2 0h2m1 0h1m-39 1h3m3 0h5m2 0h4m1 0h4m1 0h1m2 0h2m1 0h1m2 0h2m3 0h2m-41 1h2m1 0h1m1 0h2m2 0h1m2 0h1m1 0h2m1 0h1m2 0h2m2 0h1m2 0h1m1 0h1m1 0h1m3 0h1m1 0h1m-38 1h2m3 0h1m2 0h3m1 0h2m1 0h1m1 0h1m3 0h1m1 0h1m4 0h1m5 0h2m4 0h1m-40 1h3m1 0h4m1 0h1m1 0h1m1 0h1m1 0h2m4 0h1m2 0h1m4 0h1m2 0h2m1 0h2m1 0h2m-41 1h3m8 0h2m7 0h2m3 0h1m3 0h3m2 0h2m1 0h1m2 0h1m-38 1h2m1 0h4m2 0h1m1 0h1m1 0h2m4 0h3m1 0h1m2 0h2m1 0h3m3 0h1m1 0h1m-41 1h1m2 0h2m7 0h1m2 0h2m3 0h3m5 0h3m1 0h3m4 0h2m-38 1h1m1 0h2m1 0h1m1 0h5m1 0h2m1 0h1m1 0h1m3 0h2m3 0h2m6 0h2m-38 1h1m1 0h2m1 0h1m3 0h3m1 0h1m2 0h2m1 0h1m1 0h6m1 0h1m3 0h3m1 0h1m1 0h1m-40 1h1m1 0h2m1 0h2m2 0h3m1 0h1m2 0h1m1 0h3m1 0h3m1 0h3m1 0h5m1 0h1m1 0h2m-39 1h2m5 0h1m4 0h1m4 0h3m2 0h1m4 0h3m1 0h1m3 0h1m-38 1h2m4 0h1m1 0h1m1 0h2m1 0h1m4 0h1m4 0h3m2 0h1m3 0h3m1 0h1m2 0h2m-39 1h2m1 0h1m1 0h1m1 0h1m1 0h2m2 0h1m1 0h1m2 0h3m1 0h7m1 0h2m1 0h1m-34 1h5m1 0h1m1 0h4m3 0h1m3 0h4m1 0h1m1 0h2m2 0h2m-33 1h3m4 0h1m1 0h1m2 0h2m4 0h2m3 0h4m1 0h1m1 0h5m1 0h2m1 0h1m-41 1h1m1 0h2m2 0h2m6 0h4m5 0h2m1 0h1m2 0h1m2 0h1m2 0h3m1 0h2m-37 1h1m3 0h3m3 0h1m2 0h1m3 0h1m2 0h1m2 0h7m1 0h3m2 0h1m-41 1h1m2 0h2m1 0h1m3 0h3m2 0h1m4 0h2m3 0h2m1 0h1m1 0h1m1 0h5m1 0h3m-33 1h2m1 0h1m2 0h2m1 0h1m2 0h1m1 0h1m1 0h2m2 0h1m2 0h2m3 0h1m2 0h2m-41 1h7m2 0h2m1 0h1m2 0h2m1 0h2m1 0h2m2 0h2m1 0h2m2 0h1m1 0h1m1 0h2m1 0h1m-40 1h1m5 0h1m1 0h3m1 0h3m3 0h3m3 0h2m1 0h3m2 0h1m3 0h1m1 0h3m-41 1h1m1 0h3m1 0h1m2 0h8m1 0h1m1 0h1m3 0h1m1 0h3m3 0h5m2 0h2m-41 1h1m1 0h3m1 0h1m1 0h2m1 0h2m3 0h4m1 0h2m1 0h1m1 0h1m2 0h1m1 0h1m1 0h2m1 0h1m3 0h1m-41 1h1m1 0h3m1 0h1m2 0h1m2 0h1m1 0h1m5 0h1m2 0h1m6 0h1m1 0h1m3 0h1m1 0h3m-41 1h1m5 0h1m10 0h1m1 0h3m1 0h4m1 0h2m1 0h2m1 0h2m1 0h1m1 0h1m-40 1h7m1 0h1m3 0h4m2 0h4m1 0h2m1 0h4m2 0h1m2 0h3m1 0h1"/></svg><span class="l">CERT.br<br>Caiu? Veja o que fazer</span></div>
+      </div>
+    </div>
+    <div class="notes"><p>Marque a caixa de interesse no termo de saída e <b>encaminhe a lista em até 48 horas</b>. Turma que sai motivada e não é procurada em duas semanas volta ao estado anterior.</p><p>Junto: as fotos dos cartazes do bloco I.</p></div>
+  </section>
+
+  <section class="slide" data-block="J" data-title="Fim" data-end="100" data-mat="void">
+    <div style="height:100%;display:flex;flex-direction:column;justify-content:center;padding:78px 82px">
+      <div class="eyebrow">Unidade 11 · Gestão de Investigações de Fraudes Bancárias Eletrônicas</div>
+      <h1 style="font-size:92px">Vocês passaram trinta horas<br>aprendendo a fazer as <span class="signal">678</span>.</h1>
+      <div class="rule" style="max-width:520px"></div>
+      <h2 style="font-size:44px;color:var(--guard)">Estas duas foram sobre os 24 milhões.</h2>
+      <p class="lede" style="margin-top:34px">Obrigado. Os materiais ficam com vocês.</p>
+    </div>
+    <div class="notes"><p>Deixe este slide na tela enquanto recolhe os termos de saída. Não fale mais nada.</p></div>
+  </section>
+
+  <div class="hud bot"><div class="rail"><i id="railfill"></i></div></div>
+</div>
+
+<div id="notes"></div>
+
+<div id="over">
+  <h5>Todos os slides · clique para ir · tecla O fecha</h5>
+  <div class="grid" id="overgrid"></div>
+</div>
+
+<div id="help">
+  <b>←→</b> navega · <b>C</b> cronômetro do bloco · <b>T</b> relógio da aula · <b>R</b> zera · <b>N</b> notas · <b>O</b> índice · <b>F</b> tela cheia
+</div>
+
+<script>
+(function(){
+  "use strict";
+  document.documentElement.lang="pt-BR";
+  var stage=document.getElementById('stage');
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var i=0, notesOn=false;
+
+  var BLOCKS={A:'Abertura · o confronto',B:'Onde vocês divergem',C:'Quatro casos',D:'Quem podia agir',
+    E:'Por que prevenir',F:'O que é campanha boa',G:'O que a PF já faz',H:'Sala de espelhos',
+    I:'Plano 30 dias',J:'O que você leva'};
+
+  /* ---- escala do palco ---- */
+  function fit(){
+    var k=Math.min(window.innerWidth/1280, window.innerHeight/720);
+    stage.style.transform='scale('+k+')';
+  }
+  window.addEventListener('resize',fit); fit();
+
+  /* ---- navegação ---- */
+  function show(n){
+    if(n<0||n>=slides.length) return;
+    slides[i].classList.remove('on');
+    i=n;
+    var s=slides[i];
+    s.classList.add('on');
+    document.documentElement.dataset.mat = s.dataset.mat || 'screen';
+    document.getElementById('bmark').textContent=s.dataset.block;
+    document.getElementById('btitle').textContent=BLOCKS[s.dataset.block]||'';
+    document.getElementById('pos').textContent=(i+1)+' / '+slides.length;
+    document.getElementById('railfill').style.width=((i+1)/slides.length*100)+'%';
+    paintNotes();
+    animateBars(s);
+    resetCount(s);
+    tick();
+  }
+
+  function paintNotes(){
+    var box=document.getElementById('notes');
+    var n=slides[i].querySelector('.notes');
+    box.innerHTML='<h5>Notas · slide '+(i+1)+'</h5>'+(n?n.innerHTML:'<p>Sem notas.</p>');
+  }
+
+  /* ---- barras do termômetro ---- */
+  function animateBars(s){
+    [].forEach.call(s.querySelectorAll('.bar'),function(b){
+      var fill=b.querySelector('i'), v=b.querySelector('.v');
+      var p=parseFloat(fill.getAttribute('data-pct')||'0');
+      fill.style.width='0%';
+      v.textContent = p>0 ? p+'%' : '–';
+      setTimeout(function(){ fill.style.width=p+'%'; },120);
+    });
+  }
+
+  /* ---- relógio da aula (100 min) ---- */
+  var t0=null;
+  function tick(){
+    var el=document.getElementById('clock');
+    var s=slides[i], target=parseInt(s.dataset.end||'0',10);
+    if(t0===null){
+      el.className='idle';
+      el.textContent = target ? ('--:-- / '+target+"'") : '--:-- / 100';
+      return;
+    }
+    var sec=Math.floor((Date.now()-t0)/1000);
+    var mm=Math.floor(sec/60), ss=sec%60;
+    el.textContent = pad(mm)+':'+pad(ss)+' / '+target+"'";
+    el.className = (target && mm>=target) ? 'over' : '';
+  }
+  function pad(n){ return (n<10?'0':'')+n; }
+  setInterval(tick,1000);
+
+  /* ---- cronômetro de atividade por slide ---- */
+  var cd=null;
+  function resetCount(s){
+    if(cd){clearInterval(cd);cd=null;}
+    var t=s.querySelector('[data-count]');
+    if(!t) return;
+    var total=parseInt(t.getAttribute('data-count'),10);
+    t.textContent=pad(Math.floor(total/60))+':'+pad(total%60);
+    t.className='t';
+  }
+  function toggleCount(){
+    var t=slides[i].querySelector('[data-count]');
+    if(!t) return;
+    if(cd){ clearInterval(cd); cd=null; t.className='t'; return; }
+    var left=parseInt(t.getAttribute('data-count'),10);
+    var started=Date.now();
+    t.className='t run';
+    cd=setInterval(function(){
+      var rem=left-Math.floor((Date.now()-started)/1000);
+      if(rem<=0){ rem=0; clearInterval(cd); cd=null; t.className='t done'; }
+      t.textContent=pad(Math.floor(rem/60))+':'+pad(rem%60);
+    },250);
+  }
+
+  /* ---- contador do cold open ---- */
+  var cnt=document.getElementById('cnt'), n=0, cStart=Date.now();
+  setInterval(function(){
+    n=Math.floor((Date.now()-cStart)/2000);
+    cnt.textContent=n.toLocaleString('pt-BR');
+    var h=document.getElementById('counterHud');
+    h.textContent = i>0 ? (n.toLocaleString('pt-BR')+' tentativas') : '';
+  },250);
+
+  /* ---- índice ---- */
+  var grid=document.getElementById('overgrid');
+  slides.forEach(function(s,k){
+    var b=document.createElement('button');
+    b.className='th';
+    b.innerHTML='<span class="i">'+s.dataset.block+' · '+(k+1)+'</span><span class="n">'+(s.dataset.title||'')+'</span>';
+    b.addEventListener('click',function(){ document.getElementById('over').classList.remove('on'); show(k); });
+    grid.appendChild(b);
+  });
+
+  /* ---- teclado ---- */
+  document.addEventListener('keydown',function(e){
+    var k=e.key;
+    if(k==='ArrowRight'||k==='PageDown'||k===' '){ e.preventDefault(); show(i+1); }
+    else if(k==='ArrowLeft'||k==='PageUp'){ e.preventDefault(); show(i-1); }
+    else if(k==='Home'){ show(0); }
+    else if(k==='End'){ show(slides.length-1); }
+    else if(k==='f'||k==='F'){ if(!document.fullscreenElement){document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();} else {document.exitFullscreen();} }
+    else if(k==='n'||k==='N'){ notesOn=!notesOn; document.getElementById('notes').classList.toggle('on',notesOn); }
+    else if(k==='o'||k==='O'){ document.getElementById('over').classList.toggle('on'); }
+    else if(k==='c'||k==='C'){ toggleCount(); }
+    else if(k==='t'||k==='T'){ if(t0===null){t0=Date.now();} else {t0=null;} tick(); }
+    else if(k==='r'||k==='R'){ t0=null; tick(); resetCount(slides[i]); }
+    else if(k==='Escape'){ document.getElementById('over').classList.remove('on'); }
+  });
+
+  /* ---- clique avança ---- */
+  stage.addEventListener('click',function(e){
+    if(e.target.closest('#over')) return;
+    show(e.clientX < window.innerWidth*0.22 ? i-1 : i+1);
+  });
+
+  var helpEl=document.getElementById('help'), helpT=null;
+  function nudgeHelp(){
+    helpEl.classList.remove('dim');
+    clearTimeout(helpT);
+    helpT=setTimeout(function(){ helpEl.classList.add('dim'); },5000);
+  }
+  document.addEventListener('mousemove',nudgeHelp);
+  document.addEventListener('keydown',nudgeHelp);
+  nudgeHelp();
+
+  show(0);
+})();
+</script>
