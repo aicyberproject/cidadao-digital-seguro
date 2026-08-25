@@ -1,0 +1,455 @@
+<title>Briefing da Unidade 11</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap">
+
+<style>
+/* ============================================================
+   BRIEFING À COORDENAÇÃO — UNIDADE 11
+   Registro documental. Mesma família tipográfica do material de
+   apresentação (Archivo + IBM Plex), em registro de nota técnica.
+   Verde institucional = eixo preventivo. Terra queimada = o único
+   ponto que exige decisão. Nada mais é colorido.
+   ============================================================ */
+:root{
+  --ground:#F2F1EC;
+  --surface:#FBFAF7;
+  --sunk:#E9E7DF;
+  --ink:#191C22;
+  --ink-2:#565D6B;
+  --ink-3:#868D9A;
+  --rule:#DBD7CD;
+  --rule-soft:#E6E3DA;
+  --accent:#24705A;
+  --accent-soft:#E2EDE7;
+  --flag:#A4552B;
+  --flag-soft:#F4E7DD;
+
+  --display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#13161B;
+    --surface:#1A1F27;
+    --sunk:#0F1216;
+    --ink:#E8EBF0;
+    --ink-2:#98A2B1;
+    --ink-3:#6D7787;
+    --rule:#2A313C;
+    --rule-soft:#222831;
+    --accent:#4FB286;
+    --accent-soft:#16281F;
+    --flag:#D08152;
+    --flag-soft:#2A1C13;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#13161B;
+  --surface:#1A1F27;
+  --sunk:#0F1216;
+  --ink:#E8EBF0;
+  --ink-2:#98A2B1;
+  --ink-3:#6D7787;
+  --rule:#2A313C;
+  --rule-soft:#222831;
+  --accent:#4FB286;
+  --accent-soft:#16281F;
+  --flag:#D08152;
+  --flag-soft:#2A1C13;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--body);
+  font-weight:300;
+  font-size:16.5px;
+  line-height:1.62;
+  margin:0;
+  padding:0 24px 96px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:780px;margin:0 auto}
+
+/* ---------- cabeçalho ---------- */
+header{padding:64px 0 0}
+.kicker{
+  font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 20px;
+}
+h1{
+  font-family:var(--display);font-weight:800;font-size:clamp(34px,5.4vw,50px);
+  line-height:1.04;letter-spacing:-.025em;margin:0 0 20px;text-wrap:balance;
+}
+.standfirst{font-size:19px;line-height:1.55;color:var(--ink-2);max-width:60ch;margin:0}
+
+dl.meta{
+  display:grid;grid-template-columns:auto 1fr;gap:0 22px;
+  margin:36px 0 0;padding:22px 0 0;border-top:1px solid var(--rule);
+  font-size:14.5px;
+}
+dl.meta dt{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);padding:7px 0;font-weight:400;white-space:nowrap;
+}
+dl.meta dd{margin:0;padding:7px 0;color:var(--ink-2)}
+dl.meta dd b{color:var(--ink);font-weight:500}
+
+/* ---------- painel de números ---------- */
+.stats{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));
+  gap:1px;background:var(--rule);border:1px solid var(--rule);
+  margin:40px 0 0;
+}
+.stats div{background:var(--surface);padding:16px 16px 14px}
+.stats .n{
+  font-family:var(--display);font-weight:700;font-size:27px;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;display:block;line-height:1.1;
+}
+.stats .l{
+  font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);display:block;margin-top:6px;line-height:1.5;
+}
+
+/* ---------- seções ---------- */
+section{margin:56px 0 0;padding:34px 0 0;border-top:1px solid var(--rule)}
+section:first-of-type{border-top:0}
+.snum{
+  font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 12px;
+}
+h2{
+  font-family:var(--display);font-weight:700;font-size:clamp(23px,3.2vw,29px);
+  line-height:1.16;letter-spacing:-.018em;margin:0 0 20px;text-wrap:balance;
+}
+h3{
+  font-family:var(--display);font-weight:600;font-size:18px;line-height:1.3;
+  letter-spacing:-.008em;margin:30px 0 10px;
+}
+p{margin:0 0 16px;max-width:66ch}
+p:last-child{margin-bottom:0}
+strong{font-weight:600;color:var(--ink)}
+em{font-style:italic;color:var(--ink-2)}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+
+.lede{font-size:19px;line-height:1.55;color:var(--ink);font-weight:300}
+.lede strong{font-weight:500}
+
+/* ---------- tabelas ---------- */
+.scroll{overflow-x:auto;margin:0 0 6px;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:15px;min-width:520px}
+th{
+  text-align:left;font-family:var(--mono);font-size:10px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
+  padding:0 16px 9px 0;border-bottom:1px solid var(--rule);vertical-align:bottom;
+}
+td{
+  padding:13px 16px 13px 0;border-bottom:1px solid var(--rule-soft);
+  color:var(--ink-2);line-height:1.5;vertical-align:top;
+}
+td:last-child,th:last-child{padding-right:0}
+td b,td strong{color:var(--ink);font-weight:500}
+tr.hi td{background:var(--flag-soft)}
+tr.hi td b{color:var(--flag)}
+td.k{font-family:var(--mono);font-size:12px;color:var(--ink-3);white-space:nowrap;font-variant-numeric:tabular-nums}
+td.blk{font-family:var(--display);font-weight:700;font-size:15px;color:var(--accent)}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink);font-size:13px}
+
+/* ---------- faixa dos 100 minutos ---------- */
+.band{margin:6px 0 0}
+.band .bar{display:flex;gap:2px;height:56px}
+.band .seg{
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:8px 7px;min-width:0;overflow:hidden;
+}
+.band .seg .b{font-family:var(--display);font-weight:700;font-size:13px;line-height:1}
+.band .seg .m{font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;line-height:1;opacity:.72}
+.seg.alunos{background:var(--accent);color:#fff}
+.seg.prof{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 1px var(--rule)}
+.seg.midia{background:var(--flag);color:#fff}
+:root[data-theme="dark"] .seg.alunos,
+:root[data-theme="dark"] .seg.midia{color:#0F1216}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .seg.alunos,
+  :root:not([data-theme="light"]) .seg.midia{color:#0F1216}
+}
+.band .scale{
+  display:flex;justify-content:space-between;margin-top:7px;
+  font-family:var(--mono);font-size:10px;color:var(--ink-3);
+  border-top:1px solid var(--rule);padding-top:6px;
+}
+.legend{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:16px;font-size:13px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend i{width:11px;height:11px;display:inline-block;flex:0 0 auto}
+.legend i.alunos{background:var(--accent)}
+.legend i.prof{background:var(--surface);box-shadow:inset 0 0 0 1px var(--rule)}
+.legend i.midia{background:var(--flag)}
+
+/* ---------- destaques ---------- */
+.note{
+  background:var(--surface);border:1px solid var(--rule);
+  border-left:3px solid var(--accent);padding:20px 22px;margin:24px 0;
+}
+.note.decide{border-left-color:var(--flag)}
+.note .t{
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 10px;font-weight:500;
+}
+.note.decide .t{color:var(--flag)}
+.note p{font-size:15.5px;margin-bottom:12px}
+
+blockquote{
+  margin:18px 0;padding:18px 22px;background:var(--sunk);
+  border:1px solid var(--rule);font-size:14.5px;line-height:1.6;color:var(--ink-2);
+}
+blockquote p{margin-bottom:12px;max-width:none}
+blockquote p:last-child{margin-bottom:0}
+blockquote b{color:var(--ink);font-weight:600}
+
+.opts{display:grid;gap:18px;grid-template-columns:1fr;margin:22px 0}
+@media(min-width:640px){.opts{grid-template-columns:1fr 1fr}}
+.opt{background:var(--surface);border:1px solid var(--rule);padding:20px 22px}
+.opt .t{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);margin:0 0 8px}
+.opt h3{margin:0 0 10px;font-size:17px}
+.opt p{font-size:15px;margin-bottom:0;max-width:none;color:var(--ink-2)}
+
+ul{margin:0 0 16px;padding-left:0;list-style:none}
+ul li{position:relative;padding-left:22px;margin-bottom:11px;color:var(--ink-2);max-width:64ch}
+ul li::before{content:"";position:absolute;left:0;top:.72em;width:9px;height:1px;background:var(--accent)}
+ul li b{color:var(--ink);font-weight:500}
+ol{margin:0 0 16px;padding-left:20px}
+ol li{margin-bottom:11px;color:var(--ink-2);max-width:64ch}
+ol li b{color:var(--ink);font-weight:500}
+
+code{font-family:var(--mono);font-size:.88em;background:var(--sunk);padding:2px 6px;border:1px solid var(--rule-soft)}
+
+footer{
+  margin:64px 0 0;padding:26px 0 0;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink-3);
+  text-transform:uppercase;line-height:2;
+}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{
+  body{background:#fff;color:#000;padding:0}
+  section{break-inside:avoid}
+  .stats div{background:#fff}
+}
+</style>
+
+<div class="wrap">
+
+<header>
+  <p class="kicker">Briefing à coordenação · Curso de Investigação e Gestão em Fraudes Bancárias Eletrônicas</p>
+  <h1>Unidade 11 — Prevenção no enfrentamento às fraudes e golpes digitais</h1>
+  <p class="standfirst">A unidade será conduzida por metodologias ativas, preservando integralmente objetivos, conteúdo, carga horária e regime de avaliação do Plano de Disciplina. Ao final, a coordenação recebe seis planos de ação preventiva escritos pelos próprios alunos e a lista de candidatos ao credenciamento como multiplicador.</p>
+
+  <dl class="meta">
+    <dt>Disciplina</dt><dd>Gestão de Investigações de Fraudes Bancárias Eletrônicas — <b>32 h/a</b>, presencial</dd>
+    <dt>Unidade</dt><dd><b>11</b> — última da disciplina · <b>2 h/a</b> · ∑ 32 h/a</dd>
+    <dt>Turma</dt><dd><b>30 alunos</b> — delegados, agentes e escrivães de Polícia Federal</dd>
+    <dt>Professor</dt><dd><em>[nome e função]</em></dd>
+  </dl>
+
+  <div class="stats">
+    <div><span class="n">100</span><span class="l">minutos em sala</span></div>
+    <div><span class="n">10</span><span class="l">blocos encadeados</span></div>
+    <div><span class="n">26%</span><span class="l">do tempo de fala é do professor</span></div>
+    <div><span class="n">6</span><span class="l">planos de ação produzidos</span></div>
+    <div><span class="n">1</span><span class="l">decisão pendente da coordenação</span></div>
+  </div>
+</header>
+
+<section>
+  <p class="snum">01</p>
+  <h2>O que muda e o que não muda</h2>
+  <div class="scroll">
+  <table>
+    <tr><th style="width:42%">Campo do Plano de Disciplina</th><th>Situação</th></tr>
+    <tr><td><b>Objetivos específicos</b> (3)</td><td>Inalterados</td></tr>
+    <tr><td><b>Conteúdo</b> (2 blocos)</td><td>Inalterado</td></tr>
+    <tr><td><b>Carga horária</b> — 2 h/a, ∑ 32 h/a</td><td>Inalterada</td></tr>
+    <tr><td><b>Avaliação</b> — "perguntas e respostas durante a exposição"</td><td>Mantida e ampliada. Continua ocorrendo em cinco dos dez blocos; soma-se avaliação formativa por produto de grupo</td></tr>
+    <tr><td><b>Recursos</b> — professor, sala, kit multimídia</td><td>Mantidos, com acréscimos de baixo custo: papel, pincel, cartaz</td></tr>
+    <tr class="hi"><td><b>Estratégias de Ensino</b> — "aula expositiva dialogada"</td><td><b>Único ponto de divergência.</b> A exposição dialogada permanece, ocupando cerca de 25 dos 100 minutos, mas deixa de ser a estratégia exclusiva</td></tr>
+  </table>
+  </div>
+  <p style="margin-top:18px">Não há alteração de matriz, de ementa nem de referências.</p>
+</section>
+
+<section>
+  <p class="snum">02</p>
+  <h2>Por que a mudança metodológica</h2>
+  <p class="lede">Três razões, na ordem de importância.</p>
+
+  <h3>A unidade pede mudança de papel, não aquisição de informação</h3>
+  <p>É a única da disciplina em que se espera que o aluno passe a atuar também no eixo preventivo. Mudança de postura profissional não se produz por exposição; produz-se por experiência dirigida. Esse é o critério que define a escolha metodológica.</p>
+
+  <h3>É a décima primeira unidade de trinta e duas horas expositivas</h3>
+  <p>A turma chega com fadiga atencional acumulada. Manter o mesmo formato nas duas últimas horas é aceitar, na prática, que a unidade renda menos do que as anteriores.</p>
+
+  <h3>O eixo preventivo tem um gargalo conhecido, e a turma é o público dele</h3>
+  <p>O projeto de prevenção da Polícia Federal já dispõe de curso, kit de palestra padronizado e módulo de formação de multiplicadores. O que falta é policial habilitado para levar o material a campo. Uma aula expositiva <em>informa</em> sobre esse gargalo; uma aula ativa <em>produz candidatos</em> a resolvê-lo.</p>
+</section>
+
+<section>
+  <p class="snum">03</p>
+  <h2>Como a aula funciona</h2>
+  <p>Estrutura sobre o <strong>Arco de Maguerez</strong>, metodologia da problematização, em dez blocos encadeados. A faixa abaixo mostra os 100 minutos em escala, com o modo dominante de cada bloco.</p>
+
+  <div class="band">
+    <div class="bar" role="img" aria-label="Distribuição dos 100 minutos: bloco A 5 minutos de mídia; B 9 e C 15 de atividade dos alunos; D 9 de plenária; E 8 de exposição; F 7 de mídia; G 11 de exposição; H 12 e I 16 de atividade dos alunos; J 8 de fechamento pelo professor.">
+      <div class="seg midia"  style="flex:5"><span class="b">A</span><span class="m">5'</span></div>
+      <div class="seg alunos" style="flex:9"><span class="b">B</span><span class="m">9'</span></div>
+      <div class="seg alunos" style="flex:15"><span class="b">C</span><span class="m">15'</span></div>
+      <div class="seg alunos" style="flex:9"><span class="b">D</span><span class="m">9'</span></div>
+      <div class="seg prof"   style="flex:8"><span class="b">E</span><span class="m">8'</span></div>
+      <div class="seg midia"  style="flex:7"><span class="b">F</span><span class="m">7'</span></div>
+      <div class="seg prof"   style="flex:11"><span class="b">G</span><span class="m">11'</span></div>
+      <div class="seg alunos" style="flex:12"><span class="b">H</span><span class="m">12'</span></div>
+      <div class="seg alunos" style="flex:16"><span class="b">I</span><span class="m">16'</span></div>
+      <div class="seg prof"   style="flex:8"><span class="b">J</span><span class="m">8'</span></div>
+    </div>
+    <div class="scale"><span>0</span><span>25 min</span><span>50 min</span><span>75 min</span><span>100</span></div>
+    <div class="legend">
+      <span><i class="alunos"></i> Atividade dos alunos</span>
+      <span><i class="prof"></i> Exposição dialogada</span>
+      <span><i class="midia"></i> Vídeo e dinâmica</span>
+    </div>
+  </div>
+
+  <div class="scroll" style="margin-top:32px">
+  <table>
+    <tr><th style="width:34px">Bl.</th><th style="width:48px">Min</th><th>O que acontece</th><th style="width:27%">Metodologia</th></tr>
+    <tr><td class="blk">A</td><td class="num">5</td><td>Abertura com contraste de dados e a pergunta geradora da aula</td><td>Choque cognitivo</td></tr>
+    <tr><td class="blk">B</td><td class="num">9</td><td>Votação, discussão em duplas, revotação sobre o que evitaria mais vítimas</td><td>Instrução por pares</td></tr>
+    <tr><td class="blk">C</td><td class="num">15</td><td>Grupos reconstroem uma fraude em seis etapas e marcam pontos de interrupção</td><td>Estudo de caso · roteiro criminal</td></tr>
+    <tr><td class="blk">D</td><td class="num">9</td><td>Socialização e consolidação no Mapa dos 5 Atores</td><td>Plenária dirigida</td></tr>
+    <tr><td class="blk">E</td><td class="num">8</td><td>Escala, janela de dissipação, funil, níveis e técnicas de prevenção</td><td>Exposição dialogada</td></tr>
+    <tr><td class="blk">F</td><td class="num">7</td><td>Duas peças reais de campanha, analisadas criticamente</td><td>Análise crítica de mídia</td></tr>
+    <tr><td class="blk">G</td><td class="num">11</td><td>Arquitetura preventiva da PF e o projeto estruturado de prevenção</td><td>Exposição + demonstração</td></tr>
+    <tr><td class="blk">H</td><td class="num">12</td><td>Simulação dos limites de fala do agente público diante de público externo</td><td><em>Roleplay</em> em trios</td></tr>
+    <tr><td class="blk">I</td><td class="num">16</td><td>Cada grupo redige um plano de ação preventiva executável em 30 dias</td><td>Aprendizagem em times</td></tr>
+    <tr><td class="blk">J</td><td class="num">8</td><td>Síntese, convite ao credenciamento e termo de saída</td><td>Compromisso</td></tr>
+  </table>
+  </div>
+
+  <div class="note">
+    <p class="t">A pergunta que organiza a aula inteira</p>
+    <p>A Polícia Federal realizou <b>678 operações</b> contra fraudes bancárias eletrônicas entre 2018 e 2025. O Brasil teve cerca de <b>24 milhões de vítimas</b> em doze meses. Quantas operações seriam necessárias?</p>
+    <p style="margin-bottom:0">A resposta não é um número — e são os alunos que a constroem, ao longo dos dez blocos.</p>
+  </div>
+</section>
+
+<section>
+  <p class="snum">04</p>
+  <h2>O que a coordenação recebe ao final</h2>
+  <p>Esta é a diferença prática em relação a uma aula expositiva. Todos os itens são produzidos em sala, sem trabalho adicional para o aluno depois.</p>
+  <div class="scroll">
+  <table>
+    <tr><th style="width:38%">Produto</th><th style="width:70px">Qtd.</th><th>Utilidade institucional</th></tr>
+    <tr><td><b>Planos de ação preventiva de 1 página</b><br>público, canal e parceiro, mensagem, executor e indicador</td><td class="num">6</td><td>Ações executáveis em 30 dias, desenhadas por policiais que conhecem o próprio território. Boa parte é de custo zero</td></tr>
+    <tr><td><b>Cartazes de roteiro criminal</b><br>com pontos de interrupção mapeados</td><td class="num">6</td><td>Insumo qualitativo sobre onde a prevenção rende mais, na leitura de quem investiga</td></tr>
+    <tr><td><b>Termos de saída</b></td><td class="num">30</td><td>Avaliação formativa da unidade e insumo para revisão da disciplina</td></tr>
+    <tr><td><b>Lista de interessados em credenciamento</b> como multiplicador</td><td class="num">—</td><td>Entrada direta no funil de habilitação do projeto de prevenção</td></tr>
+  </table>
+  </div>
+  <p style="margin-top:18px"><strong>Compromisso do professor:</strong> encaminhar tudo à coordenação em até <strong>48 horas</strong> após a aula. Turma que sai motivada e não é procurada em duas semanas volta ao estado anterior.</p>
+</section>
+
+<section>
+  <p class="snum">05</p>
+  <h2>O que preciso da coordenação</h2>
+  <div class="scroll">
+  <table>
+    <tr><th style="width:30px">#</th><th>Providência</th><th style="width:24%">Prazo</th></tr>
+    <tr><td class="num">1</td><td><b>Decisão sobre o campo <em>Estratégias de Ensino</em> do PD</b> — ver seção 06</td><td>Antes da primeira turma</td></tr>
+    <tr><td class="num">2</td><td><b>Distribuir a tarefa de pré-aula</b> à turma e hospedar o micro-quiz de 5 questões, em formulário simples e sem identificação</td><td>5 a 7 dias antes</td></tr>
+    <tr><td class="num">3</td><td><b>Autorizar o material</b> conforme lista fechada já elaborada: 78 folhas A4 75 g, 60 folhas A4 180 g, 16 folhas A3, cartazes, pincéis e fita</td><td>5 dias antes</td></tr>
+    <tr><td class="num">4</td><td><b>Sala com mesas em 6 grupos de 5 lugares, montadas antes da entrada da turma</b>, parede livre para 12 cartazes e quadro branco visível</td><td>No dia</td></tr>
+    <tr><td class="num">5</td><td><b>Kit multimídia com caixa de som</b> e apresentador remoto. Projetor sem áudio inviabiliza um bloco inteiro</td><td>No dia</td></tr>
+    <tr><td class="num">6</td><td><b>60 exemplares do checklist de bolso</b> do Kit de Palestra Pública, na versão vigente, junto à coordenação do projeto de prevenção</td><td>5 dias antes</td></tr>
+    <tr><td class="num">7</td><td><b>Indicar o destinatário</b> a quem encaminhar os produtos da seção 04</td><td>Antes da aula</td></tr>
+  </table>
+  </div>
+  <p style="margin-top:18px">O item 6 é deliberado: o checklist <strong>não será reimpresso</strong> a partir do material da aula. Orientação preventiva divergente entre fontes oficiais produz inação no público — é justamente o problema que a padronização do kit existe para evitar.</p>
+</section>
+
+<section>
+  <p class="snum">06</p>
+  <h2>A decisão pendente</h2>
+  <p>O único campo em que o desenho diverge do PD homologado é <em>Estratégias de Ensino</em>. Há duas saídas, e ambas são legítimas.</p>
+
+  <div class="opts">
+    <div class="opt">
+      <p class="t">Opção A</p>
+      <h3>Executar sem alterar o PD</h3>
+      <p>A aula é registrada como "aula expositiva dialogada com metodologias ativas de apoio". A exposição dialogada de fato ocorre, em cinco dos dez blocos. Nenhum trâmite necessário.</p>
+    </div>
+    <div class="opt">
+      <p class="t">Opção B</p>
+      <h3>Atualizar o PD junto ao SAVAL/CGDE</h3>
+      <p>Substituição em três campos da Unidade 11, com objetivos, conteúdo e carga horária inalterados. A redação já está pronta, ao lado.</p>
+    </div>
+  </div>
+
+  <blockquote>
+    <p><b>Estratégias de Ensino:</b> Metodologia da problematização (Arco de Maguerez), com sala de aula invertida, estudo de caso com análise de roteiro criminal, instrução por pares, análise crítica de peças de campanha, simulação de atendimento a público externo e elaboração de plano de ação preventiva em equipe, integradas a exposições dialogadas de curta duração.</p>
+    <p><b>Recursos:</b> 01 professor, sala de aula com disposição em grupos, kit multimídia e material impresso de apoio (fichas de caso, cartões de simulação e fichas de plano de ação).</p>
+    <p><b>Avaliação:</b> Avaliação formativa por meio de perguntas e respostas durante a exposição, instrução por pares, produto de grupo (roteiro criminal e plano de ação preventiva) e termo de saída.</p>
+  </blockquote>
+
+  <div class="note decide">
+    <p class="t">Recomendação</p>
+    <p style="margin-bottom:0">Executar pela <b>Opção A</b> nesta turma e avaliar a Opção B com base no resultado. Se os planos de ação do bloco I se mostrarem aproveitáveis, o argumento para a atualização formal passa a ser empírico, e não apenas metodológico.</p>
+  </div>
+</section>
+
+<section>
+  <p class="snum">07</p>
+  <h2>Riscos e como estão tratados</h2>
+  <div class="scroll">
+  <table>
+    <tr><th style="width:38%">Risco</th><th>Tratamento</th></tr>
+    <tr><td><b>Turma resistente</b> — "prevenção não é atribuição de polícia judiciária"</td><td>Não se confronta. O bloco C resolve sozinho: são os próprios alunos que mapeiam onde a intervenção rende, e onde ela não depende de inquérito</td></tr>
+    <tr><td><b>Aluno traz caso sigiloso em curso</b></td><td>Conduta definida e, ela mesma, conteúdo do bloco H. Os quatro casos da aula são compostos, e o uso de caso real de inquérito próprio é expressamente vedado na atividade</td></tr>
+    <tr><td><b>Falha de projeção ou de internet</b></td><td>Material de apresentação autocontido, funciona offline; vídeos baixados previamente; demonstração substituída por capturas</td></tr>
+    <tr><td><b>Estouro de tempo nos blocos de grupo</b></td><td>Cronômetro por atividade embutido no material de apresentação, com avisos programados e ordem de cortes definida por escrito</td></tr>
+    <tr><td><b>Turma de 30 deixa a socialização sem folga</b></td><td>Alternativa prevista: quatro grupos sorteados apresentam e os demais afixam o cartaz para leitura</td></tr>
+  </table>
+  </div>
+</section>
+
+<section>
+  <p class="snum">08</p>
+  <h2>Ressalvas declaradas</h2>
+  <p>Três, para conhecimento prévio da coordenação.</p>
+  <ol>
+    <li><b>Links de vídeo pendentes de verificação.</b> As peças do bloco F vêm da curadoria do projeto e de busca pública; devem ser abertas e baixadas antes da aula, e há alternativas listadas para cada uma. É item obrigatório do checklist de preparação.</li>
+    <li><b>Séries estatísticas de agosto de 2026.</b> Os dados de abertura devem ser reconferidos a cada turma.</li>
+    <li><b>A unidade não trata de tipificação penal.</b> Não enuncia artigos, penas ou critérios de competência — matéria das unidades anteriores da disciplina.</li>
+  </ol>
+</section>
+
+<section>
+  <p class="snum">09</p>
+  <h2>Onde está o material</h2>
+  <p>Pacote completo, com plano de aula, roteiro de condução, material de apresentação, peças imprimíveis, rubricas e lista de materiais por tamanho de turma, em <code>aulas/modulo-11-prevencao-fraudes-digitais/</code>, no repositório do projeto Cidadão Digital Seguro.</p>
+  <p>Documentos que a coordenação pode querer ler na íntegra:</p>
+  <ul>
+    <li><b>Plano de aula</b> — §1 convergência com o PD · §5 cronograma minuto a minuto · §8 avaliação · §11 redação sugerida para o PD</li>
+    <li><b>Lista de materiais</b> — §G traz o texto de requisição pronto para o almoxarifado</li>
+    <li><b>Avaliação e rubricas</b> — instrumentos formativos e indicadores de turma</li>
+  </ul>
+</section>
+
+<footer>
+  Briefing à coordenação · Unidade 11 · Gestão de Investigações de Fraudes Bancárias Eletrônicas<br>
+  Curso de Investigação e Gestão em Fraudes Bancárias Eletrônicas — ANP/PF
+</footer>
+
+</div>
