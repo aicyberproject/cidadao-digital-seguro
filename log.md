@@ -20,3 +20,13 @@
   certificado, acessibilidade e mobile) já mergeadas na `main`.
 - **Próxima prioridade:** cortar a release v3.1.0 formalmente — o trabalho já está na
   `main` mas não foi tagueado nem versionado no `package.json` (ainda em `3.0.0`).
+
+## 2026-10-09 (Claude Code)
+
+- **Correção da entrada de 2026-07-13.** Ela dizia que o `package.json` estava em `3.0.0`
+  e que a v3.1.0 não estava versionada. Isso estava errado: `package.json` e `CHANGELOG.md`
+  já estão em `3.1.0` (entrada de 2026-07-04). O que falta é a tag Git `v3.1.0`, que não
+  existe no repositório local nem no `origin`.
+- Estado do produto: **v3.1.0 versionada** na `main`; tag `v3.0.0` existe, `v3.1.0` não.
+- **Próxima prioridade:** criar a tag `v3.1.0` apontando para a `main` e publicar a release,
+  somente após confirmação.
