@@ -4,7 +4,7 @@
 
 O projeto é uma aplicação web em React 18 empacotada com Vite. A publicação principal usa GitHub Pages, com `base` configurado para `/cidadao-digital-seguro/` em `vite.config.js`.
 
-A aplicação é estática: não há backend, autenticação, banco de dados ou API própria. Todo o conteúdo do curso fica versionado no repositório, e o progresso do participante é persistido no navegador.
+A aplicação é estática no front-end. Todo o conteúdo do curso fica versionado no repositório, e o progresso do participante é persistido no navegador. Há um backend mínimo no Supabase, usado apenas para registrar e validar certificados (ver seção "Backend Supabase"). Ele não armazena progresso do curso.
 
 ## Estrutura de conteúdo
 
@@ -126,4 +126,36 @@ O fluxo principal é:
 
 ## Certificado
 
-O certificado não depende de backend. A emissão acontece no navegador, após aprovação na avaliação final. O PDF inclui dados do participante, nome do curso, carga horária sugerida, data, status de aprovação, versão do curso e código verificador local.
+A emissão do PDF acontece no navegador, após aprovação na avaliação final. O PDF inclui dados do participante, nome do curso, carga horária sugerida, data, status de aprovação, versão do curso e código verificador.
+
+O PDF é gerado mesmo sem o backend. Antes de gerá-lo, o app dispara, sem aguardar resposta, uma chamada à Edge Function `emitir-certificado` com o código verificador e o nome do participante. A função grava o código na tabela `certificados`. Se a chamada falhar, o download do PDF não é afetado.
+
+O código verificador também é consultado pela RPC `validar_certificado`, que é o gate de acesso ao módulo de formação de multiplicadores (`validarCertificado` em `src/lib/supabaseClient.js`).
+
+## Backend Supabase
+
+O backend está versionado na pasta `supabase/`:
+
+```text
+supabase/
+├── config.toml
+├── migrations/
+│   ├── 20260730182854_create_certificados_e_validador.sql
+│   ├── 20260730183010_grant_service_role_certificados.sql
+│   └── 20261009054100_remote_schema.sql
+└── functions/
+    └── emitir-certificado/index.ts
+```
+
+- `20260730182854`: cria a tabela `certificados`, habilita RLS, remove o acesso direto de `anon` e `authenticated` e cria a RPC `validar_certificado`.
+- `20260730183010`: concede a `service_role` o acesso à tabela `certificados`.
+- `20261009054100`: baseline gerado a partir do schema de produção com `supabase db pull`. Foi registrado como já aplicado em produção, sem recriar objetos existentes.
+- `emitir-certificado`: código baixado de produção. Valida o formato do código, grava `codigo`, `nome_participante` e `tipo = 'curso'` com a service role key, que fica somente no ambiente da função. O campo `versao`, enviado pelo cliente, não é gravado.
+
+No build, o workflow de deploy injeta `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` a partir dos secrets do repositório. A chave `anon` é pública por natureza, pois vai para o bundle.
+
+Pontos em aberto, acompanhados na issue #127:
+
+- A função `emitir-certificado` não exige autenticação do chamador, e o CORS está liberado para qualquer origem. Qualquer cliente que envie um código no formato válido consegue gravar um registro. A correção deve ir em issue separada, pois altera comportamento.
+- A migration inicial inseriu um registro de teste na tabela `certificados`, ainda pendente de decisão para produção.
+- A integração do repositório com o painel do Supabase ainda não foi configurada. Quando for, "Deploy to production" deve permanecer desligado.
