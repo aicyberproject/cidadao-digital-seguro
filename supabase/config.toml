@@ -372,6 +372,11 @@ authorization_url_path = "/oauth/consent"
 # Allow dynamic client registration
 allow_dynamic_registration = false
 
+# Função pública, chamada pelo app sem login. Valor fixado para que o padrão da CLI não mude
+# a configuração ao publicar (ver issue #129).
+[functions.emitir-certificado]
+verify_jwt = false
+
 [edge_runtime]
 enabled = true
 # Supported request policies: `oneshot`, `per_worker`.
