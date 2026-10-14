@@ -43,7 +43,9 @@ import {
   iniciarQuizFinal,
   mensagemDeErroServidor,
   responderQuestaoModulo,
+  responderQuestaoMultiplicador,
   sortearQuestoesModulo,
+  sortearQuestoesMultiplicador,
 } from './lib/cursoServidor'
 import { CharacterAvatar } from './components/CharacterAvatar'
 import { ScamAlertBlock, SpecialistWordBlock, LudicTransition } from './components/LudicBlocks'
@@ -121,13 +123,6 @@ function descartarProgressoAntigo() {
   }
 }
 
-function shuffleArray(items) {
-  return [...items]
-    .map((item) => ({ item, sort: Math.random() }))
-    .sort((a, b) => a.sort - b.sort)
-    .map(({ item }) => item)
-}
-
 function normalizeSearchText(value) {
   return String(value || '')
     .normalize('NFD')
@@ -167,21 +162,6 @@ function getQuizSize(moduleItem) {
   }
 
   return 10
-}
-
-function randomizeQuiz(quizSource, size = 10) {
-  const selectedQuestions = shuffleArray(quizSource).slice(0, Math.min(size, quizSource.length))
-
-  return selectedQuestions.map((questionItem) => {
-    const correctOption = questionItem.options[questionItem.answer]
-    const shuffledOptions = shuffleArray(questionItem.options)
-
-    return {
-      ...questionItem,
-      options: shuffledOptions,
-      answer: shuffledOptions.indexOf(correctOption),
-    }
-  })
 }
 
 function getModuleContent(moduleItem) {
@@ -384,20 +364,6 @@ function getResumeTarget(progressState) {
   return { view: 'module', moduleId: pendingModule.id, screenIndex: 0 }
 }
 
-function scoreQuiz(quiz, answers) {
-  let correct = 0
-
-  quiz.forEach((q, i) => {
-    if (answers[i] === q.answer) correct += 1
-  })
-
-  return {
-    correct,
-    total: quiz.length,
-    passed: quiz.length > 0 ? correct / quiz.length >= 0.7 : false,
-  }
-}
-
 // Pontuação de quiz cujas respostas vêm do servidor: cada entrada guarda `correta`, conferida pela RPC.
 function scoreQuizServidor(quiz, answers) {
   let correct = 0
@@ -580,6 +546,9 @@ export default function App() {
   const [carregandoQuiz, setCarregandoQuiz] = useState(false)
   const [erroQuiz, setErroQuiz] = useState('')
   const [respondendoQuiz, setRespondendoQuiz] = useState(false)
+  const [carregandoMultQuiz, setCarregandoMultQuiz] = useState(false)
+  const [erroMultQuiz, setErroMultQuiz] = useState('')
+  const [respondendoMultQuiz, setRespondendoMultQuiz] = useState(false)
 
   useEffect(() => {
     descartarProgressoAntigo()
@@ -691,8 +660,8 @@ export default function App() {
   const multTotalSteps = multiplicadorContent.length
   const multAccessGranted = !!progressState.multAccessCodigo
 
-  const activeMultQuiz = progressState.multQuizVariant || moduloMultiplicador.questionBank || []
-  const multQuizResult = scoreQuiz(activeMultQuiz, progressState.multState.quizAnswers || {})
+  const activeMultQuiz = progressState.multQuizVariant || []
+  const multQuizResult = scoreQuizServidor(activeMultQuiz, progressState.multState.quizAnswers || {})
   const multAnsweredCount = Object.keys(progressState.multState.quizAnswers || {}).length
   const multTotalQuestions = multQuizResult.total
   const multHasAnsweredQuestions = multAnsweredCount > 0
@@ -942,22 +911,32 @@ export default function App() {
   }, [currentView, sessaoAtiva, progressState.finalAssessmentPassed])
 
   useEffect(() => {
-    const isMultQuizScreen = currentView === 'multiplicadores' && multScreenIndex === multiplicadorContent.length
+    const quizMultVisivel =
+      currentView === 'multiplicadores' && multAccessGranted && multScreenIndex === multiplicadorContent.length
 
-    if (!isMultQuizScreen) return
+    if (!quizMultVisivel || progressState.multQuizVariant) return undefined
 
-    setProgressState((prev) => {
-      if (prev.multQuizVariant) return prev
+    let ativo = true
 
-      return {
-        ...prev,
-        multQuizVariant: randomizeQuiz(
-          moduloMultiplicador.questionBank || [],
-          moduloMultiplicador.quizSize || 10,
-        ),
-      }
-    })
-  }, [currentView, multScreenIndex, multiplicadorContent.length])
+    setCarregandoMultQuiz(true)
+    setErroMultQuiz('')
+
+    sortearQuestoesMultiplicador(progressState.multAccessCodigo)
+      .then((questoes) => {
+        if (!ativo) return
+        setProgressState((prev) => ({ ...prev, multQuizVariant: questoes }))
+      })
+      .catch((error) => {
+        if (ativo) setErroMultQuiz(mensagemDeErroServidor(error))
+      })
+      .finally(() => {
+        if (ativo) setCarregandoMultQuiz(false)
+      })
+
+    return () => {
+      ativo = false
+    }
+  }, [currentView, multScreenIndex, multAccessGranted, multiplicadorContent.length])
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -1390,14 +1369,33 @@ export default function App() {
     setMultScreenIndex((s) => Math.min(multiplicadorContent.length, s + 1))
   }
 
-  function answerMultQuiz(idx, answer) {
+  // Respostas do módulo de multiplicadores são conferidas no servidor, com o código verificador como chave.
+  async function answerMultQuiz(idx, optionIndex) {
+    const questao = activeMultQuiz[idx]
+    const codigo = progressState.multAccessCodigo
+
+    if (!questao || !codigo || respondendoMultQuiz || progressState.multState.quizAnswers?.[idx] !== undefined) return
+
+    setRespondendoMultQuiz(true)
+    setErroMultQuiz('')
+
+    let resultado
+    try {
+      resultado = await responderQuestaoMultiplicador(codigo, questao.id, optionIndex)
+    } catch (error) {
+      setRespondendoMultQuiz(false)
+      setErroMultQuiz(mensagemDeErroServidor(error))
+      return
+    }
+
+    setRespondendoMultQuiz(false)
+
     setProgressState((prev) => {
-      const quizForScoring = prev.multQuizVariant || moduloMultiplicador.questionBank || []
       const nextAnswers = {
         ...prev.multState.quizAnswers,
-        [idx]: answer,
+        [idx]: { alternativa: optionIndex, correta: resultado.correta },
       }
-      const result = scoreQuiz(quizForScoring, nextAnswers)
+      const result = scoreQuizServidor(prev.multQuizVariant || [], nextAnswers)
 
       return {
         ...prev,
@@ -1410,19 +1408,31 @@ export default function App() {
     })
   }
 
-  function retryMultQuiz() {
-    setProgressState((prev) => ({
-      ...prev,
-      multQuizVariant: randomizeQuiz(
-        moduloMultiplicador.questionBank || [],
-        moduloMultiplicador.quizSize || 10,
-      ),
-      multState: {
-        ...prev.multState,
-        quizAnswers: {},
-        quizPassed: false,
-      },
-    }))
+  async function retryMultQuiz() {
+    const codigo = progressState.multAccessCodigo
+
+    if (!codigo) return
+
+    setCarregandoMultQuiz(true)
+    setErroMultQuiz('')
+
+    try {
+      const questoes = await sortearQuestoesMultiplicador(codigo)
+
+      setProgressState((prev) => ({
+        ...prev,
+        multQuizVariant: questoes,
+        multState: {
+          ...prev.multState,
+          quizAnswers: {},
+          quizPassed: false,
+        },
+      }))
+    } catch (error) {
+      setErroMultQuiz(mensagemDeErroServidor(error))
+    } finally {
+      setCarregandoMultQuiz(false)
+    }
   }
 
   function completeMultiplicadores() {
@@ -2858,9 +2868,19 @@ export default function App() {
 
               {multScreenIndex === multiplicadorContent.length && (
                 <ScreenCard title="Quiz do módulo de multiplicadores" icon={CheckCircle2}>
+                  {carregandoMultQuiz ? (
+                    <div className="info-box muted-body" role="status">
+                      Sorteando as questões do módulo...
+                    </div>
+                  ) : null}
+                  {erroMultQuiz ? (
+                    <div className="warning-text" role="alert">
+                      {erroMultQuiz}
+                    </div>
+                  ) : null}
                   <div className="stack-lg">
                     {activeMultQuiz.map((q, idx) => (
-                      <div key={`mult-${idx}-${q.question}`} className="quiz-box">
+                      <div key={`mult-${idx}-${q.id}`} className="quiz-box">
                         <div className="quiz-question">
                           {idx + 1}. {q.question}
                         </div>
@@ -2871,7 +2891,8 @@ export default function App() {
                               <input
                                 type="radio"
                                 name={`mult-${idx}`}
-                                checked={progressState.multState.quizAnswers[idx] === optionIndex}
+                                checked={progressState.multState.quizAnswers[idx]?.alternativa === optionIndex}
+                                disabled={respondendoMultQuiz || progressState.multState.quizAnswers[idx] !== undefined}
                                 onChange={() => answerMultQuiz(idx, optionIndex)}
                               />
                               <span>{opt}</span>
