@@ -120,6 +120,30 @@ export async function enviarQuizFinal(tentativaId, respostas) {
   }
 }
 
+// Trilha de multiplicadores: sem login, liberada pelo código verificador de um certificado ativo.
+// Devolve as 20 questões sem gabarito.
+export async function sortearQuestoesMultiplicador(codigo) {
+  const cliente = exigirCliente()
+  const { data, error } = await cliente.rpc('sortear_questoes_multiplicador', { p_codigo: codigo })
+
+  if (error) throw error
+
+  return (data || []).map(paraQuestaoUI)
+}
+
+export async function responderQuestaoMultiplicador(codigo, questaoId, alternativa) {
+  const cliente = exigirCliente()
+  const { data, error } = await cliente.rpc('responder_questao_multiplicador', {
+    p_codigo: codigo,
+    p_questao_id: questaoId,
+    p_alternativa: alternativa,
+  })
+
+  if (error) throw error
+
+  return { correta: data?.correta === true }
+}
+
 // Confere uma resposta de treino. Só o indicador `correta` sai daqui; o gabarito fica no servidor.
 export async function responderQuestaoModulo(questaoId, alternativa) {
   const cliente = exigirCliente()
