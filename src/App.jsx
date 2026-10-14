@@ -36,11 +36,20 @@ import { quickSimulations, simulationCategories, simulationModules } from './con
 import { moduloMultiplicador } from './content/moduloMultiplicador'
 import { supabase, validarCertificado, registrarCertificadoEmitido } from './lib/supabaseClient'
 import { AcessoCurso } from './components/AcessoCurso'
+import {
+  carregarModulosConcluidos,
+  concluirModuloNoServidor,
+  mensagemDeErroServidor,
+} from './lib/cursoServidor'
 import { CharacterAvatar } from './components/CharacterAvatar'
 import { ScamAlertBlock, SpecialistWordBlock, LudicTransition } from './components/LudicBlocks'
 import packageInfo from '../package.json'
 
-const STORAGE_KEY = 'cidadao-digital-seguro-progress-v2'
+// Progresso dos módulos vem do servidor (concluir_modulo / progresso_modulos). No navegador fica só um
+// cache de tela, por usuário, com as etapas lidas e os checks de atividade. O progresso local antigo
+// (v2, sem conta) é descartado.
+const STORAGE_KEY_ANTIGA = 'cidadao-digital-seguro-progress-v2'
+const CACHE_TELA_PREFIXO = 'cds-cache-tela-v1:'
 const COURSE_VERSION = packageInfo.version
 const CERTIFICATE_WORKLOAD = '12 a 18 horas'
 const FINAL_ASSESSMENT_VERSION = createFinalAssessmentVersion(finalAssessment)
@@ -86,24 +95,53 @@ function createCertificateCode(name, date, timestamp) {
   return `CDS-${COURSE_VERSION.replace(/\D/g, '')}-${hash.toString(36).toUpperCase().padStart(7, '0')}`
 }
 
-function loadProgress() {
+function lerCacheTela(userId) {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return null
-    return JSON.parse(raw)
+    const raw = window.localStorage.getItem(`${CACHE_TELA_PREFIXO}${userId}`)
+    return raw ? JSON.parse(raw) : null
   } catch {
     return null
   }
 }
 
-function saveProgress(data) {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify({
-      ...data,
-      finalAssessmentVersion: FINAL_ASSESSMENT_VERSION,
-    }),
-  )
+function gravarCacheTela(userId, progress) {
+  try {
+    window.localStorage.setItem(
+      `${CACHE_TELA_PREFIXO}${userId}`,
+      JSON.stringify({
+        started: !!progress.started,
+        moduleState: Object.fromEntries(
+          modules.map((m) => [
+            m.id,
+            {
+              contentSeen: progress.moduleState[m.id]?.contentSeen || {},
+              checklist: progress.moduleState[m.id]?.checklist || {},
+              activityDone: !!progress.moduleState[m.id]?.activityDone,
+              videoDone: !!progress.moduleState[m.id]?.videoDone,
+            },
+          ]),
+        ),
+      }),
+    )
+  } catch {
+    // Cache de tela: a falha não deve impedir o uso do curso.
+  }
+}
+
+function removerCacheTela(userId) {
+  try {
+    window.localStorage.removeItem(`${CACHE_TELA_PREFIXO}${userId}`)
+  } catch {
+    // Mesmo critério do cache de tela.
+  }
+}
+
+function descartarProgressoAntigo() {
+  try {
+    window.localStorage.removeItem(STORAGE_KEY_ANTIGA)
+  } catch {
+    // Sem acesso ao armazenamento local, não há nada a descartar.
+  }
 }
 
 function shuffleArray(items) {
@@ -297,70 +335,35 @@ function defaultProgress() {
   }
 }
 
-function normalizeProgress(loaded) {
+// Monta o progresso a partir do servidor. `concluidos` tem os números de módulo (1 a 6) concluídos.
+// `cache` traz só as etapas de tela (lidas, checklists, atividade e vídeo) deste usuário.
+function montarProgresso(concluidos, cache) {
   const fresh = defaultProgress()
 
-  if (!loaded || typeof loaded !== 'object') return fresh
+  const moduleState = Object.fromEntries(
+    modules.map((moduleItem, index) => {
+      const completed = concluidos.has(index + 1)
+      const ui = cache?.moduleState?.[moduleItem.id] || {}
 
-  const normalizedModuleState = { ...fresh.moduleState }
-
-  modules.forEach((moduleItem) => {
-    normalizedModuleState[moduleItem.id] = {
-      ...fresh.moduleState[moduleItem.id],
-      ...(loaded.moduleState?.[moduleItem.id] || {}),
-      contentSeen: {
-        ...fresh.moduleState[moduleItem.id].contentSeen,
-        ...(loaded.moduleState?.[moduleItem.id]?.contentSeen || {}),
-      },
-      checklist: {
-        ...fresh.moduleState[moduleItem.id].checklist,
-        ...(loaded.moduleState?.[moduleItem.id]?.checklist || {}),
-      },
-      quizAnswers: {
-        ...fresh.moduleState[moduleItem.id].quizAnswers,
-        ...(loaded.moduleState?.[moduleItem.id]?.quizAnswers || {}),
-      },
-    }
-  })
-
-  const finalAssessmentVersionMatches =
-    loaded.finalAssessmentVersion === FINAL_ASSESSMENT_VERSION
-  const finalAssessmentAnswers = finalAssessmentVersionMatches
-    ? loaded.finalAssessmentAnswers || {}
-    : {}
-  const finalAssessmentPassed = finalAssessmentVersionMatches
-    ? scoreQuiz(finalAssessment, finalAssessmentAnswers).passed
-    : false
-
-  const multState = {
-    ...fresh.multState,
-    ...(loaded.multState || {}),
-    contentSeen: {
-      ...fresh.multState.contentSeen,
-      ...(loaded.multState?.contentSeen || {}),
-    },
-    checklist: {
-      ...fresh.multState.checklist,
-      ...(loaded.multState?.checklist || {}),
-    },
-    quizAnswers: {
-      ...fresh.multState.quizAnswers,
-      ...(loaded.multState?.quizAnswers || {}),
-    },
-  }
+      return [
+        moduleItem.id,
+        {
+          ...fresh.moduleState[moduleItem.id],
+          unlocked: index === 0 || concluidos.has(index) || completed,
+          completed,
+          contentSeen: ui.contentSeen || {},
+          checklist: ui.checklist || {},
+          activityDone: !!ui.activityDone,
+          videoDone: !!ui.videoDone,
+        },
+      ]
+    }),
+  )
 
   return {
     ...fresh,
-    ...loaded,
-    moduleState: normalizedModuleState,
-    quizVariants: loaded.quizVariants || {},
-    finalAssessmentAnswers,
-    finalAssessmentVersion: FINAL_ASSESSMENT_VERSION,
-    finalAssessmentPassed,
-    certificateUnlocked: finalAssessmentPassed,
-    multState,
-    multQuizVariant: loaded.multQuizVariant || null,
-    multAccessCodigo: loaded.multAccessCodigo || null,
+    started: !!cache?.started || concluidos.size > 0,
+    moduleState,
   }
 }
 
@@ -581,10 +584,48 @@ export default function App() {
   const [authPronto, setAuthPronto] = useState(!supabase)
   const [recoveryMode, setRecoveryMode] = useState(false)
 
+  const userId = session?.user?.id ?? null
+  const [progressoCarregado, setProgressoCarregado] = useState(false)
+  const [erroProgresso, setErroProgresso] = useState('')
+  const [erroModulo, setErroModulo] = useState('')
+  const [concluindoModulo, setConcluindoModulo] = useState(false)
+  const [versaoProgresso, setVersaoProgresso] = useState(0)
+
   useEffect(() => {
-    const loaded = loadProgress()
-    if (loaded) setProgressState(normalizeProgress(loaded))
+    descartarProgressoAntigo()
   }, [])
+
+  useEffect(() => {
+    if (!userId || !supabase) {
+      setProgressoCarregado(false)
+      return undefined
+    }
+
+    let ativo = true
+
+    setProgressoCarregado(false)
+    setErroProgresso('')
+
+    carregarModulosConcluidos(userId)
+      .then((concluidos) => {
+        if (!ativo) return
+        setProgressState(montarProgresso(concluidos, lerCacheTela(userId)))
+        setProgressoCarregado(true)
+      })
+      .catch((error) => {
+        if (!ativo) return
+        setErroProgresso(mensagemDeErroServidor(error))
+      })
+
+    return () => {
+      ativo = false
+    }
+  }, [userId, versaoProgresso])
+
+  useEffect(() => {
+    if (!userId || !progressoCarregado) return
+    gravarCacheTela(userId, progressState)
+  }, [userId, progressoCarregado, progressState])
 
   useEffect(() => {
     if (!supabase) return undefined
@@ -614,10 +655,6 @@ export default function App() {
   const sessaoAtiva = !!session && !recoveryMode
   const viewPrivada = PRIVATE_VIEWS.includes(currentView)
   const mostrarAcesso = authPronto && (recoveryMode || (!sessaoAtiva && (currentView === 'home' || viewPrivada)))
-
-  useEffect(() => {
-    saveProgress(progressState)
-  }, [progressState])
 
   const selectedModule = useMemo(
     () => modules.find((m) => m.id === selectedModuleId) || modules[0],
@@ -1209,9 +1246,22 @@ export default function App() {
     })
   }
 
-  function completeModule() {
+  async function completeModule() {
     const moduleIndex = modules.findIndex((m) => m.id === selectedModule.id)
     const nextModule = modules[moduleIndex + 1]
+
+    setErroModulo('')
+    setConcluindoModulo(true)
+
+    try {
+      await concluirModuloNoServidor(moduleIndex + 1)
+    } catch (error) {
+      setConcluindoModulo(false)
+      setErroModulo(mensagemDeErroServidor(error))
+      return
+    }
+
+    setConcluindoModulo(false)
 
     setProgressState((prev) => {
       const updated = {
@@ -1405,14 +1455,14 @@ export default function App() {
 
   function resetCourse() {
     const shouldReset = window.confirm(
-      'Tem certeza de que deseja reiniciar o curso? Essa ação apagará o progresso dos módulos, respostas, avaliação final e dados do certificado salvos neste dispositivo.',
+      'Tem certeza de que deseja reiniciar a visão do curso neste navegador? Isso apaga as etapas lidas, os checklists marcados e as respostas dos quizzes desta sessão. Os módulos já concluídos na sua conta são mantidos.',
     )
 
     if (!shouldReset) return
 
-    const fresh = defaultProgress()
-    setProgressState(fresh)
-    saveProgress(fresh)
+    if (userId) removerCacheTela(userId)
+    setProgressState(defaultProgress())
+    setVersaoProgresso((versao) => versao + 1)
     setCurrentView('home')
     setSelectedModuleId(modules[0].id)
     setScreenIndex(0)
@@ -1618,9 +1668,14 @@ export default function App() {
                 </div>
 
                 <div className="actions-row">
-                  <button className="button" onClick={startCourse}>
+                  <button className="button" onClick={startCourse} disabled={!progressoCarregado}>
                     {progressState.started ? 'Continuar curso' : 'Começar agora'} <ChevronRight size={16} aria-hidden="true" focusable="false" />
                   </button>
+                  {erroProgresso ? (
+                    <div className="warning-text" role="alert">
+                      Não foi possível carregar seu progresso: {erroProgresso} Recarregue a página para tentar de novo.
+                    </div>
+                  ) : null}
                   <button className="button button-outline" onClick={() => setCurrentView('structure')}>
                     Como funciona a trilha
                   </button>
@@ -3112,7 +3167,10 @@ export default function App() {
 
                     <button
                       className="button"
-                      disabled={!(selectedModuleState.activityDone && selectedModuleState.videoDone && moduleQuizResult.passed)}
+                      disabled={
+                        concluindoModulo ||
+                        !(selectedModuleState.activityDone && selectedModuleState.videoDone && moduleQuizResult.passed)
+                      }
                       onClick={completeModule}
                     >
                       {modules.findIndex((m) => m.id === selectedModule.id) === modules.length - 1
@@ -3124,6 +3182,12 @@ export default function App() {
                   {!selectedModuleState.activityDone || !selectedModuleState.videoDone ? (
                     <div className="warning-text">
                       Para concluir o módulo, registre a videoaula e conclua a atividade prática.
+                    </div>
+                  ) : null}
+
+                  {erroModulo ? (
+                    <div className="warning-text" role="alert">
+                      {erroModulo}
                     </div>
                   ) : null}
                 </ScreenCard>
