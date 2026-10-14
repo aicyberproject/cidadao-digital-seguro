@@ -1,5 +1,4 @@
 import { FileCheck } from 'lucide-react'
-import { questionBank } from '../questionBank'
 
 const module6 = {
   id: 'm6',
@@ -342,9 +341,7 @@ const module6 = {
       url: 'https://portal.febraban.org.br/AntiFraude/',
     },
   ],
-  questionBank: questionBank.m6,
   quizSize: 10,
-  quiz: questionBank.m6.slice(0, 10),
 }
 
 export { module6 }

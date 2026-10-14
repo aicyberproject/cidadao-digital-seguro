@@ -1,5 +1,4 @@
 import { Wifi } from 'lucide-react'
-import { questionBank } from '../questionBank'
 
 const module3Resources = [
   {
@@ -249,7 +248,5 @@ export const module3 = {
       'Roteador, Wi-Fi e trabalho remoto seguro',
     ],
   },
-  questionBank: questionBank.m3,
   quizSize: 10,
-  quiz: questionBank.m3.slice(0, 10),
 }

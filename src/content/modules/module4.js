@@ -1,5 +1,4 @@
 import { CreditCard } from 'lucide-react'
-import { questionBank } from '../questionBank'
 
 const module4 = {
   id: 'm4',
@@ -317,9 +316,7 @@ const module4 = {
       url: 'https://www.gov.br/mj/pt-br/acesso-a-informacao/acoes-e-programas/sofri-um-golpe-e-agora',
     },
   ],
-  questionBank: questionBank.m4,
   quizSize: 10,
-  quiz: questionBank.m4.slice(0, 10),
 }
 
 export { module4 }
