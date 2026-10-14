@@ -9,6 +9,8 @@ const ORIGENS_PERMITIDAS = [
 ];
 // Tentativas por IP em uma hora. Alto de propósito: muitos servidores compartilham o mesmo IP de saída.
 const LIMITE_POR_HORA = 100;
+// Alfabeto sem caracteres ambíguos (0/O, 1/I), para o código ser lido e digitado sem erro.
+const ALFABETO_CODIGO = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const HEADERS_BASE = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
@@ -33,10 +35,18 @@ async function hashDoIp(req) {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`${serviceRoleKey}:${ip}`));
   return Array.from(new Uint8Array(digest)).map((b)=>b.toString(16).padStart(2, "0")).join("");
 }
-// Registra, no banco de certificados, o código verificador gerado localmente pelo app
-// ao emitir o PDF de conclusão do curso Cidadão Digital Seguro. É esse registro que
-// permite ao módulo de multiplicadores validar o código como pertencente a um
-// certificado real, sem expor a tabela nem a service role key ao cliente.
+// Código no formato CDS-<versão>-<8 caracteres>, gerado aleatoriamente no servidor.
+function gerarCodigo(versao) {
+  const bytes = new Uint8Array(8);
+  crypto.getRandomValues(bytes);
+  let sufixo = "";
+  for (const b of bytes) {
+    sufixo += ALFABETO_CODIGO[b % ALFABETO_CODIGO.length];
+  }
+  return `CDS-${versao}-${sufixo}`;
+}
+// Emissão só para quem tem tentativa aprovada no quiz final (#130). O nome vem de participantes,
+// nunca do corpo da requisição, e o código é gerado aqui. Um certificado por participante no curso.
 Deno.serve(async (req)=>{
   const origin = req.headers.get("origin");
   // Navegadores enviam Origin em toda chamada cross-origin. Origem fora da lista é recusada.
@@ -74,27 +84,80 @@ Deno.serve(async (req)=>{
       error: "limite_excedido"
     }, 429, headers);
   }
-  let payload;
-  try {
-    payload = await req.json();
-  } catch  {
+  // Identifica o participante pelo token do próprio usuário. Sem token válido, nada é emitido.
+  const token = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "").trim();
+  const { data: dadosUsuario, error: erroUsuario } = token
+    ? await client.auth.getUser(token)
+    : { data: null, error: { message: "sem_token" } };
+  const uid = dadosUsuario?.user?.id;
+  if (erroUsuario || !uid) {
     return jsonResponse({
       ok: false,
-      error: "corpo_invalido"
-    }, 400, headers);
+      error: "nao_autenticado"
+    }, 401, headers);
   }
-  const codigo = String(payload?.codigo || "").trim().toUpperCase();
-  const nome = String(payload?.nome || "").trim().slice(0, 200);
-  if (!/^CDS-[A-Z0-9]{1,10}-[A-Z0-9]{5,12}$/.test(codigo)) {
+  // A aprovação é conferida no banco. Código enviado pelo cliente não é aceito em nenhum caso.
+  const { data: aprovada, error: erroAprovacao } = await client
+    .from("tentativas_quiz_final")
+    .select("id")
+    .eq("user_id", uid)
+    .eq("aprovada", true)
+    .limit(1)
+    .maybeSingle();
+  if (erroAprovacao) {
     return jsonResponse({
       ok: false,
-      error: "codigo_invalido"
-    }, 400, headers);
+      error: "erro_ao_consultar"
+    }, 500, headers);
   }
+  if (!aprovada) {
+    return jsonResponse({
+      ok: false,
+      error: "quiz_nao_aprovado"
+    }, 403, headers);
+  }
+  const { data: participante, error: erroParticipante } = await client
+    .from("participantes")
+    .select("nome")
+    .eq("user_id", uid)
+    .maybeSingle();
+  if (erroParticipante || !participante) {
+    return jsonResponse({
+      ok: false,
+      error: "participante_nao_encontrado"
+    }, 403, headers);
+  }
+  // Idempotente: se o participante já tem certificado do curso, devolve o existente.
+  const buscarExistente = () =>
+    client
+      .from("certificados")
+      .select("codigo, nome_participante")
+      .eq("participante_id", uid)
+      .eq("tipo", "curso")
+      .maybeSingle();
+  const { data: existente, error: erroExistente } = await buscarExistente();
+  if (erroExistente) {
+    return jsonResponse({
+      ok: false,
+      error: "erro_ao_consultar"
+    }, 500, headers);
+  }
+  if (existente) {
+    return jsonResponse({
+      ok: true,
+      codigo: existente.codigo,
+      nome: existente.nome_participante,
+      emitido: false
+    }, 200, headers);
+  }
+  const corpo = await lerCorpo(req);
+  const versao = String(corpo?.versao ?? "").replace(/[^0-9]/g, "").slice(0, 10) || "0";
+  const nome = String(participante.nome || "").trim().slice(0, 200);
   const { error } = await client.from("certificados").insert({
-    codigo,
+    codigo: gerarCodigo(versao),
     nome_participante: nome || null,
-    tipo: "curso"
+    tipo: "curso",
+    participante_id: uid
   });
   if (error && error.code !== "23505") {
     return jsonResponse({
@@ -102,7 +165,25 @@ Deno.serve(async (req)=>{
       error: "erro_ao_registrar"
     }, 500, headers);
   }
+  // Em caso de corrida (23505), a linha que venceu é a que vale: devolve essa.
+  const { data: emitido, error: erroFinal } = await buscarExistente();
+  if (erroFinal || !emitido) {
+    return jsonResponse({
+      ok: false,
+      error: "erro_ao_registrar"
+    }, 500, headers);
+  }
   return jsonResponse({
-    ok: true
+    ok: true,
+    codigo: emitido.codigo,
+    nome: emitido.nome_participante,
+    emitido: true
   }, 200, headers);
 });
+async function lerCorpo(req) {
+  try {
+    return await req.json();
+  } catch {
+    return {};
+  }
+}
