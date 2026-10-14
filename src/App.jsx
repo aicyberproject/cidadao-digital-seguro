@@ -40,6 +40,8 @@ import {
   carregarModulosConcluidos,
   concluirModuloNoServidor,
   mensagemDeErroServidor,
+  responderQuestaoModulo,
+  sortearQuestoesModulo,
 } from './lib/cursoServidor'
 import { CharacterAvatar } from './components/CharacterAvatar'
 import { ScamAlertBlock, SpecialistWordBlock, LudicTransition } from './components/LudicBlocks'
@@ -182,18 +184,6 @@ function getVideoStatusLabel(status) {
     Deprecated: 'Descontinuado',
   }
   return map[status] || status
-}
-
-function getQuizSource(moduleItem) {
-  if (Array.isArray(moduleItem.questionBank) && moduleItem.questionBank.length > 0) {
-    return moduleItem.questionBank
-  }
-
-  if (Array.isArray(moduleItem.quiz) && moduleItem.quiz.length > 0) {
-    return moduleItem.quiz
-  }
-
-  return []
 }
 
 function getQuizSize(moduleItem) {
@@ -433,6 +423,21 @@ function scoreQuiz(quiz, answers) {
   }
 }
 
+// Pontuação de quiz cujas respostas vêm do servidor: cada entrada guarda `correta`, conferida pela RPC.
+function scoreQuizServidor(quiz, answers) {
+  let correct = 0
+
+  quiz.forEach((_, i) => {
+    if (answers[i]?.correta === true) correct += 1
+  })
+
+  return {
+    correct,
+    total: quiz.length,
+    passed: quiz.length > 0 ? correct / quiz.length >= 0.7 : false,
+  }
+}
+
 function ProgressBar({ value, label = 'Progresso' }) {
   return (
     <div
@@ -463,8 +468,7 @@ function ModuleProgress({ mod, state }) {
     ? Object.values(state.contentSeen).filter(Boolean).length
     : 0
 
-  const quizSource = getQuizSource(mod)
-  const totalQuestions = Array.isArray(quizSource) ? Math.min(getQuizSize(mod), quizSource.length) : 0
+  const totalQuestions = getQuizSize(mod)
 
   const answeredQuestions = state?.quizAnswers
     ? Object.keys(state.quizAnswers).length
@@ -590,6 +594,9 @@ export default function App() {
   const [erroModulo, setErroModulo] = useState('')
   const [concluindoModulo, setConcluindoModulo] = useState(false)
   const [versaoProgresso, setVersaoProgresso] = useState(0)
+  const [carregandoQuiz, setCarregandoQuiz] = useState(false)
+  const [erroQuiz, setErroQuiz] = useState('')
+  const [respondendoQuiz, setRespondendoQuiz] = useState(false)
 
   useEffect(() => {
     descartarProgressoAntigo()
@@ -670,8 +677,8 @@ export default function App() {
   const totalContentSteps = selectedModuleContent.length
 
   const allModulesCompleted = modules.every((m) => progressState.moduleState[m.id]?.completed)
-  const activeModuleQuiz = progressState.quizVariants?.[selectedModule.id] || selectedModule.quiz || []
-  const moduleQuizResult = scoreQuiz(activeModuleQuiz, selectedModuleState.quizAnswers || {})
+  const activeModuleQuiz = progressState.quizVariants?.[selectedModule.id] || []
+  const moduleQuizResult = scoreQuizServidor(activeModuleQuiz, selectedModuleState.quizAnswers || {})
 
   const answeredQuestionsCount = Object.keys(selectedModuleState.quizAnswers || {}).length
   const totalQuizQuestions = moduleQuizResult.total
@@ -920,25 +927,34 @@ export default function App() {
   }, [videoQuery, selectedVideoSource, selectedVideoModule])
 
   useEffect(() => {
-    const isQuizScreen = screenIndex === selectedModuleContent.length
+    const quizVisivel = currentView === 'module' && sessaoAtiva && screenIndex === selectedModuleContent.length
 
-    if (!isQuizScreen) return
+    if (!quizVisivel || progressState.quizVariants?.[selectedModule.id]) return undefined
 
-    setProgressState((prev) => {
-      if (prev.quizVariants?.[selectedModule.id]) return prev
+    let ativo = true
 
-      return {
-        ...prev,
-        quizVariants: {
-          ...(prev.quizVariants || {}),
-          [selectedModule.id]: randomizeQuiz(
-            getQuizSource(selectedModule),
-            getQuizSize(selectedModule),
-          ),
-        },
-      }
-    })
-  }, [screenIndex, selectedModule.id, selectedModuleContent.length, selectedModule])
+    setCarregandoQuiz(true)
+    setErroQuiz('')
+
+    sortearQuizDoModulo(selectedModule)
+      .then((questoes) => {
+        if (!ativo) return
+        setProgressState((prev) => ({
+          ...prev,
+          quizVariants: { ...(prev.quizVariants || {}), [selectedModule.id]: questoes },
+        }))
+      })
+      .catch((error) => {
+        if (ativo) setErroQuiz(mensagemDeErroServidor(error))
+      })
+      .finally(() => {
+        if (ativo) setCarregandoQuiz(false)
+      })
+
+    return () => {
+      ativo = false
+    }
+  }, [currentView, sessaoAtiva, screenIndex, selectedModule.id, selectedModuleContent.length])
 
   useEffect(() => {
     const isMultQuizScreen = currentView === 'multiplicadores' && multScreenIndex === multiplicadorContent.length
@@ -1198,21 +1214,47 @@ export default function App() {
     setScreenIndex((s) => Math.min(selectedModuleContent.length, s + 1))
   }
 
-  function answerModuleQuiz(idx, answer) {
+  // Sorteio no servidor: as questões chegam sem gabarito, na ordem original das alternativas.
+  async function sortearQuizDoModulo(moduleItem) {
+    const numero = modules.findIndex((m) => m.id === moduleItem.id) + 1
+
+    return sortearQuestoesModulo(numero)
+  }
+
+  // Cada resposta é conferida no servidor. A alternativa fica travada após a primeira resposta.
+  async function answerModuleQuiz(idx, optionIndex) {
+    const questao = activeModuleQuiz[idx]
+
+    if (!questao || respondendoQuiz || selectedModuleState.quizAnswers?.[idx] !== undefined) return
+
+    setRespondendoQuiz(true)
+    setErroQuiz('')
+
+    let resultado
+    try {
+      resultado = await responderQuestaoModulo(questao.id, optionIndex)
+    } catch (error) {
+      setRespondendoQuiz(false)
+      setErroQuiz(mensagemDeErroServidor(error))
+      return
+    }
+
+    setRespondendoQuiz(false)
+
     setProgressState((prev) => {
-      const quizForScoring = prev.quizVariants?.[selectedModule.id] || selectedModule.quiz || []
+      const moduleAtual = prev.moduleState[selectedModule.id]
       const nextAnswers = {
-        ...prev.moduleState[selectedModule.id].quizAnswers,
-        [idx]: answer,
+        ...moduleAtual.quizAnswers,
+        [idx]: { alternativa: optionIndex, correta: resultado.correta },
       }
-      const result = scoreQuiz(quizForScoring, nextAnswers)
+      const result = scoreQuizServidor(prev.quizVariants?.[selectedModule.id] || [], nextAnswers)
 
       return {
         ...prev,
         moduleState: {
           ...prev.moduleState,
           [selectedModule.id]: {
-            ...prev.moduleState[selectedModule.id],
+            ...moduleAtual,
             quizAnswers: nextAnswers,
             quizPassed: result.passed,
           },
@@ -1221,18 +1263,18 @@ export default function App() {
     })
   }
 
-  function retryModuleQuiz() {
-    setProgressState((prev) => {
-      const randomizedQuiz = randomizeQuiz(
-        getQuizSource(selectedModule),
-        getQuizSize(selectedModule),
-      )
+  async function retryModuleQuiz() {
+    setCarregandoQuiz(true)
+    setErroQuiz('')
 
-      return {
+    try {
+      const questoes = await sortearQuizDoModulo(selectedModule)
+
+      setProgressState((prev) => ({
         ...prev,
         quizVariants: {
           ...(prev.quizVariants || {}),
-          [selectedModule.id]: randomizedQuiz,
+          [selectedModule.id]: questoes,
         },
         moduleState: {
           ...prev.moduleState,
@@ -1242,8 +1284,12 @@ export default function App() {
             quizPassed: false,
           },
         },
-      }
-    })
+      }))
+    } catch (error) {
+      setErroQuiz(mensagemDeErroServidor(error))
+    } finally {
+      setCarregandoQuiz(false)
+    }
   }
 
   async function completeModule() {
@@ -3088,9 +3134,19 @@ export default function App() {
 
               {screenIndex === selectedModuleContent.length && (
                 <ScreenCard title={`Quiz do ${selectedModule.shortTitle}`} icon={CheckCircle2}>
+                  {carregandoQuiz ? (
+                    <div className="info-box muted-body" role="status">
+                      Sorteando as questões do módulo...
+                    </div>
+                  ) : null}
+                  {erroQuiz ? (
+                    <div className="warning-text" role="alert">
+                      {erroQuiz}
+                    </div>
+                  ) : null}
                   <div className="stack-lg">
                     {activeModuleQuiz.map((q, idx) => (
-                      <div key={`${selectedModule.id}-${idx}-${q.question}`} className="quiz-box">
+                      <div key={`${selectedModule.id}-${idx}-${q.id}`} className="quiz-box">
                         <div className="quiz-question">
                           {idx + 1}. {q.question}
                         </div>
@@ -3101,7 +3157,8 @@ export default function App() {
                               <input
                                 type="radio"
                                 name={`${selectedModule.id}-${idx}`}
-                                checked={selectedModuleState.quizAnswers[idx] === optionIndex}
+                                checked={selectedModuleState.quizAnswers[idx]?.alternativa === optionIndex}
+                                disabled={respondendoQuiz || selectedModuleState.quizAnswers[idx] !== undefined}
                                 onChange={() => answerModuleQuiz(idx, optionIndex)}
                               />
                               <span>{opt}</span>
