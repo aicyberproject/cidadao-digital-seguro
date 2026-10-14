@@ -36,18 +36,29 @@ export async function validarCertificado(codigoBruto) {
   return { valido: true, tipo: data.tipo }
 }
 
-export function registrarCertificadoEmitido({ codigo, nome, versao }) {
-  if (!supabaseUrl || !supabaseAnonKey) return
+// Emissão do certificado do curso (#130). Exige a sessão do participante: a função confere a tentativa
+// aprovada no banco, pega o nome em participantes e gera o código no servidor. O cliente envia só a versão.
+// Não lança exceção: devolve { codigo, nome } ou null, e quem chama decide a mensagem para o usuário.
+export async function registrarCertificadoEmitido({ accessToken, versao }) {
+  if (!supabaseUrl || !supabaseAnonKey || !accessToken) return null
 
-  fetch(`${supabaseUrl}/functions/v1/emitir-certificado`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      apikey: supabaseAnonKey,
-      Authorization: `Bearer ${supabaseAnonKey}`,
-    },
-    body: JSON.stringify({ codigo, nome, versao }),
-  }).catch(() => {
-    // Falha silenciosa: não deve impedir a emissão local do PDF do certificado.
-  })
+  try {
+    const resposta = await fetch(`${supabaseUrl}/functions/v1/emitir-certificado`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ versao }),
+    })
+
+    const dados = await resposta.json().catch(() => null)
+
+    if (!resposta.ok || !dados?.ok || !dados.codigo) return null
+
+    return { codigo: dados.codigo, nome: dados.nome || '' }
+  } catch {
+    return null
+  }
 }
