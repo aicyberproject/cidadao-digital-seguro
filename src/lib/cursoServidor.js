@@ -69,6 +69,57 @@ export async function sortearQuestoesModulo(numeroModulo) {
   return (data || []).map(paraQuestaoUI)
 }
 
+// Situação do quiz final: o participante tem alguma tentativa aprovada? (RLS: só as próprias linhas.)
+export async function carregarSituacaoFinal(userId) {
+  const cliente = exigirCliente()
+  const { data, error } = await cliente
+    .from('tentativas_quiz_final')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('aprovada', true)
+    .limit(1)
+
+  if (error) throw error
+
+  return (data || []).length > 0
+}
+
+// Abre uma tentativa do quiz final (ou retoma a que estiver aberta). O servidor confere os seis módulos.
+export async function iniciarQuizFinal() {
+  const cliente = exigirCliente()
+  const { data, error } = await cliente.rpc('iniciar_quiz_final')
+
+  if (error) throw error
+
+  return {
+    tentativaId: Number(data.tentativa_id),
+    numero: Number(data.numero),
+    total: Number(data.total),
+    notaMinima: Number(data.nota_minima),
+    perguntas: (data.perguntas || []).map((item) => ({ ...paraQuestaoUI(item), modulo: Number(item.modulo) })),
+  }
+}
+
+// Envia as 18 respostas: [{ pergunta_id, alternativa }]. Devolve acertos e aprovação, sem gabarito.
+export async function enviarQuizFinal(tentativaId, respostas) {
+  const cliente = exigirCliente()
+  const { data, error } = await cliente.rpc('enviar_quiz_final', {
+    p_tentativa_id: tentativaId,
+    p_respostas: respostas,
+  })
+
+  if (error) throw error
+
+  return {
+    tentativaId: Number(data.tentativa_id),
+    numero: Number(data.numero),
+    acertos: Number(data.acertos),
+    total: Number(data.total),
+    notaMinima: Number(data.nota_minima),
+    aprovada: data.aprovada === true,
+  }
+}
+
 // Confere uma resposta de treino. Só o indicador `correta` sai daqui; o gabarito fica no servidor.
 export async function responderQuestaoModulo(questaoId, alternativa) {
   const cliente = exigirCliente()
