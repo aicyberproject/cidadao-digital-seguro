@@ -21,6 +21,7 @@ import {
   AlertOctagon,
   GraduationCap,
   Lock,
+  LogOut,
 } from 'lucide-react'
 
 import { courseIntro } from './content/courseIntro'
@@ -33,7 +34,8 @@ import { videoLibrary } from './content/videoLibrary'
 import { practicalChecklists, checklistCategories, checklistModules } from './content/checklists'
 import { quickSimulations, simulationCategories, simulationModules } from './content/simulations'
 import { moduloMultiplicador } from './content/moduloMultiplicador'
-import { validarCertificado, registrarCertificadoEmitido } from './lib/supabaseClient'
+import { supabase, validarCertificado, registrarCertificadoEmitido } from './lib/supabaseClient'
+import { AcessoCurso } from './components/AcessoCurso'
 import { CharacterAvatar } from './components/CharacterAvatar'
 import { ScamAlertBlock, SpecialistWordBlock, LudicTransition } from './components/LudicBlocks'
 import packageInfo from '../package.json'
@@ -42,6 +44,9 @@ const STORAGE_KEY = 'cidadao-digital-seguro-progress-v2'
 const COURSE_VERSION = packageInfo.version
 const CERTIFICATE_WORKLOAD = '12 a 18 horas'
 const FINAL_ASSESSMENT_VERSION = createFinalAssessmentVersion(finalAssessment)
+// Views que exigem sessão (módulos, revisão, avaliação final e certificado). Glossário, biblioteca,
+// vídeos, checklists, simulações e multiplicadores continuam públicos.
+const PRIVATE_VIEWS = ['module', 'final-review', 'final-assessment', 'certificate']
 const MODULE_LOCKED_MESSAGE = 'Conclua o módulo anterior para liberar esta etapa.'
 const FINAL_ASSESSMENT_LOCKED_MESSAGE = 'Conclua todos os módulos para liberar a avaliação final.'
 
@@ -572,11 +577,43 @@ export default function App() {
   const [multAccessCode, setMultAccessCode] = useState('')
   const [multAccessError, setMultAccessError] = useState('')
   const [multAccessChecking, setMultAccessChecking] = useState(false)
+  const [session, setSession] = useState(null)
+  const [authPronto, setAuthPronto] = useState(!supabase)
+  const [recoveryMode, setRecoveryMode] = useState(false)
 
   useEffect(() => {
     const loaded = loadProgress()
     if (loaded) setProgressState(normalizeProgress(loaded))
   }, [])
+
+  useEffect(() => {
+    if (!supabase) return undefined
+
+    let ativo = true
+
+    supabase.auth.getSession().then(({ data }) => {
+      if (!ativo) return
+      setSession(data?.session ?? null)
+      setAuthPronto(true)
+    })
+
+    const { data: listener } = supabase.auth.onAuthStateChange((event, nextSession) => {
+      if (!ativo) return
+      if (event === 'PASSWORD_RECOVERY') setRecoveryMode(true)
+      if (event === 'SIGNED_OUT') setRecoveryMode(false)
+      setSession(nextSession ?? null)
+      setAuthPronto(true)
+    })
+
+    return () => {
+      ativo = false
+      listener.subscription.unsubscribe()
+    }
+  }, [])
+
+  const sessaoAtiva = !!session && !recoveryMode
+  const viewPrivada = PRIVATE_VIEWS.includes(currentView)
+  const mostrarAcesso = authPronto && (recoveryMode || (!sessaoAtiva && (currentView === 'home' || viewPrivada)))
 
   useEffect(() => {
     saveProgress(progressState)
@@ -1029,6 +1066,13 @@ export default function App() {
     setScreenIndex(0)
   }
 
+  async function sair() {
+    if (supabase) await supabase.auth.signOut()
+    setProgressState(defaultProgress())
+    setCurrentView('home')
+    setScreenIndex(0)
+  }
+
   function markSeen(itemIndex) {
     setProgressState((prev) => ({
       ...prev,
@@ -1441,6 +1485,11 @@ export default function App() {
           >
             <GraduationCap size={16} aria-hidden="true" focusable="false" /> Multiplicadores
           </button>
+          {sessaoAtiva ? (
+            <button className="button button-outline" onClick={sair}>
+              <LogOut size={16} aria-hidden="true" focusable="false" /> Sair
+            </button>
+          ) : null}
           <button className="button button-outline" onClick={resetCourse}>
             <RotateCcw size={16} aria-hidden="true" focusable="false" /> Reiniciar
           </button>
@@ -1476,12 +1525,12 @@ export default function App() {
                       isActiveModule ? 'module-chip-active' : '',
                     ].filter(Boolean).join(' ')}
                     onClick={() => {
-                      if (!state.unlocked) return
+                      if (!sessaoAtiva || !state.unlocked) return
                       setSelectedModuleId(m.id)
                       setCurrentView('module')
                       setScreenIndex(0)
                     }}
-                    disabled={!state.unlocked}
+                    disabled={!sessaoAtiva || !state.unlocked}
                     aria-label={`Módulo ${idx + 1}: ${m.shortTitle}. ${moduleStatusLabel}`}
                   >
                     <div className="module-chip-head">
@@ -1516,7 +1565,7 @@ export default function App() {
 
                 <button
                   className="button full"
-                  disabled={!allModulesCompleted}
+                  disabled={!sessaoAtiva || !allModulesCompleted}
                   onClick={() => setCurrentView('final-review')}
                   aria-label={allModulesCompleted ? 'Ir para a revisão final' : `Avaliação final bloqueada. ${FINAL_ASSESSMENT_LOCKED_MESSAGE}`}
                 >
@@ -1529,7 +1578,27 @@ export default function App() {
         </aside>
 
         <main id="conteudo-principal" className="content-column" tabIndex={-1}>
-          {currentView === 'home' && (
+          {!authPronto && supabase ? <p className="muted-body">Verificando sua sessão...</p> : null}
+
+          {mostrarAcesso ? (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
+              {viewPrivada && !recoveryMode ? (
+                <div className="info-box muted-body" role="status">
+                  Esta etapa exige login. Entre na sua conta ou crie uma para continuar.
+                </div>
+              ) : null}
+              <AcessoCurso
+                supabase={supabase}
+                courseIntro={courseIntro}
+                cargaHoraria={CERTIFICATE_WORKLOAD}
+                apresentacao={currentView === 'home' && !recoveryMode}
+                recoveryMode={recoveryMode}
+                onRecoveryDone={() => setRecoveryMode(false)}
+              />
+            </motion.div>
+          ) : null}
+
+          {currentView === 'home' && sessaoAtiva && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
               <ScreenCard title="Bem-vindo ao curso" icon={Shield}>
                 <p className="muted-body">{courseIntro.description}</p>
@@ -2755,7 +2824,7 @@ export default function App() {
             </ScreenCard>
           )}
 
-          {currentView === 'module' && selectedModule && (
+          {currentView === 'module' && selectedModule && sessaoAtiva && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
               <ScreenCard title={selectedModule.title} icon={selectedModule.icon}>
                 <p className="muted-body">{selectedModule.subtitle || selectedModule.theme}</p>
@@ -3062,7 +3131,7 @@ export default function App() {
             </motion.div>
           )}
 
-          {currentView === 'final-review' && (
+          {currentView === 'final-review' && sessaoAtiva && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
               <ScreenCard title="Revisão geral do curso" icon={BookOpen}>
                 <p className="muted-body">
@@ -3085,7 +3154,7 @@ export default function App() {
             </motion.div>
           )}
 
-          {currentView === 'final-assessment' && (
+          {currentView === 'final-assessment' && sessaoAtiva && (
             <ScreenCard title="Avaliação final integradora" icon={Award}>
               <p className="muted-body">
                 Estudo de caso transversal para verificar identificação do golpe, falhas preventivas, ordem correta da reação, preservação de provas e escolha do canal institucional adequado.
@@ -3182,7 +3251,7 @@ export default function App() {
             </ScreenCard>
           )}
 
-          {currentView === 'certificate' && (
+          {currentView === 'certificate' && sessaoAtiva && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
               <ScreenCard title="Certificação" icon={Award}>
                 <div className="certificate-box">
