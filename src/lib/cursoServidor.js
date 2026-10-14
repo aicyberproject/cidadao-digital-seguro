@@ -48,3 +48,36 @@ export async function concluirModuloNoServidor(numeroModulo) {
 
   if (error) throw error
 }
+
+// Formato usado pela interface: `options` mantém a ordem original de alternativas, e a posição
+// escolhida é a que vai para o servidor.
+export function paraQuestaoUI(item) {
+  return {
+    id: Number(item.id),
+    question: String(item.enunciado || ''),
+    options: Array.isArray(item.alternativas) ? item.alternativas.map((texto) => String(texto)) : [],
+  }
+}
+
+// Sorteio de 10 questões de treino do módulo. Não traz a alternativa correta.
+export async function sortearQuestoesModulo(numeroModulo) {
+  const cliente = exigirCliente()
+  const { data, error } = await cliente.rpc('sortear_questoes_modulo', { p_modulo: numeroModulo })
+
+  if (error) throw error
+
+  return (data || []).map(paraQuestaoUI)
+}
+
+// Confere uma resposta de treino. Só o indicador `correta` sai daqui; o gabarito fica no servidor.
+export async function responderQuestaoModulo(questaoId, alternativa) {
+  const cliente = exigirCliente()
+  const { data, error } = await cliente.rpc('responder_questao_modulo', {
+    p_questao_id: questaoId,
+    p_alternativa: alternativa,
+  })
+
+  if (error) throw error
+
+  return { correta: data?.correta === true }
+}
