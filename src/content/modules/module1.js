@@ -1,5 +1,4 @@
 import { Shield } from 'lucide-react'
-import { questionBank } from '../questionBank'
 
 const module1Resources = [
   {
@@ -211,7 +210,5 @@ export const module1 = {
       'Primeira resposta e preservação de evidências',
     ],
   },
-  questionBank: questionBank.m1,
   quizSize: 10,
-  quiz: questionBank.m1.slice(0, 10),
 }
