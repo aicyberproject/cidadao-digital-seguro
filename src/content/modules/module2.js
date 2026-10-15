@@ -1,5 +1,4 @@
 import { Lock } from 'lucide-react'
-import { questionBank } from '../questionBank'
 
 const module2Resources = [
   {
@@ -221,7 +220,5 @@ export const module2 = {
       'Privacidade, permissões e minimização de dados',
     ],
   },
-  questionBank: questionBank.m2,
   quizSize: 10,
-  quiz: questionBank.m2.slice(0, 10),
 }
