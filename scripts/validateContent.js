@@ -5,10 +5,10 @@ import { createServer } from 'vite'
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
+// Questões de quiz não ficam no bundle: são servidas pelo Supabase (#130). Por isso não há mais
+// carregamento de banco de questões nem de avaliação final aqui.
 const contentModules = {
   modules: '/src/content/modules/index.js',
-  questionBank: '/src/content/questionBank/index.js',
-  finalAssessment: '/src/content/finalAssessment.js',
   glossary: '/src/content/glossary.js',
   library: '/src/content/library.js',
   videos: '/src/content/videos.js',
@@ -195,8 +195,6 @@ async function loadContent() {
   try {
     const [
       modulesModule,
-      questionBankModule,
-      finalAssessmentModule,
       glossaryModule,
       libraryModule,
       videosModule,
@@ -205,8 +203,6 @@ async function loadContent() {
       videoLibraryModule,
     ] = await Promise.all([
       server.ssrLoadModule(contentModules.modules),
-      server.ssrLoadModule(contentModules.questionBank),
-      server.ssrLoadModule(contentModules.finalAssessment),
       server.ssrLoadModule(contentModules.glossary),
       server.ssrLoadModule(contentModules.library),
       server.ssrLoadModule(contentModules.videos),
@@ -217,8 +213,6 @@ async function loadContent() {
 
     return {
       modules: modulesModule.modules,
-      questionBank: questionBankModule.questionBank,
-      finalAssessment: finalAssessmentModule.finalAssessment,
       glossary: {
         categories: glossaryModule.glossaryCategories,
         entries: glossaryModule.glossaryEntries,
@@ -252,43 +246,9 @@ async function loadContent() {
   }
 }
 
-function validateQuestion(questionItem, context, errors) {
-  if (!isPresent(questionItem?.question)) {
-    errors.push(`${context}: question obrigatorio ausente.`)
-  }
-
-  if (!Array.isArray(questionItem?.options)) {
-    errors.push(`${context}: options deve ser array.`)
-  } else if (questionItem.options.length < 4) {
-    errors.push(`${context}: options deve ter pelo menos 4 alternativas.`)
-  }
-
-  if (typeof questionItem?.answer !== 'number' || Number.isNaN(questionItem.answer)) {
-    errors.push(`${context}: answer deve ser number.`)
-    return
-  }
-
-  if (
-    !Number.isInteger(questionItem.answer) ||
-    !Array.isArray(questionItem?.options) ||
-    questionItem.answer < 0 ||
-    questionItem.answer >= questionItem.options.length
-  ) {
-    errors.push(`${context}: answer deve apontar para indice valido em options.`)
-  }
-}
-
-function validateModule(moduleItem, index, questionBankIndex, report) {
-  const { errors, warnings, moduleQuestionTotals } = report
+function validateModule(moduleItem, index, report) {
+  const { errors, warnings } = report
   const label = getModuleLabel(moduleItem, index)
-  const questionCount = Array.isArray(moduleItem?.questionBank)
-    ? moduleItem.questionBank.length
-    : 0
-
-  moduleQuestionTotals.push({
-    label,
-    total: questionCount,
-  })
 
   if (!isPresent(moduleItem?.id)) {
     errors.push(`${label}: id obrigatorio ausente.`)
@@ -340,16 +300,7 @@ function validateModule(moduleItem, index, questionBankIndex, report) {
     )
   }
 
-  if (!Array.isArray(moduleItem?.questionBank)) {
-    errors.push(`${label}: questionBank obrigatorio deve ser array.`)
-  }
-
-  if (moduleItem?.id && questionBankIndex && !Array.isArray(questionBankIndex[moduleItem.id])) {
-    warnings.push(
-      `${label}: src/content/questionBank/index.js nao possui array para o id ${moduleItem.id}.`,
-    )
-  }
-
+  // quizSize informa quantas questões o servidor sorteia para o módulo (sorteio feito pela RPC).
   const hasValidQuizSize =
     typeof moduleItem?.quizSize === 'number' &&
     Number.isFinite(moduleItem.quizSize) &&
@@ -359,26 +310,11 @@ function validateModule(moduleItem, index, questionBankIndex, report) {
     errors.push(`${label}: quizSize obrigatorio deve ser maior que 0.`)
   }
 
-  if (
-    Array.isArray(moduleItem?.questionBank) &&
-    hasValidQuizSize &&
-    moduleItem.questionBank.length < moduleItem.quizSize
-  ) {
-    errors.push(`${label}: questionBank.length deve ser maior ou igual a quizSize.`)
-  }
-
-  if ('quiz' in (moduleItem || {}) && !Array.isArray(moduleItem.quiz)) {
-    errors.push(`${label}: quiz fallback, se existir, deve ser array.`)
-  }
-
-  if (Array.isArray(moduleItem?.questionBank)) {
-    moduleItem.questionBank.forEach((questionItem, questionIndex) => {
-      validateQuestion(
-        questionItem,
-        `${label} questao ${questionIndex + 1}`,
-        errors,
-      )
-    })
+  // Gabarito não pode estar no bundle: o quiz do módulo vem do servidor (#130).
+  if ('questionBank' in (moduleItem || {}) || 'quiz' in (moduleItem || {})) {
+    errors.push(
+      `${label}: questoes nao podem ficar no bundle. Remova questionBank/quiz; o quiz e servido pelo Supabase (#130).`,
+    )
   }
 
   const linkCollections = [
@@ -738,8 +674,6 @@ function validateVideoLibrary(videoLibrary, report) {
 
 function validateContent({
   modules,
-  questionBank,
-  finalAssessment,
   glossary,
   library,
   videos,
@@ -751,8 +685,6 @@ function validateContent({
     errors: [],
     warnings: [],
     totalModules: Array.isArray(modules) ? modules.length : 0,
-    moduleQuestionTotals: [],
-    totalFinalAssessment: Array.isArray(finalAssessment) ? finalAssessment.length : 0,
     resourceTotals: [],
   }
 
@@ -760,25 +692,7 @@ function validateContent({
     report.errors.push('src/content/modules/index.js deve exportar modules como array.')
   } else {
     modules.forEach((moduleItem, index) => {
-      validateModule(moduleItem, index, questionBank, report)
-    })
-  }
-
-  if (!questionBank || typeof questionBank !== 'object' || Array.isArray(questionBank)) {
-    report.warnings.push('src/content/questionBank/index.js nao exporta questionBank como objeto.')
-  }
-
-  if (!Array.isArray(finalAssessment)) {
-    report.errors.push('finalAssessment deve ser array.')
-  } else if (finalAssessment.length === 0) {
-    report.errors.push('finalAssessment deve ter ao menos 1 questao.')
-  } else {
-    finalAssessment.forEach((questionItem, questionIndex) => {
-      validateQuestion(
-        questionItem,
-        `Avaliacao final questao ${questionIndex + 1}`,
-        report.errors,
-      )
+      validateModule(moduleItem, index, report)
     })
   }
 
@@ -813,10 +727,6 @@ function printReport(report) {
 
   console.log('\nTotais')
   console.log(`- Total de modulos: ${report.totalModules}`)
-  report.moduleQuestionTotals.forEach(({ label, total }) => {
-    console.log(`- ${label}: ${total} questoes`)
-  })
-  console.log(`- Total da avaliacao final: ${report.totalFinalAssessment}`)
   report.resourceTotals.forEach(({ label, total }) => {
     console.log(`- ${label}: ${total} itens`)
   })

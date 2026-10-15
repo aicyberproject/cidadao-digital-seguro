@@ -21,11 +21,11 @@ import {
   AlertOctagon,
   GraduationCap,
   Lock,
+  LogOut,
 } from 'lucide-react'
 
 import { courseIntro } from './content/courseIntro'
 import { modules } from './content/modules'
-import { finalAssessment } from './content/finalAssessment'
 import { glossaryCategories, glossaryEntries } from './content/glossary'
 import { libraryDocuments, librarySources, libraryCategories, libraryTypes } from './content/library'
 import { educationalVideos, videoModules, videoSources, videoThemes } from './content/videos'
@@ -33,34 +33,38 @@ import { videoLibrary } from './content/videoLibrary'
 import { practicalChecklists, checklistCategories, checklistModules } from './content/checklists'
 import { quickSimulations, simulationCategories, simulationModules } from './content/simulations'
 import { moduloMultiplicador } from './content/moduloMultiplicador'
-import { validarCertificado, registrarCertificadoEmitido } from './lib/supabaseClient'
+import { supabase, validarCertificado, registrarCertificadoEmitido } from './lib/supabaseClient'
+import { AcessoCurso } from './components/AcessoCurso'
+import {
+  carregarModulosConcluidos,
+  carregarSituacaoFinal,
+  concluirModuloNoServidor,
+  enviarQuizFinal,
+  iniciarQuizFinal,
+  mensagemDeErroServidor,
+  responderQuestaoModulo,
+  responderQuestaoMultiplicador,
+  sortearQuestoesModulo,
+  sortearQuestoesMultiplicador,
+} from './lib/cursoServidor'
 import { CharacterAvatar } from './components/CharacterAvatar'
 import { ScamAlertBlock, SpecialistWordBlock, LudicTransition } from './components/LudicBlocks'
 import packageInfo from '../package.json'
 
-const STORAGE_KEY = 'cidadao-digital-seguro-progress-v2'
+// Progresso dos módulos vem do servidor (concluir_modulo / progresso_modulos). No navegador fica só um
+// cache de tela, por usuário, com as etapas lidas e os checks de atividade. O progresso local antigo
+// (v2, sem conta) é descartado.
+const STORAGE_KEY_ANTIGA = 'cidadao-digital-seguro-progress-v2'
+const CACHE_TELA_PREFIXO = 'cds-cache-tela-v1:'
 const COURSE_VERSION = packageInfo.version
 const CERTIFICATE_WORKLOAD = '12 a 18 horas'
-const FINAL_ASSESSMENT_VERSION = createFinalAssessmentVersion(finalAssessment)
+// Limite de tentativas da avaliação final: mesmo valor da RPC iniciar_quiz_final (2 tentativas).
+const TENTATIVAS_FINAL_MAX = 2
+// Views que exigem sessão (módulos, revisão, avaliação final e certificado). Glossário, biblioteca,
+// vídeos, checklists, simulações e multiplicadores continuam públicos.
+const PRIVATE_VIEWS = ['module', 'final-review', 'final-assessment', 'certificate']
 const MODULE_LOCKED_MESSAGE = 'Conclua o módulo anterior para liberar esta etapa.'
 const FINAL_ASSESSMENT_LOCKED_MESSAGE = 'Conclua todos os módulos para liberar a avaliação final.'
-
-function createFinalAssessmentVersion(assessment) {
-  const source = assessment
-    .map(({ question, options, answer }) => {
-      const optionText = Array.isArray(options) ? options.join('|') : ''
-
-      return `${question}|${optionText}|${answer}`
-    })
-    .join('||')
-  let hash = 0
-
-  for (let i = 0; i < source.length; i += 1) {
-    hash = (hash * 31 + source.charCodeAt(i)) >>> 0
-  }
-
-  return `${assessment.length}-${hash.toString(36)}`
-}
 
 function formatCertificateDate(date) {
   return date.toLocaleDateString('pt-BR', {
@@ -70,42 +74,53 @@ function formatCertificateDate(date) {
   })
 }
 
-function createCertificateCode(name, date, timestamp) {
-  const source = `${name.trim().toLowerCase()}|${date.toISOString().slice(0, 10)}|${timestamp}`
-  let hash = 0
-
-  for (let i = 0; i < source.length; i += 1) {
-    hash = (hash * 31 + source.charCodeAt(i)) >>> 0
-  }
-
-  return `CDS-${COURSE_VERSION.replace(/\D/g, '')}-${hash.toString(36).toUpperCase().padStart(7, '0')}`
-}
-
-function loadProgress() {
+function lerCacheTela(userId) {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return null
-    return JSON.parse(raw)
+    const raw = window.localStorage.getItem(`${CACHE_TELA_PREFIXO}${userId}`)
+    return raw ? JSON.parse(raw) : null
   } catch {
     return null
   }
 }
 
-function saveProgress(data) {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify({
-      ...data,
-      finalAssessmentVersion: FINAL_ASSESSMENT_VERSION,
-    }),
-  )
+function gravarCacheTela(userId, progress) {
+  try {
+    window.localStorage.setItem(
+      `${CACHE_TELA_PREFIXO}${userId}`,
+      JSON.stringify({
+        started: !!progress.started,
+        moduleState: Object.fromEntries(
+          modules.map((m) => [
+            m.id,
+            {
+              contentSeen: progress.moduleState[m.id]?.contentSeen || {},
+              checklist: progress.moduleState[m.id]?.checklist || {},
+              activityDone: !!progress.moduleState[m.id]?.activityDone,
+              videoDone: !!progress.moduleState[m.id]?.videoDone,
+            },
+          ]),
+        ),
+      }),
+    )
+  } catch {
+    // Cache de tela: a falha não deve impedir o uso do curso.
+  }
 }
 
-function shuffleArray(items) {
-  return [...items]
-    .map((item) => ({ item, sort: Math.random() }))
-    .sort((a, b) => a.sort - b.sort)
-    .map(({ item }) => item)
+function removerCacheTela(userId) {
+  try {
+    window.localStorage.removeItem(`${CACHE_TELA_PREFIXO}${userId}`)
+  } catch {
+    // Mesmo critério do cache de tela.
+  }
+}
+
+function descartarProgressoAntigo() {
+  try {
+    window.localStorage.removeItem(STORAGE_KEY_ANTIGA)
+  } catch {
+    // Sem acesso ao armazenamento local, não há nada a descartar.
+  }
 }
 
 function normalizeSearchText(value) {
@@ -141,39 +156,12 @@ function getVideoStatusLabel(status) {
   return map[status] || status
 }
 
-function getQuizSource(moduleItem) {
-  if (Array.isArray(moduleItem.questionBank) && moduleItem.questionBank.length > 0) {
-    return moduleItem.questionBank
-  }
-
-  if (Array.isArray(moduleItem.quiz) && moduleItem.quiz.length > 0) {
-    return moduleItem.quiz
-  }
-
-  return []
-}
-
 function getQuizSize(moduleItem) {
   if (typeof moduleItem.quizSize === 'number' && moduleItem.quizSize > 0) {
     return moduleItem.quizSize
   }
 
   return 10
-}
-
-function randomizeQuiz(quizSource, size = 10) {
-  const selectedQuestions = shuffleArray(quizSource).slice(0, Math.min(size, quizSource.length))
-
-  return selectedQuestions.map((questionItem) => {
-    const correctOption = questionItem.options[questionItem.answer]
-    const shuffledOptions = shuffleArray(questionItem.options)
-
-    return {
-      ...questionItem,
-      options: shuffledOptions,
-      answer: shuffledOptions.indexOf(correctOption),
-    }
-  })
 }
 
 function getModuleContent(moduleItem) {
@@ -274,8 +262,6 @@ function defaultProgress() {
     introSeen: false,
     moduleState,
     quizVariants: {},
-    finalAssessmentAnswers: {},
-    finalAssessmentVersion: FINAL_ASSESSMENT_VERSION,
     finalAssessmentPassed: false,
     certificateUnlocked: false,
     multAccessCodigo: null,
@@ -292,70 +278,37 @@ function defaultProgress() {
   }
 }
 
-function normalizeProgress(loaded) {
+// Monta o progresso a partir do servidor. `concluidos` tem os números de módulo (1 a 6) concluídos.
+// `cache` traz só as etapas de tela (lidas, checklists, atividade e vídeo) deste usuário.
+function montarProgresso(concluidos, cache, aprovadaFinal) {
   const fresh = defaultProgress()
 
-  if (!loaded || typeof loaded !== 'object') return fresh
+  const moduleState = Object.fromEntries(
+    modules.map((moduleItem, index) => {
+      const completed = concluidos.has(index + 1)
+      const ui = cache?.moduleState?.[moduleItem.id] || {}
 
-  const normalizedModuleState = { ...fresh.moduleState }
-
-  modules.forEach((moduleItem) => {
-    normalizedModuleState[moduleItem.id] = {
-      ...fresh.moduleState[moduleItem.id],
-      ...(loaded.moduleState?.[moduleItem.id] || {}),
-      contentSeen: {
-        ...fresh.moduleState[moduleItem.id].contentSeen,
-        ...(loaded.moduleState?.[moduleItem.id]?.contentSeen || {}),
-      },
-      checklist: {
-        ...fresh.moduleState[moduleItem.id].checklist,
-        ...(loaded.moduleState?.[moduleItem.id]?.checklist || {}),
-      },
-      quizAnswers: {
-        ...fresh.moduleState[moduleItem.id].quizAnswers,
-        ...(loaded.moduleState?.[moduleItem.id]?.quizAnswers || {}),
-      },
-    }
-  })
-
-  const finalAssessmentVersionMatches =
-    loaded.finalAssessmentVersion === FINAL_ASSESSMENT_VERSION
-  const finalAssessmentAnswers = finalAssessmentVersionMatches
-    ? loaded.finalAssessmentAnswers || {}
-    : {}
-  const finalAssessmentPassed = finalAssessmentVersionMatches
-    ? scoreQuiz(finalAssessment, finalAssessmentAnswers).passed
-    : false
-
-  const multState = {
-    ...fresh.multState,
-    ...(loaded.multState || {}),
-    contentSeen: {
-      ...fresh.multState.contentSeen,
-      ...(loaded.multState?.contentSeen || {}),
-    },
-    checklist: {
-      ...fresh.multState.checklist,
-      ...(loaded.multState?.checklist || {}),
-    },
-    quizAnswers: {
-      ...fresh.multState.quizAnswers,
-      ...(loaded.multState?.quizAnswers || {}),
-    },
-  }
+      return [
+        moduleItem.id,
+        {
+          ...fresh.moduleState[moduleItem.id],
+          unlocked: index === 0 || concluidos.has(index) || completed,
+          completed,
+          contentSeen: ui.contentSeen || {},
+          checklist: ui.checklist || {},
+          activityDone: !!ui.activityDone,
+          videoDone: !!ui.videoDone,
+        },
+      ]
+    }),
+  )
 
   return {
     ...fresh,
-    ...loaded,
-    moduleState: normalizedModuleState,
-    quizVariants: loaded.quizVariants || {},
-    finalAssessmentAnswers,
-    finalAssessmentVersion: FINAL_ASSESSMENT_VERSION,
-    finalAssessmentPassed,
-    certificateUnlocked: finalAssessmentPassed,
-    multState,
-    multQuizVariant: loaded.multQuizVariant || null,
-    multAccessCodigo: loaded.multAccessCodigo || null,
+    started: !!cache?.started || concluidos.size > 0,
+    moduleState,
+    finalAssessmentPassed: aprovadaFinal,
+    certificateUnlocked: aprovadaFinal,
   }
 }
 
@@ -411,11 +364,12 @@ function getResumeTarget(progressState) {
   return { view: 'module', moduleId: pendingModule.id, screenIndex: 0 }
 }
 
-function scoreQuiz(quiz, answers) {
+// Pontuação de quiz cujas respostas vêm do servidor: cada entrada guarda `correta`, conferida pela RPC.
+function scoreQuizServidor(quiz, answers) {
   let correct = 0
 
-  quiz.forEach((q, i) => {
-    if (answers[i] === q.answer) correct += 1
+  quiz.forEach((_, i) => {
+    if (answers[i]?.correta === true) correct += 1
   })
 
   return {
@@ -455,8 +409,7 @@ function ModuleProgress({ mod, state }) {
     ? Object.values(state.contentSeen).filter(Boolean).length
     : 0
 
-  const quizSource = getQuizSource(mod)
-  const totalQuestions = Array.isArray(quizSource) ? Math.min(getQuizSize(mod), quizSource.length) : 0
+  const totalQuestions = getQuizSize(mod)
 
   const answeredQuestions = state?.quizAnswers
     ? Object.keys(state.quizAnswers).length
@@ -548,7 +501,15 @@ export default function App() {
   const [currentView, setCurrentView] = useState('home')
   const [selectedModuleId, setSelectedModuleId] = useState(modules[0].id)
   const [screenIndex, setScreenIndex] = useState(0)
-  const [participantName, setParticipantName] = useState('')
+  const [quizFinal, setQuizFinal] = useState(null)
+  const [respostasFinal, setRespostasFinal] = useState({})
+  const [resultadoFinal, setResultadoFinal] = useState(null)
+  const [carregandoFinal, setCarregandoFinal] = useState(false)
+  const [enviandoFinal, setEnviandoFinal] = useState(false)
+  const [erroFinal, setErroFinal] = useState('')
+  const [certificado, setCertificado] = useState(null)
+  const [emitindoCertificado, setEmitindoCertificado] = useState(false)
+  const [erroCertificado, setErroCertificado] = useState('')
   const [glossaryQuery, setGlossaryQuery] = useState('')
   const [selectedGlossaryCategory, setSelectedGlossaryCategory] = useState('Todos')
   const [libraryQuery, setLibraryQuery] = useState('')
@@ -572,15 +533,87 @@ export default function App() {
   const [multAccessCode, setMultAccessCode] = useState('')
   const [multAccessError, setMultAccessError] = useState('')
   const [multAccessChecking, setMultAccessChecking] = useState(false)
+  const [session, setSession] = useState(null)
+  const [authPronto, setAuthPronto] = useState(!supabase)
+  const [recoveryMode, setRecoveryMode] = useState(false)
+
+  const userId = session?.user?.id ?? null
+  const [progressoCarregado, setProgressoCarregado] = useState(false)
+  const [erroProgresso, setErroProgresso] = useState('')
+  const [erroModulo, setErroModulo] = useState('')
+  const [concluindoModulo, setConcluindoModulo] = useState(false)
+  const [versaoProgresso, setVersaoProgresso] = useState(0)
+  const [carregandoQuiz, setCarregandoQuiz] = useState(false)
+  const [erroQuiz, setErroQuiz] = useState('')
+  const [respondendoQuiz, setRespondendoQuiz] = useState(false)
+  const [carregandoMultQuiz, setCarregandoMultQuiz] = useState(false)
+  const [erroMultQuiz, setErroMultQuiz] = useState('')
+  const [respondendoMultQuiz, setRespondendoMultQuiz] = useState(false)
 
   useEffect(() => {
-    const loaded = loadProgress()
-    if (loaded) setProgressState(normalizeProgress(loaded))
+    descartarProgressoAntigo()
   }, [])
 
   useEffect(() => {
-    saveProgress(progressState)
-  }, [progressState])
+    if (!userId || !supabase) {
+      setProgressoCarregado(false)
+      return undefined
+    }
+
+    let ativo = true
+
+    setProgressoCarregado(false)
+    setErroProgresso('')
+
+    Promise.all([carregarModulosConcluidos(userId), carregarSituacaoFinal(userId)])
+      .then(([concluidos, aprovadaFinal]) => {
+        if (!ativo) return
+        setProgressState(montarProgresso(concluidos, lerCacheTela(userId), aprovadaFinal))
+        setProgressoCarregado(true)
+      })
+      .catch((error) => {
+        if (!ativo) return
+        setErroProgresso(mensagemDeErroServidor(error))
+      })
+
+    return () => {
+      ativo = false
+    }
+  }, [userId, versaoProgresso])
+
+  useEffect(() => {
+    if (!userId || !progressoCarregado) return
+    gravarCacheTela(userId, progressState)
+  }, [userId, progressoCarregado, progressState])
+
+  useEffect(() => {
+    if (!supabase) return undefined
+
+    let ativo = true
+
+    supabase.auth.getSession().then(({ data }) => {
+      if (!ativo) return
+      setSession(data?.session ?? null)
+      setAuthPronto(true)
+    })
+
+    const { data: listener } = supabase.auth.onAuthStateChange((event, nextSession) => {
+      if (!ativo) return
+      if (event === 'PASSWORD_RECOVERY') setRecoveryMode(true)
+      if (event === 'SIGNED_OUT') setRecoveryMode(false)
+      setSession(nextSession ?? null)
+      setAuthPronto(true)
+    })
+
+    return () => {
+      ativo = false
+      listener.subscription.unsubscribe()
+    }
+  }, [])
+
+  const sessaoAtiva = !!session && !recoveryMode
+  const viewPrivada = PRIVATE_VIEWS.includes(currentView)
+  const mostrarAcesso = authPronto && (recoveryMode || (!sessaoAtiva && (currentView === 'home' || viewPrivada)))
 
   const selectedModule = useMemo(
     () => modules.find((m) => m.id === selectedModuleId) || modules[0],
@@ -596,8 +629,8 @@ export default function App() {
   const totalContentSteps = selectedModuleContent.length
 
   const allModulesCompleted = modules.every((m) => progressState.moduleState[m.id]?.completed)
-  const activeModuleQuiz = progressState.quizVariants?.[selectedModule.id] || selectedModule.quiz || []
-  const moduleQuizResult = scoreQuiz(activeModuleQuiz, selectedModuleState.quizAnswers || {})
+  const activeModuleQuiz = progressState.quizVariants?.[selectedModule.id] || []
+  const moduleQuizResult = scoreQuizServidor(activeModuleQuiz, selectedModuleState.quizAnswers || {})
 
   const answeredQuestionsCount = Object.keys(selectedModuleState.quizAnswers || {}).length
   const totalQuizQuestions = moduleQuizResult.total
@@ -627,8 +660,8 @@ export default function App() {
   const multTotalSteps = multiplicadorContent.length
   const multAccessGranted = !!progressState.multAccessCodigo
 
-  const activeMultQuiz = progressState.multQuizVariant || moduloMultiplicador.questionBank || []
-  const multQuizResult = scoreQuiz(activeMultQuiz, progressState.multState.quizAnswers || {})
+  const activeMultQuiz = progressState.multQuizVariant || []
+  const multQuizResult = scoreQuizServidor(activeMultQuiz, progressState.multState.quizAnswers || {})
   const multAnsweredCount = Object.keys(progressState.multState.quizAnswers || {}).length
   const multTotalQuestions = multQuizResult.total
   const multHasAnsweredQuestions = multAnsweredCount > 0
@@ -658,30 +691,24 @@ export default function App() {
     ? 100
     : Math.round(((multContentProgress + multQuizProgressRatio) / 2) * 100)
 
-  const finalResult = scoreQuiz(finalAssessment, progressState.finalAssessmentAnswers || {})
+  const finalTotalQuestions = quizFinal?.perguntas.length || 0
+  const finalAnsweredCount = Object.keys(respostasFinal).length
+  const hasAnsweredAllFinalQuestions = finalTotalQuestions > 0 && finalAnsweredCount === finalTotalQuestions
+  const finalAprovadaAgora = progressState.finalAssessmentPassed || resultadoFinal?.aprovada === true
 
-  const finalAnsweredCount = Object.keys(progressState.finalAssessmentAnswers || {}).length
-  const finalTotalQuestions = finalResult.total
-  const hasAnsweredFinalQuestions = finalAnsweredCount > 0
-  const hasAnsweredAllFinalQuestions = finalAnsweredCount === finalTotalQuestions
+  const finalAssessmentStatusLabel = finalAprovadaAgora
+    ? 'Avaliação aprovada'
+    : resultadoFinal
+      ? 'Aproveitamento insuficiente para certificação'
+      : !hasAnsweredAllFinalQuestions
+        ? 'Responda às questões para habilitar o envio'
+        : 'Todas as questões respondidas. Envie a avaliação.'
 
-  const finalAssessmentStatusLabel =
-    progressState.certificateUnlocked || progressState.finalAssessmentPassed
-      ? 'Avaliação aprovada'
-      : !hasAnsweredFinalQuestions
-        ? 'Responda às questões para acompanhar seu desempenho'
-        : !hasAnsweredAllFinalQuestions
-          ? 'Continue respondendo'
-          : finalResult.passed
-            ? 'Aproveitamento suficiente para certificação'
-            : 'Aproveitamento insuficiente'
-
-  const finalAssessmentStatusTone =
-    progressState.certificateUnlocked || progressState.finalAssessmentPassed || finalResult.passed
-      ? 'success'
-      : hasAnsweredAllFinalQuestions
-        ? 'warning'
-        : 'neutral'
+  const finalAssessmentStatusTone = finalAprovadaAgora
+    ? 'success'
+    : resultadoFinal
+      ? 'warning'
+      : 'neutral'
   const glossaryCategoryOptions = useMemo(() => ['Todos', ...glossaryCategories], [])
   const filteredGlossaryEntries = useMemo(() => {
     const query = normalizeSearchText(glossaryQuery)
@@ -846,65 +873,91 @@ export default function App() {
   }, [videoQuery, selectedVideoSource, selectedVideoModule])
 
   useEffect(() => {
-    const isQuizScreen = screenIndex === selectedModuleContent.length
+    const quizVisivel = currentView === 'module' && sessaoAtiva && screenIndex === selectedModuleContent.length
 
-    if (!isQuizScreen) return
+    if (!quizVisivel || progressState.quizVariants?.[selectedModule.id]) return undefined
 
-    setProgressState((prev) => {
-      if (prev.quizVariants?.[selectedModule.id]) return prev
+    let ativo = true
 
-      return {
-        ...prev,
-        quizVariants: {
-          ...(prev.quizVariants || {}),
-          [selectedModule.id]: randomizeQuiz(
-            getQuizSource(selectedModule),
-            getQuizSize(selectedModule),
-          ),
-        },
-      }
-    })
-  }, [screenIndex, selectedModule.id, selectedModuleContent.length, selectedModule])
+    setCarregandoQuiz(true)
+    setErroQuiz('')
+
+    sortearQuizDoModulo(selectedModule)
+      .then((questoes) => {
+        if (!ativo) return
+        setProgressState((prev) => ({
+          ...prev,
+          quizVariants: { ...(prev.quizVariants || {}), [selectedModule.id]: questoes },
+        }))
+      })
+      .catch((error) => {
+        if (ativo) setErroQuiz(mensagemDeErroServidor(error))
+      })
+      .finally(() => {
+        if (ativo) setCarregandoQuiz(false)
+      })
+
+    return () => {
+      ativo = false
+    }
+  }, [currentView, sessaoAtiva, screenIndex, selectedModule.id, selectedModuleContent.length])
 
   useEffect(() => {
-    const isMultQuizScreen = currentView === 'multiplicadores' && multScreenIndex === multiplicadorContent.length
+    const certificadoVisivel = currentView === 'certificate' && sessaoAtiva && progressState.finalAssessmentPassed
 
-    if (!isMultQuizScreen) return
+    if (certificadoVisivel && !certificado && !emitindoCertificado) {
+      emitirCertificado()
+    }
+  }, [currentView, sessaoAtiva, progressState.finalAssessmentPassed])
 
-    setProgressState((prev) => {
-      if (prev.multQuizVariant) return prev
+  useEffect(() => {
+    const quizMultVisivel =
+      currentView === 'multiplicadores' && multAccessGranted && multScreenIndex === multiplicadorContent.length
 
-      return {
-        ...prev,
-        multQuizVariant: randomizeQuiz(
-          moduloMultiplicador.questionBank || [],
-          moduloMultiplicador.quizSize || 10,
-        ),
-      }
-    })
-  }, [currentView, multScreenIndex, multiplicadorContent.length])
+    if (!quizMultVisivel || progressState.multQuizVariant) return undefined
+
+    let ativo = true
+
+    setCarregandoMultQuiz(true)
+    setErroMultQuiz('')
+
+    sortearQuestoesMultiplicador(progressState.multAccessCodigo)
+      .then((questoes) => {
+        if (!ativo) return
+        setProgressState((prev) => ({ ...prev, multQuizVariant: questoes }))
+      })
+      .catch((error) => {
+        if (ativo) setErroMultQuiz(mensagemDeErroServidor(error))
+      })
+      .finally(() => {
+        if (ativo) setCarregandoMultQuiz(false)
+      })
+
+    return () => {
+      ativo = false
+    }
+  }, [currentView, multScreenIndex, multAccessGranted, multiplicadorContent.length])
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [currentView, screenIndex, selectedModuleId, multScreenIndex])
 
+  // Nome e código vêm do servidor (emitir-certificado). Sem eles, o PDF não é gerado.
   function generateCertificatePdf() {
-    if (!progressState.certificateUnlocked) return
+    if (!progressState.certificateUnlocked || !certificado) return
 
-    const cleanName = participantName.trim()
+    const cleanName = String(certificado.nome || '').trim()
+    const verificationCode = certificado.codigo
 
-    if (!cleanName) {
-      window.alert('Informe o nome completo do participante antes de emitir o certificado.')
+    if (!cleanName || !verificationCode) {
+      setErroCertificado('Os dados do certificado ainda não foram recebidos. Tente emitir novamente.')
       return
     }
 
     const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' })
     const issuedAt = new Date()
     const completionDate = formatCertificateDate(issuedAt)
-    const verificationCode = createCertificateCode(cleanName, issuedAt, issuedAt.getTime())
     const courseName = `${courseIntro.title} — ${courseIntro.subtitle}`
-
-    registrarCertificadoEmitido({ codigo: verificationCode, nome: cleanName, versao: COURSE_VERSION })
 
     doc.setFillColor(248, 247, 244)
     doc.rect(0, 0, 297, 210, 'F')
@@ -1029,6 +1082,23 @@ export default function App() {
     setScreenIndex(0)
   }
 
+  function limparEstadoFinal() {
+    setQuizFinal(null)
+    setRespostasFinal({})
+    setResultadoFinal(null)
+    setErroFinal('')
+    setCertificado(null)
+    setErroCertificado('')
+  }
+
+  async function sair() {
+    if (supabase) await supabase.auth.signOut()
+    setProgressState(defaultProgress())
+    limparEstadoFinal()
+    setCurrentView('home')
+    setScreenIndex(0)
+  }
+
   function markSeen(itemIndex) {
     setProgressState((prev) => ({
       ...prev,
@@ -1117,21 +1187,47 @@ export default function App() {
     setScreenIndex((s) => Math.min(selectedModuleContent.length, s + 1))
   }
 
-  function answerModuleQuiz(idx, answer) {
+  // Sorteio no servidor: as questões chegam sem gabarito, na ordem original das alternativas.
+  async function sortearQuizDoModulo(moduleItem) {
+    const numero = modules.findIndex((m) => m.id === moduleItem.id) + 1
+
+    return sortearQuestoesModulo(numero)
+  }
+
+  // Cada resposta é conferida no servidor. A alternativa fica travada após a primeira resposta.
+  async function answerModuleQuiz(idx, optionIndex) {
+    const questao = activeModuleQuiz[idx]
+
+    if (!questao || respondendoQuiz || selectedModuleState.quizAnswers?.[idx] !== undefined) return
+
+    setRespondendoQuiz(true)
+    setErroQuiz('')
+
+    let resultado
+    try {
+      resultado = await responderQuestaoModulo(questao.id, optionIndex)
+    } catch (error) {
+      setRespondendoQuiz(false)
+      setErroQuiz(mensagemDeErroServidor(error))
+      return
+    }
+
+    setRespondendoQuiz(false)
+
     setProgressState((prev) => {
-      const quizForScoring = prev.quizVariants?.[selectedModule.id] || selectedModule.quiz || []
+      const moduleAtual = prev.moduleState[selectedModule.id]
       const nextAnswers = {
-        ...prev.moduleState[selectedModule.id].quizAnswers,
-        [idx]: answer,
+        ...moduleAtual.quizAnswers,
+        [idx]: { alternativa: optionIndex, correta: resultado.correta },
       }
-      const result = scoreQuiz(quizForScoring, nextAnswers)
+      const result = scoreQuizServidor(prev.quizVariants?.[selectedModule.id] || [], nextAnswers)
 
       return {
         ...prev,
         moduleState: {
           ...prev.moduleState,
           [selectedModule.id]: {
-            ...prev.moduleState[selectedModule.id],
+            ...moduleAtual,
             quizAnswers: nextAnswers,
             quizPassed: result.passed,
           },
@@ -1140,18 +1236,18 @@ export default function App() {
     })
   }
 
-  function retryModuleQuiz() {
-    setProgressState((prev) => {
-      const randomizedQuiz = randomizeQuiz(
-        getQuizSource(selectedModule),
-        getQuizSize(selectedModule),
-      )
+  async function retryModuleQuiz() {
+    setCarregandoQuiz(true)
+    setErroQuiz('')
 
-      return {
+    try {
+      const questoes = await sortearQuizDoModulo(selectedModule)
+
+      setProgressState((prev) => ({
         ...prev,
         quizVariants: {
           ...(prev.quizVariants || {}),
-          [selectedModule.id]: randomizedQuiz,
+          [selectedModule.id]: questoes,
         },
         moduleState: {
           ...prev.moduleState,
@@ -1161,13 +1257,30 @@ export default function App() {
             quizPassed: false,
           },
         },
-      }
-    })
+      }))
+    } catch (error) {
+      setErroQuiz(mensagemDeErroServidor(error))
+    } finally {
+      setCarregandoQuiz(false)
+    }
   }
 
-  function completeModule() {
+  async function completeModule() {
     const moduleIndex = modules.findIndex((m) => m.id === selectedModule.id)
     const nextModule = modules[moduleIndex + 1]
+
+    setErroModulo('')
+    setConcluindoModulo(true)
+
+    try {
+      await concluirModuloNoServidor(moduleIndex + 1)
+    } catch (error) {
+      setConcluindoModulo(false)
+      setErroModulo(mensagemDeErroServidor(error))
+      return
+    }
+
+    setConcluindoModulo(false)
 
     setProgressState((prev) => {
       const updated = {
@@ -1256,14 +1369,33 @@ export default function App() {
     setMultScreenIndex((s) => Math.min(multiplicadorContent.length, s + 1))
   }
 
-  function answerMultQuiz(idx, answer) {
+  // Respostas do módulo de multiplicadores são conferidas no servidor, com o código verificador como chave.
+  async function answerMultQuiz(idx, optionIndex) {
+    const questao = activeMultQuiz[idx]
+    const codigo = progressState.multAccessCodigo
+
+    if (!questao || !codigo || respondendoMultQuiz || progressState.multState.quizAnswers?.[idx] !== undefined) return
+
+    setRespondendoMultQuiz(true)
+    setErroMultQuiz('')
+
+    let resultado
+    try {
+      resultado = await responderQuestaoMultiplicador(codigo, questao.id, optionIndex)
+    } catch (error) {
+      setRespondendoMultQuiz(false)
+      setErroMultQuiz(mensagemDeErroServidor(error))
+      return
+    }
+
+    setRespondendoMultQuiz(false)
+
     setProgressState((prev) => {
-      const quizForScoring = prev.multQuizVariant || moduloMultiplicador.questionBank || []
       const nextAnswers = {
         ...prev.multState.quizAnswers,
-        [idx]: answer,
+        [idx]: { alternativa: optionIndex, correta: resultado.correta },
       }
-      const result = scoreQuiz(quizForScoring, nextAnswers)
+      const result = scoreQuizServidor(prev.multQuizVariant || [], nextAnswers)
 
       return {
         ...prev,
@@ -1276,19 +1408,31 @@ export default function App() {
     })
   }
 
-  function retryMultQuiz() {
-    setProgressState((prev) => ({
-      ...prev,
-      multQuizVariant: randomizeQuiz(
-        moduloMultiplicador.questionBank || [],
-        moduloMultiplicador.quizSize || 10,
-      ),
-      multState: {
-        ...prev.multState,
-        quizAnswers: {},
-        quizPassed: false,
-      },
-    }))
+  async function retryMultQuiz() {
+    const codigo = progressState.multAccessCodigo
+
+    if (!codigo) return
+
+    setCarregandoMultQuiz(true)
+    setErroMultQuiz('')
+
+    try {
+      const questoes = await sortearQuestoesMultiplicador(codigo)
+
+      setProgressState((prev) => ({
+        ...prev,
+        multQuizVariant: questoes,
+        multState: {
+          ...prev.multState,
+          quizAnswers: {},
+          quizPassed: false,
+        },
+      }))
+    } catch (error) {
+      setErroMultQuiz(mensagemDeErroServidor(error))
+    } finally {
+      setCarregandoMultQuiz(false)
+    }
   }
 
   function completeMultiplicadores() {
@@ -1318,22 +1462,88 @@ export default function App() {
     }))
   }
 
-  function answerFinalAssessment(idx, answer) {
-    setProgressState((prev) => {
-      const nextAnswers = {
-        ...prev.finalAssessmentAnswers,
-        [idx]: answer,
-      }
-      const result = scoreQuiz(finalAssessment, nextAnswers)
+  // Abre uma tentativa da avaliação final (ou retoma a aberta). O servidor confere os seis módulos.
+  async function iniciarAvaliacaoFinal() {
+    setCarregandoFinal(true)
+    setErroFinal('')
 
-      return {
-        ...prev,
-        finalAssessmentAnswers: nextAnswers,
-        finalAssessmentVersion: FINAL_ASSESSMENT_VERSION,
-        finalAssessmentPassed: result.passed,
-        certificateUnlocked: result.passed,
+    try {
+      const quiz = await iniciarQuizFinal()
+
+      setQuizFinal(quiz)
+      setRespostasFinal({})
+      setResultadoFinal(null)
+      setCurrentView('final-assessment')
+    } catch (error) {
+      const texto = mensagemDeErroServidor(error)
+
+      if (String(error?.message || '').includes('quiz_ja_aprovado')) {
+        setProgressState((prev) => ({ ...prev, finalAssessmentPassed: true, certificateUnlocked: true }))
+        setCurrentView('certificate')
+      } else {
+        setErroFinal(texto)
       }
+    } finally {
+      setCarregandoFinal(false)
+    }
+  }
+
+  function answerFinalAssessment(idx, optionIndex) {
+    if (enviandoFinal || resultadoFinal) return
+
+    setRespostasFinal((prev) => ({ ...prev, [idx]: optionIndex }))
+  }
+
+  // Envia as 18 respostas. Só a pontuação e a aprovação voltam do servidor.
+  async function enviarAvaliacaoFinal() {
+    if (!quizFinal || !hasAnsweredAllFinalQuestions || enviandoFinal || resultadoFinal) return
+
+    setEnviandoFinal(true)
+    setErroFinal('')
+
+    const respostas = quizFinal.perguntas.map((pergunta, idx) => ({
+      pergunta_id: pergunta.id,
+      alternativa: respostasFinal[idx],
+    }))
+
+    try {
+      const resultado = await enviarQuizFinal(quizFinal.tentativaId, respostas)
+
+      setResultadoFinal(resultado)
+
+      if (resultado.aprovada) {
+        setProgressState((prev) => ({ ...prev, finalAssessmentPassed: true, certificateUnlocked: true }))
+      }
+    } catch (error) {
+      setErroFinal(mensagemDeErroServidor(error))
+    } finally {
+      setEnviandoFinal(false)
+    }
+  }
+
+  // Emissão idempotente no servidor: se o certificado já existe, a função devolve o mesmo código.
+  async function emitirCertificado() {
+    if (!session?.access_token) {
+      setErroCertificado('Entre na sua conta para emitir o certificado.')
+      return
+    }
+
+    setEmitindoCertificado(true)
+    setErroCertificado('')
+
+    const resultado = await registrarCertificadoEmitido({
+      accessToken: session.access_token,
+      versao: COURSE_VERSION,
     })
+
+    setEmitindoCertificado(false)
+
+    if (!resultado) {
+      setErroCertificado('Não foi possível emitir o certificado agora. Tente novamente em alguns instantes.')
+      return
+    }
+
+    setCertificado(resultado)
   }
 
   function toggleCheckedChecklistItem(checklistId, itemIndex) {
@@ -1361,14 +1571,15 @@ export default function App() {
 
   function resetCourse() {
     const shouldReset = window.confirm(
-      'Tem certeza de que deseja reiniciar o curso? Essa ação apagará o progresso dos módulos, respostas, avaliação final e dados do certificado salvos neste dispositivo.',
+      'Tem certeza de que deseja reiniciar a visão do curso neste navegador? Isso apaga as etapas lidas, os checklists marcados e as respostas dos quizzes desta sessão. Os módulos já concluídos na sua conta são mantidos.',
     )
 
     if (!shouldReset) return
 
-    const fresh = defaultProgress()
-    setProgressState(fresh)
-    saveProgress(fresh)
+    if (userId) removerCacheTela(userId)
+    setProgressState(defaultProgress())
+    limparEstadoFinal()
+    setVersaoProgresso((versao) => versao + 1)
     setCurrentView('home')
     setSelectedModuleId(modules[0].id)
     setScreenIndex(0)
@@ -1441,6 +1652,11 @@ export default function App() {
           >
             <GraduationCap size={16} aria-hidden="true" focusable="false" /> Multiplicadores
           </button>
+          {sessaoAtiva ? (
+            <button className="button button-outline" onClick={sair}>
+              <LogOut size={16} aria-hidden="true" focusable="false" /> Sair
+            </button>
+          ) : null}
           <button className="button button-outline" onClick={resetCourse}>
             <RotateCcw size={16} aria-hidden="true" focusable="false" /> Reiniciar
           </button>
@@ -1476,12 +1692,12 @@ export default function App() {
                       isActiveModule ? 'module-chip-active' : '',
                     ].filter(Boolean).join(' ')}
                     onClick={() => {
-                      if (!state.unlocked) return
+                      if (!sessaoAtiva || !state.unlocked) return
                       setSelectedModuleId(m.id)
                       setCurrentView('module')
                       setScreenIndex(0)
                     }}
-                    disabled={!state.unlocked}
+                    disabled={!sessaoAtiva || !state.unlocked}
                     aria-label={`Módulo ${idx + 1}: ${m.shortTitle}. ${moduleStatusLabel}`}
                   >
                     <div className="module-chip-head">
@@ -1511,12 +1727,18 @@ export default function App() {
                 </div>
 
                 <ProgressBar
-                  value={finalResult.passed ? 100 : Math.round((finalResult.correct / finalResult.total) * 100) || 0}
+                  value={
+                    progressState.finalAssessmentPassed
+                      ? 100
+                      : finalTotalQuestions > 0
+                        ? Math.round((finalAnsweredCount / finalTotalQuestions) * 100)
+                        : 0
+                  }
                 />
 
                 <button
                   className="button full"
-                  disabled={!allModulesCompleted}
+                  disabled={!sessaoAtiva || !allModulesCompleted}
                   onClick={() => setCurrentView('final-review')}
                   aria-label={allModulesCompleted ? 'Ir para a revisão final' : `Avaliação final bloqueada. ${FINAL_ASSESSMENT_LOCKED_MESSAGE}`}
                 >
@@ -1529,7 +1751,27 @@ export default function App() {
         </aside>
 
         <main id="conteudo-principal" className="content-column" tabIndex={-1}>
-          {currentView === 'home' && (
+          {!authPronto && supabase ? <p className="muted-body">Verificando sua sessão...</p> : null}
+
+          {mostrarAcesso ? (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
+              {viewPrivada && !recoveryMode ? (
+                <div className="info-box muted-body" role="status">
+                  Esta etapa exige login. Entre na sua conta ou crie uma para continuar.
+                </div>
+              ) : null}
+              <AcessoCurso
+                supabase={supabase}
+                courseIntro={courseIntro}
+                cargaHoraria={CERTIFICATE_WORKLOAD}
+                apresentacao={currentView === 'home' && !recoveryMode}
+                recoveryMode={recoveryMode}
+                onRecoveryDone={() => setRecoveryMode(false)}
+              />
+            </motion.div>
+          ) : null}
+
+          {currentView === 'home' && sessaoAtiva && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
               <ScreenCard title="Bem-vindo ao curso" icon={Shield}>
                 <p className="muted-body">{courseIntro.description}</p>
@@ -1549,9 +1791,14 @@ export default function App() {
                 </div>
 
                 <div className="actions-row">
-                  <button className="button" onClick={startCourse}>
+                  <button className="button" onClick={startCourse} disabled={!progressoCarregado}>
                     {progressState.started ? 'Continuar curso' : 'Começar agora'} <ChevronRight size={16} aria-hidden="true" focusable="false" />
                   </button>
+                  {erroProgresso ? (
+                    <div className="warning-text" role="alert">
+                      Não foi possível carregar seu progresso: {erroProgresso} Recarregue a página para tentar de novo.
+                    </div>
+                  ) : null}
                   <button className="button button-outline" onClick={() => setCurrentView('structure')}>
                     Como funciona a trilha
                   </button>
@@ -2621,9 +2868,19 @@ export default function App() {
 
               {multScreenIndex === multiplicadorContent.length && (
                 <ScreenCard title="Quiz do módulo de multiplicadores" icon={CheckCircle2}>
+                  {carregandoMultQuiz ? (
+                    <div className="info-box muted-body" role="status">
+                      Sorteando as questões do módulo...
+                    </div>
+                  ) : null}
+                  {erroMultQuiz ? (
+                    <div className="warning-text" role="alert">
+                      {erroMultQuiz}
+                    </div>
+                  ) : null}
                   <div className="stack-lg">
                     {activeMultQuiz.map((q, idx) => (
-                      <div key={`mult-${idx}-${q.question}`} className="quiz-box">
+                      <div key={`mult-${idx}-${q.id}`} className="quiz-box">
                         <div className="quiz-question">
                           {idx + 1}. {q.question}
                         </div>
@@ -2634,7 +2891,8 @@ export default function App() {
                               <input
                                 type="radio"
                                 name={`mult-${idx}`}
-                                checked={progressState.multState.quizAnswers[idx] === optionIndex}
+                                checked={progressState.multState.quizAnswers[idx]?.alternativa === optionIndex}
+                                disabled={respondendoMultQuiz || progressState.multState.quizAnswers[idx] !== undefined}
                                 onChange={() => answerMultQuiz(idx, optionIndex)}
                               />
                               <span>{opt}</span>
@@ -2755,7 +3013,7 @@ export default function App() {
             </ScreenCard>
           )}
 
-          {currentView === 'module' && selectedModule && (
+          {currentView === 'module' && selectedModule && sessaoAtiva && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
               <ScreenCard title={selectedModule.title} icon={selectedModule.icon}>
                 <p className="muted-body">{selectedModule.subtitle || selectedModule.theme}</p>
@@ -2964,9 +3222,19 @@ export default function App() {
 
               {screenIndex === selectedModuleContent.length && (
                 <ScreenCard title={`Quiz do ${selectedModule.shortTitle}`} icon={CheckCircle2}>
+                  {carregandoQuiz ? (
+                    <div className="info-box muted-body" role="status">
+                      Sorteando as questões do módulo...
+                    </div>
+                  ) : null}
+                  {erroQuiz ? (
+                    <div className="warning-text" role="alert">
+                      {erroQuiz}
+                    </div>
+                  ) : null}
                   <div className="stack-lg">
                     {activeModuleQuiz.map((q, idx) => (
-                      <div key={`${selectedModule.id}-${idx}-${q.question}`} className="quiz-box">
+                      <div key={`${selectedModule.id}-${idx}-${q.id}`} className="quiz-box">
                         <div className="quiz-question">
                           {idx + 1}. {q.question}
                         </div>
@@ -2977,7 +3245,8 @@ export default function App() {
                               <input
                                 type="radio"
                                 name={`${selectedModule.id}-${idx}`}
-                                checked={selectedModuleState.quizAnswers[idx] === optionIndex}
+                                checked={selectedModuleState.quizAnswers[idx]?.alternativa === optionIndex}
+                                disabled={respondendoQuiz || selectedModuleState.quizAnswers[idx] !== undefined}
                                 onChange={() => answerModuleQuiz(idx, optionIndex)}
                               />
                               <span>{opt}</span>
@@ -3043,7 +3312,10 @@ export default function App() {
 
                     <button
                       className="button"
-                      disabled={!(selectedModuleState.activityDone && selectedModuleState.videoDone && moduleQuizResult.passed)}
+                      disabled={
+                        concluindoModulo ||
+                        !(selectedModuleState.activityDone && selectedModuleState.videoDone && moduleQuizResult.passed)
+                      }
                       onClick={completeModule}
                     >
                       {modules.findIndex((m) => m.id === selectedModule.id) === modules.length - 1
@@ -3057,12 +3329,18 @@ export default function App() {
                       Para concluir o módulo, registre a videoaula e conclua a atividade prática.
                     </div>
                   ) : null}
+
+                  {erroModulo ? (
+                    <div className="warning-text" role="alert">
+                      {erroModulo}
+                    </div>
+                  ) : null}
                 </ScreenCard>
               )}
             </motion.div>
           )}
 
-          {currentView === 'final-review' && (
+          {currentView === 'final-review' && sessaoAtiva && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
               <ScreenCard title="Revisão geral do curso" icon={BookOpen}>
                 <p className="muted-body">
@@ -3078,42 +3356,52 @@ export default function App() {
                   ))}
                 </div>
 
-                <button className="button" onClick={() => setCurrentView('final-assessment')}>
-                  Iniciar avaliação final integradora
+                <button className="button" onClick={iniciarAvaliacaoFinal} disabled={carregandoFinal}>
+                  {carregandoFinal ? 'Preparando a avaliação...' : 'Iniciar avaliação final integradora'}
                 </button>
+                {erroFinal ? (
+                  <div className="warning-text" role="alert">
+                    {erroFinal}
+                  </div>
+                ) : null}
               </ScreenCard>
             </motion.div>
           )}
 
-          {currentView === 'final-assessment' && (
+          {currentView === 'final-assessment' && sessaoAtiva && (
             <ScreenCard title="Avaliação final integradora" icon={Award}>
               <p className="muted-body">
                 Estudo de caso transversal para verificar identificação do golpe, falhas preventivas, ordem correta da reação, preservação de provas e escolha do canal institucional adequado.
               </p>
 
-              <div className="stack-lg">
-                {finalAssessment.map((q, idx) => (
-                  <div key={q.question} className="quiz-box">
-                    <div className="quiz-question">
-                      {idx + 1}. {q.question}
-                    </div>
+              {quizFinal ? (
+                <div className="stack-lg">
+                  {quizFinal.perguntas.map((q, idx) => (
+                    <div key={q.id} className="quiz-box">
+                      <div className="quiz-question">
+                        {idx + 1}. {q.question}
+                      </div>
 
-                    <div className="stack-sm">
-                      {q.options.map((opt, optionIndex) => (
-                        <label key={opt} className="radio-row">
-                          <input
-                            type="radio"
-                            name={`final-${idx}`}
-                            checked={progressState.finalAssessmentAnswers[idx] === optionIndex}
-                            onChange={() => answerFinalAssessment(idx, optionIndex)}
-                          />
-                          <span>{opt}</span>
-                        </label>
-                      ))}
+                      <div className="stack-sm">
+                        {q.options.map((opt, optionIndex) => (
+                          <label key={`${q.id}-${optionIndex}`} className="radio-row">
+                            <input
+                              type="radio"
+                              name={`final-${idx}`}
+                              checked={respostasFinal[idx] === optionIndex}
+                              disabled={enviandoFinal || !!resultadoFinal}
+                              onChange={() => answerFinalAssessment(idx, optionIndex)}
+                            />
+                            <span>{opt}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="info-box muted-body">Inicie a avaliação para ver as questões.</div>
+              )}
 
               <div className="final-assessment-status-panel">
                 <div className="final-assessment-status-grid">
@@ -3126,12 +3414,14 @@ export default function App() {
                   <div className="quiz-status-item">
                     <span className="mini-muted">Acertos</span>
                     <div className="quiz-status-value">
-                      {finalResult.correct}/{finalResult.total}
+                      {resultadoFinal ? `${resultadoFinal.acertos}/${resultadoFinal.total}` : '—'}
                     </div>
                   </div>
                   <div className="quiz-status-item">
                     <span className="mini-muted">Mínimo</span>
-                    <div className="quiz-status-value">70%</div>
+                    <div className="quiz-status-value">
+                      {quizFinal?.notaMinima ?? 13} de {quizFinal?.total ?? 18}
+                    </div>
                   </div>
                 </div>
                 <div className={`quiz-status-label ${finalAssessmentStatusTone}`}>
@@ -3148,11 +3438,14 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="info-box muted-body">
-                Resultado atual: {finalResult.correct}/{finalResult.total} acertos. Aproveitamento mínimo: 70%.
-              </div>
+              {resultadoFinal ? (
+                <div className="info-box muted-body">
+                  Resultado: {resultadoFinal.acertos} de {resultadoFinal.total} acertos. Nota mínima:{' '}
+                  {resultadoFinal.notaMinima}. Tentativa {resultadoFinal.numero} de {TENTATIVAS_FINAL_MAX}.
+                </div>
+              ) : null}
 
-              {progressState.finalAssessmentPassed && (
+              {finalAprovadaAgora && (
                 <div className="final-assessment-success-box">
                   <div className="ludic-header" style={{ marginBottom: '8px' }}>
                     <CheckCircle2 size={18} className="success-icon" aria-hidden="true" focusable="false" />
@@ -3164,17 +3457,39 @@ export default function App() {
                 </div>
               )}
 
+              {erroFinal && quizFinal ? (
+                <div className="warning-text" role="alert">
+                  {erroFinal}
+                </div>
+              ) : null}
+
               <div className="actions-row">
+                {!resultadoFinal ? (
+                  <button
+                    className="button"
+                    onClick={enviarAvaliacaoFinal}
+                    disabled={!quizFinal || !hasAnsweredAllFinalQuestions || enviandoFinal}
+                  >
+                    {enviandoFinal ? 'Enviando...' : 'Enviar avaliação'}
+                  </button>
+                ) : null}
+
+                {resultadoFinal && !resultadoFinal.aprovada && resultadoFinal.numero < TENTATIVAS_FINAL_MAX ? (
+                  <button className="button button-outline" onClick={iniciarAvaliacaoFinal} disabled={carregandoFinal}>
+                    Iniciar nova tentativa
+                  </button>
+                ) : null}
+
                 <button
                   className="button"
                   onClick={() => setCurrentView('certificate')}
-                  disabled={!progressState.finalAssessmentPassed}
+                  disabled={!finalAprovadaAgora}
                 >
                   Ir para certificação
                 </button>
               </div>
 
-              {!progressState.finalAssessmentPassed ? (
+              {!finalAprovadaAgora ? (
                 <div className="warning-text">
                   Conclua a avaliação com aproveitamento mínimo para liberar o certificado.
                 </div>
@@ -3182,7 +3497,7 @@ export default function App() {
             </ScreenCard>
           )}
 
-          {currentView === 'certificate' && (
+          {currentView === 'certificate' && sessaoAtiva && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="stack-lg">
               <ScreenCard title="Certificação" icon={Award}>
                 <div className="certificate-box">
@@ -3192,7 +3507,7 @@ export default function App() {
                     Você concluiu a trilha formativa e foi aprovado na avaliação final integradora. O curso reforça a tríade: identificar o risco, prevenir com método e reagir com segurança.
                   </p>
                   <div className="muted-small">
-                    Preencha o nome do participante abaixo para emitir o certificado em PDF.
+                    O nome e o código verificador vêm do seu cadastro e são gerados pelo servidor.
                   </div>
                 </div>
 
@@ -3207,26 +3522,34 @@ export default function App() {
                     </div>
 
                     <p className="muted-body">
-                      Digite o nome completo exatamente como deve aparecer no certificado e clique em “Baixar certificado em PDF”. O documento será gerado no navegador com data de conclusão, versão do curso e código verificador.
+                      O nome do certificado é o informado no cadastro. O PDF traz data de conclusão, versão do curso e o código verificador emitido pelo servidor.
                     </p>
 
                     <div className="stack-sm" style={{ marginTop: '12px' }}>
-                      <label htmlFor="participantName" className="muted-body">
-                        Nome do participante para o PDF
-                      </label>
+                      {certificado ? (
+                        <div className="line-list">
+                          <div>Nome no certificado: {certificado.nome}</div>
+                          <div>Código verificador: {certificado.codigo}</div>
+                        </div>
+                      ) : null}
 
-                      <input
-                        id="participantName"
-                        className="text-input"
-                        type="text"
-                        placeholder="Digite o nome completo"
-                        autoComplete="name"
-                        maxLength={90}
-                        value={participantName}
-                        onChange={(e) => setParticipantName(e.target.value)}
-                      />
+                      {emitindoCertificado ? (
+                        <div className="muted-body" role="status">Emitindo certificado...</div>
+                      ) : null}
 
-                      <button className="button" onClick={generateCertificatePdf}>
+                      {erroCertificado ? (
+                        <div className="warning-text" role="alert">
+                          {erroCertificado}
+                        </div>
+                      ) : null}
+
+                      {!certificado && !emitindoCertificado ? (
+                        <button className="button button-outline" onClick={emitirCertificado}>
+                          Emitir certificado
+                        </button>
+                      ) : null}
+
+                      <button className="button" onClick={generateCertificatePdf} disabled={!certificado}>
                         Baixar certificado em PDF
                       </button>
                     </div>
