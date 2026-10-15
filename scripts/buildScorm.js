@@ -13,8 +13,9 @@ import { ZipArchive } from 'archiver'
 //
 // Limitações conhecidas, documentadas para quem for importar no Moodle:
 // - Vídeos ainda são placeholders ("Em preparação"); o roteiro é exibido como texto.
-// - O quiz de cada módulo usa o conjunto fixo de 10 questões já curado em `module.quiz`
-//   (sem sorteio dinâmico; pacote estático não tem esse comportamento).
+// - Quizzes e avaliação final NÃO fazem parte do pacote: as questões e o gabarito ficam no
+//   servidor (Supabase, #130) e não podem ir para um arquivo estático. A avaliação é feita
+//   só na versão online do curso.
 // - O certificado do curso Cidadão Digital Seguro (com hash validável) é gerado pelo app
 //   React, não pelo SCORM; a conclusão fica registrada via cmi.core.lesson_status de cada
 //   SCO, e cabe ao Moodle emitir certificado próprio a partir disso, se configurado.
@@ -25,8 +26,10 @@ const outputDir = resolve(projectRoot, 'dist-scorm')
 const contentModules = {
   courseIntro: '/src/content/courseIntro.js',
   modules: '/src/content/modules/index.js',
-  finalAssessment: '/src/content/finalAssessment.js',
 }
+
+const QUIZ_NOTICE =
+  'Quiz disponível somente na versão online do curso. As questões ficam no servidor e não são incluídas no pacote.'
 
 function escapeHtml(value) {
   return String(value ?? '')
@@ -125,39 +128,15 @@ function renderVideoBlock(video) {
     </section>`
 }
 
-function renderQuizSection(quiz) {
-  const quizJson = JSON.stringify(quiz.map((q) => ({ question: q.question, options: q.options, answer: q.answer })))
-
+function renderQuizNotice(title) {
   return `
     <section class="cds-block cds-quiz">
-      <h3>Quiz do módulo</h3>
-      <p class="cds-muted">Aproveitamento mínimo para aprovação: 70%.</p>
-      <form id="cds-quiz-form" onsubmit="event.preventDefault(); cdsCheckAnswers();">
-        ${quiz
-          .map(
-            (q, index) => `
-          <fieldset class="cds-question" data-question="${index}">
-            <legend>${index + 1}. ${escapeHtml(q.question)}</legend>
-            ${q.options
-              .map(
-                (option, optionIndex) => `
-              <label class="cds-option">
-                <input type="radio" name="q${index}" value="${optionIndex}" />
-                <span>${escapeHtml(option)}</span>
-              </label>`,
-              )
-              .join('')}
-          </fieldset>`,
-          )
-          .join('')}
-        <button type="submit">Corrigir respostas</button>
-      </form>
-      <div id="cds-quiz-feedback" class="cds-feedback" role="status"></div>
-      <script>window.CDS_QUIZ = ${quizJson};</script>
+      <h3>${escapeHtml(title)}</h3>
+      <p class="cds-muted">${escapeHtml(QUIZ_NOTICE)}</p>
     </section>`
 }
 
-function pageShell({ title, bodyHtml, includeQuizScript }) {
+function pageShell({ title, bodyHtml }) {
   return `<!doctype html>
 <html lang="pt-BR">
 <head>
@@ -172,7 +151,6 @@ function pageShell({ title, bodyHtml, includeQuizScript }) {
     <h1>${escapeHtml(title)}</h1>
     ${bodyHtml}
   </main>
-  ${includeQuizScript ? '<script src="shared/quiz.js"></script>' : ''}
 </body>
 </html>`
 }
@@ -187,16 +165,14 @@ async function loadContent() {
   })
 
   try {
-    const [courseIntroModule, modulesModule, finalAssessmentModule] = await Promise.all([
+    const [courseIntroModule, modulesModule] = await Promise.all([
       server.ssrLoadModule(contentModules.courseIntro),
       server.ssrLoadModule(contentModules.modules),
-      server.ssrLoadModule(contentModules.finalAssessment),
     ])
 
     return {
       courseIntro: courseIntroModule.courseIntro,
       modules: modulesModule.modules,
-      finalAssessment: finalAssessmentModule.finalAssessment,
     }
   } finally {
     await server.close()
@@ -291,40 +267,6 @@ window.addEventListener('unload', function () {
 });
 `
 
-const QUIZ_JS = `
-function cdsCheckAnswers() {
-  var quiz = window.CDS_QUIZ || [];
-  var total = quiz.length;
-  var correct = 0;
-
-  quiz.forEach(function (q, i) {
-    var checked = document.querySelector('input[name="q' + i + '"]:checked');
-    var answered = checked ? Number(checked.value) : -1;
-    var optionEls = document.querySelectorAll('[data-question="' + i + '"] .cds-option');
-
-    optionEls.forEach(function (el, idx) {
-      el.classList.remove('correct', 'incorrect');
-      if (idx === q.answer) el.classList.add('correct');
-      else if (idx === answered) el.classList.add('incorrect');
-    });
-
-    if (answered === q.answer) correct += 1;
-  });
-
-  var pct = total > 0 ? Math.round((correct / total) * 100) : 0;
-  var passed = pct >= 70;
-  var feedbackEl = document.getElementById('cds-quiz-feedback');
-
-  feedbackEl.textContent = 'Resultado: ' + correct + '/' + total + ' (' + pct + '%). ' +
-    (passed ? 'Aprovado.' : 'Aproveitamento insuficiente (mínimo 70%).');
-  feedbackEl.className = 'cds-feedback ' + (passed ? 'pass' : 'fail');
-
-  window.CDS_SCORM.setScore(pct);
-  window.CDS_SCORM.setStatus(passed ? 'passed' : 'failed');
-  window.CDS_SCORM.commit();
-}
-`
-
 function buildManifest(modules) {
   const moduleItems = modules
     .map(
@@ -342,7 +284,6 @@ function buildManifest(modules) {
       <file href="modulo-${index + 1}.html"/>
       <file href="shared/style.css"/>
       <file href="shared/scorm-api.js"/>
-      <file href="shared/quiz.js"/>
     </resource>`,
     )
     .join('')
@@ -371,7 +312,6 @@ ${moduleItems}
       <file href="avaliacao-final.html"/>
       <file href="shared/style.css"/>
       <file href="shared/scorm-api.js"/>
-      <file href="shared/quiz.js"/>
     </resource>
   </resources>
 </manifest>
@@ -379,7 +319,7 @@ ${moduleItems}
 }
 
 async function main() {
-  const { courseIntro, modules, finalAssessment } = await loadContent()
+  const { courseIntro, modules } = await loadContent()
 
   fs.mkdirSync(outputDir, { recursive: true })
 
@@ -397,7 +337,6 @@ async function main() {
   archive.append(buildManifest(modules), { name: 'imsmanifest.xml' })
   archive.append(SHARED_CSS, { name: 'shared/style.css' })
   archive.append(SCORM_API_JS, { name: 'shared/scorm-api.js' })
-  archive.append(QUIZ_JS, { name: 'shared/quiz.js' })
 
   modules.forEach((moduleItem, index) => {
     const bodyHtml = `
@@ -405,21 +344,20 @@ async function main() {
       <p><strong>Objetivo:</strong> ${escapeHtml(moduleItem.goal || '')}</p>
       ${(moduleItem.content || []).map(renderContentBlock).join('\n')}
       ${renderVideoBlock(moduleItem.video)}
-      ${renderQuizSection(moduleItem.quiz || (moduleItem.questionBank || []).slice(0, moduleItem.quizSize || 10))}
+      ${renderQuizNotice('Quiz do módulo')}
     `
 
-    archive.append(pageShell({ title: moduleItem.title, bodyHtml, includeQuizScript: true }), {
+    archive.append(pageShell({ title: moduleItem.title, bodyHtml }), {
       name: `modulo-${index + 1}.html`,
     })
   })
 
   const finalBodyHtml = `
     <p class="cds-muted">Avaliação final, ${escapeHtml(courseIntro.title)}</p>
-    <p>Responda às ${finalAssessment.length} questões abaixo. Aproveitamento mínimo para aprovação: 70%.</p>
-    ${renderQuizSection(finalAssessment)}
+    ${renderQuizNotice('Avaliação final integradora')}
   `
 
-  archive.append(pageShell({ title: 'Avaliação final', bodyHtml: finalBodyHtml, includeQuizScript: true }), {
+  archive.append(pageShell({ title: 'Avaliação final', bodyHtml: finalBodyHtml }), {
     name: 'avaliacao-final.html',
   })
 
@@ -428,7 +366,7 @@ async function main() {
 
   console.log(`Pacote SCORM gerado em ${archivePath}`)
   console.log(
-    'Limitações: vídeos são placeholders (roteiro em texto); quiz de cada módulo usa o conjunto fixo de 10 questões de module.quiz (sem sorteio); módulo de multiplicadores não incluso (fora da matriz homologada, com gate próprio por certificado).',
+    'Limitações: vídeos são placeholders (roteiro em texto); quizzes e avaliação final não fazem parte do pacote (questões no servidor, #130); módulo de multiplicadores não incluso (fora da matriz homologada, com gate próprio por certificado).',
   )
 }
 

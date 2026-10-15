@@ -1,5 +1,4 @@
 import { AlertTriangle } from 'lucide-react'
-import { questionBank } from '../questionBank'
 
 const module5 = {
   id: 'm5',
@@ -334,9 +333,7 @@ const module5 = {
     },
   ],
 
-  questionBank: questionBank.m5,
   quizSize: 10,
-  quiz: questionBank.m5.slice(0, 10),
 }
 
 export { module5 }

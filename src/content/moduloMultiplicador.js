@@ -21,8 +21,6 @@
 //
 // Ver: docs/analise-adequacao-capacitacao-multiplicadores.md
 
-import { moduloMultiplicadorQuestions } from './moduloMultiplicadorQuestions'
-
 export const moduloMultiplicador = {
   id: 'mult',
   title: 'Módulo de Formação de Multiplicadores',
@@ -466,8 +464,6 @@ export const moduloMultiplicador = {
       'Fechamento com indicação do curso completo',
     ],
   },
-  questionBank: moduloMultiplicadorQuestions,
-  quizSize: 10,
   habilitacao: {
     // Especificação de requisitos para implementação pela ANP. Não é funcionalidade desta aplicação.
     observacao:
