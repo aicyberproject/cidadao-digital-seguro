@@ -65,7 +65,7 @@ Cada questão segue o padrão:
 {
   question: 'Texto da pergunta',
   options: ['Alternativa A', 'Alternativa B', 'Alternativa C', 'Alternativa D'],
-  answer: 1,
+  answer: <índice da correta>,
 }
 ```
 
