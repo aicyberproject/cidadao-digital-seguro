@@ -92,7 +92,7 @@ Cada questão deve ter:
 {
   question: 'Pergunta',
   options: ['A', 'B', 'C', 'D'],
-  answer: 0,
+  answer: <índice da correta>,
 }
 ```
 
