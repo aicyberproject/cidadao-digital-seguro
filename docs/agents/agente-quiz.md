@@ -27,6 +27,6 @@ Formato:
 {
   question: '...',
   options: ['...', '...', '...', '...'],
-  answer: 0,
+  answer: <índice da correta>,
 }
 ```
