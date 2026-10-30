@@ -26,6 +26,16 @@ const MENSAGENS_ERRO = [
   ['Password should be', `A senha precisa ter pelo menos ${MIN_SENHA} caracteres.`],
 ]
 
+function urlDeRetorno() {
+  return `${window.location.origin}${import.meta.env.BASE_URL}`
+}
+
+// Com a confirmação de e-mail ligada, o Supabase não devolve erro para um e-mail já
+// cadastrado: responde com um usuário sem identidades, para não revelar quem tem conta.
+function contaJaExistia(user) {
+  return Array.isArray(user?.identities) && user.identities.length === 0
+}
+
 function mensagemDeErro(error) {
   const texto = String(error?.message || '')
   const encontrada = MENSAGENS_ERRO.find(([trecho]) => texto.includes(trecho))
@@ -89,7 +99,7 @@ export function AcessoCurso({
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
       password: senha,
-      options: { data: { nome: nome.trim() } },
+      options: { data: { nome: nome.trim() }, emailRedirectTo: urlDeRetorno() },
     })
 
     setOcupado(false)
@@ -99,8 +109,16 @@ export function AcessoCurso({
     }
 
     setSenha('')
+    if (contaJaExistia(data?.user)) {
+      setAviso(
+        'Este e-mail já tem uma conta. Se você já confirmou o cadastro, use a aba Entrar com seu e-mail e senha. Se esqueceu a senha, use a aba Esqueci minha senha.',
+      )
+      return
+    }
     if (!data?.session) {
-      setAviso('Conta criada. Confirme seu e-mail pelo link que enviamos antes de entrar.')
+      setAviso(
+        'Conta criada. Confirme seu e-mail pelo link que enviamos antes de entrar. Se, depois de clicar, a página do curso não abrir, volte a este site e use a aba Entrar com seu e-mail e senha: a confirmação já terá sido registrada.',
+      )
     }
   }
 
@@ -110,7 +128,7 @@ export function AcessoCurso({
     setOcupado(true)
 
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}`,
+      redirectTo: urlDeRetorno(),
     })
 
     setOcupado(false)
